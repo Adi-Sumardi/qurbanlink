@@ -56,4 +56,12 @@ export const subscriptionService = {
     const res = await api.get<ApiResponse<Payment[]>>('/subscriptions/payments');
     return res.data;
   },
+
+  /** Re-generate Snap token for an existing pending payment */
+  async resumePayment(paymentId: string) {
+    const res = await api.post<ApiResponse<MidtransPaymentResult>>(
+      `/subscriptions/payments/${paymentId}/resume`
+    );
+    return res.data;
+  },
 };

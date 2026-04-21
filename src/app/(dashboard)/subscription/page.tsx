@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   CreditCard,
@@ -93,11 +93,30 @@ export default function SubscriptionPage() {
   const [showPlans, setShowPlans] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlanInfo | null>(null);
 
+  const [resumingId, setResumingId] = useState<string | null>(null);
+
   const { pay, resumePayment, isBusy, isCreating } = usePayment({
     onClosed: () => {
       // Jika user tutup Snap tanpa bayar, biarkan mereka buka dialog lagi manual
     },
   });
+
+  const handleResume = useCallback(async (payment: Payment) => {
+    setResumingId(payment.id);
+    try {
+      const res = await subscriptionService.resumePayment(payment.id);
+      const result = res.data;
+      if (result?.snap_token) {
+        resumePayment(result.snap_token, result.invoice_number ?? payment.invoice_number, result.payment_url);
+      } else if (result?.payment_url) {
+        window.open(result.payment_url, '_blank', 'noopener,noreferrer');
+      }
+    } catch {
+      // toast shown by axios interceptor
+    } finally {
+      setResumingId(null);
+    }
+  }, [resumePayment]);
 
   /* — Queries — */
   const { data: subscriptionRes, isLoading: loadingSub } = useQuery({
@@ -479,21 +498,15 @@ export default function SubscriptionPage() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-1.5">
-                        {payment.status === 'pending' && (payment.snap_token || payment.snap_redirect_url) && (
+                        {payment.status === 'pending' && (
                           <Button
                             variant="default"
                             size="sm"
                             className="gap-1.5 bg-[#004532] text-white hover:bg-[#003526]"
-                            disabled={isBusy}
-                            onClick={() =>
-                              resumePayment(
-                                payment.snap_token ?? '',
-                                payment.invoice_number,
-                                payment.snap_redirect_url
-                              )
-                            }
+                            disabled={resumingId === payment.id || isBusy}
+                            onClick={() => handleResume(payment)}
                           >
-                            {isBusy ? (
+                            {resumingId === payment.id ? (
                               <Loader2 className="size-3.5 animate-spin" />
                             ) : (
                               <PlayCircle className="size-3.5" />
