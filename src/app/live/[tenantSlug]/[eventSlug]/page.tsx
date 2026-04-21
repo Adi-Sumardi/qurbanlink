@@ -202,7 +202,7 @@ export default function PublicLiveDashboardPage() {
             </div>
           </div>
           <div className="hidden shrink-0 text-right text-xs text-slate-500 sm:block">
-            Powered by <span className="font-semibold text-green-500">QurbanLink</span>
+            Powered by <span className="font-semibold text-green-500">Tawzii Digital</span>
           </div>
         </div>
       </header>

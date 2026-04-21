@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
 
-const CACHE_NAME = 'qurbanlink-v1';
+const CACHE_NAME = 'tawzii-v1';
 const STATIC_ASSETS = [
   '/',
   '/manifest.json',

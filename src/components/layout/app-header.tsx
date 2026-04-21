@@ -1,10 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { LogOut, User, CreditCard } from 'lucide-react';
-import { SidebarTrigger } from '@/components/ui/sidebar';
-import { Separator } from '@/components/ui/separator';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { usePathname } from 'next/navigation';
+import { Bell, Settings, LogOut, User, CreditCard, Menu } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,52 +10,89 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/stores/auth.store';
 import { useLogout } from '@/hooks/use-auth';
-import { Badge } from '@/components/ui/badge';
 
-export function AppHeader() {
+const headerNav = [
+  { label: 'Dashboard', href: '/dashboard' },
+  { label: 'Event', href: '/events' },
+  { label: 'Laporan', href: '/reports' },
+];
+
+export function AppHeader({ onMenuToggle }: { onMenuToggle?: () => void } = {}) {
   const { user } = useAuthStore();
   const logout = useLogout();
-  const tenantName = user?.tenant?.name;
+  const pathname = usePathname();
 
   const initials = user?.name
     ?.split(' ')
     .map((n) => n[0])
     .join('')
     .toUpperCase()
-    .slice(0, 2) || '?';
+    .slice(0, 2) || '??';
 
   return (
-    <header className="flex h-14 items-center gap-3 border-b bg-background px-4">
-      <SidebarTrigger />
-      <Separator orientation="vertical" className="h-5" />
-      {tenantName && (
-        <span className="text-sm font-medium text-muted-foreground truncate">
-          {tenantName}
+    <header className="flex h-14 items-center gap-3 border-b border-[rgba(190,201,194,0.2)] bg-white px-4 md:px-5">
+      {/* Hamburger — mobile only */}
+      <button
+        onClick={onMenuToggle}
+        className="flex size-9 items-center justify-center rounded-xl text-[#3f4944] transition-colors hover:bg-[#f2f4f6] md:hidden"
+        aria-label="Buka menu"
+      >
+        <Menu className="size-5" />
+      </button>
+
+      {/* Breadcrumb / Page indicator */}
+      <div className="flex items-center gap-3">
+        <span className="hidden text-xs font-black uppercase tracking-widest text-[#3f4944]/40 md:block">
+          Tawzii Digital
         </span>
-      )}
+        <nav className="hidden items-center gap-1 md:flex">
+          {headerNav.map((item) => {
+            const active = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`px-3 py-1.5 text-sm font-semibold transition-colors ${
+                  active
+                    ? 'border-b-2 border-[#004532] pb-[5px] text-[#004532]'
+                    : 'text-[#3f4944]/60 hover:text-[#004532]'
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
+
+      {/* Right Actions */}
       <div className="ml-auto flex items-center gap-2">
-        {user?.roles?.[0] && (
-          <Badge variant="secondary" className="text-xs capitalize">
-            {user.roles[0].replace('_', ' ')}
-          </Badge>
-        )}
+        {/* Notifications */}
+        <button className="flex size-9 items-center justify-center rounded-xl text-[#3f4944] transition-colors hover:bg-[#f2f4f6]">
+          <Bell className="size-4" />
+        </button>
+
+        {/* Settings */}
+        <Link
+          href="/settings"
+          className="flex size-9 items-center justify-center rounded-xl text-[#3f4944] transition-colors hover:bg-[#f2f4f6]"
+        >
+          <Settings className="size-4" />
+        </Link>
+
+        {/* Avatar */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="rounded-full">
-              <Avatar className="size-8">
-                <AvatarFallback className="text-xs bg-primary/10 text-primary">
-                  {initials}
-                </AvatarFallback>
-              </Avatar>
-            </Button>
+            <button className="flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-[#6ffbbe] to-[#a6f2d1] text-xs font-bold text-[#003826] shadow-sm transition-all hover:scale-105">
+              {initials}
+            </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
-            <div className="px-2 py-1.5">
-              <p className="text-sm font-medium">{user?.name}</p>
-              <p className="text-xs text-muted-foreground">{user?.email}</p>
+            <div className="px-2 py-2">
+              <p className="text-sm font-semibold">{user?.name}</p>
+              <p className="text-xs text-[#3f4944]/60">{user?.email}</p>
             </div>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>

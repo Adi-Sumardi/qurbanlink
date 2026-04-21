@@ -7,7 +7,7 @@ export const loginSchema = z.object({
 
 export const registerSchema = z
   .object({
-    tenant_name: z.string().min(2, 'Nama masjid/organisasi minimal 2 karakter'),
+    organization_name: z.string().min(2, 'Nama masjid/organisasi minimal 2 karakter'),
     name: z.string().min(2, 'Nama minimal 2 karakter'),
     email: z.email('Email tidak valid'),
     phone: z.string().optional(),

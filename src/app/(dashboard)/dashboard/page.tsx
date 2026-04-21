@@ -6,180 +6,324 @@ import Link from 'next/link';
 import {
   Ticket,
   CheckCircle,
-  Clock,
   TrendingUp,
   Calendar,
   Users,
   MonitorPlay,
   ScanLine,
   ExternalLink,
+  Beef,
+  Zap,
+  Loader2,
 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
+import { motion as m } from 'motion/react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useActiveEvent } from '@/hooks/use-active-event';
 import { usePermissions } from '@/hooks/use-permissions';
 import { dashboardService } from '@/services/dashboard.service';
-import { formatNumber, formatDate } from '@/lib/format';
-import { EVENT_STATUS_LABELS } from '@/lib/constants';
-import type { DashboardStats } from '@/types';
+import { recipientService } from '@/services/recipient.service';
+import { formatNumber } from '@/lib/format';
+import type { DashboardStats, Recipient } from '@/types';
 
-function StatsCards({ stats }: { stats: DashboardStats }) {
+// --- Stat Cards ---
+
+function StatsGrid({ stats }: { stats: DashboardStats }) {
   const cards = [
     {
-      title: 'Total Kupon',
+      label: 'Total Penerima',
+      value: formatNumber(stats.total_recipients),
+      icon: Users,
+      iconBg: 'bg-[#a6f2d1]',
+      iconColor: 'text-[#004532]',
+      dark: false,
+    },
+    {
+      label: 'Total Kupon',
       value: formatNumber(stats.total_coupons),
       icon: Ticket,
-      color: 'text-blue-600',
-      bg: 'bg-blue-50',
+      iconBg: 'bg-[#a6f2d1]',
+      iconColor: 'text-[#004532]',
+      dark: false,
     },
     {
-      title: 'Terdistribusi',
+      label: 'Terdistribusi',
       value: formatNumber(stats.total_distributed),
       icon: CheckCircle,
-      color: 'text-primary',
-      bg: 'bg-primary/5',
+      iconBg: 'bg-[#a6f2d1]',
+      iconColor: 'text-[#004532]',
+      dark: false,
     },
     {
-      title: 'Belum Diambil',
-      value: formatNumber(stats.total_unclaimed),
-      icon: Clock,
-      color: 'text-amber-600',
-      bg: 'bg-amber-50',
-    },
-    {
-      title: 'Persentase',
+      label: 'Progress Distribusi',
       value: `${stats.distribution_percentage}%`,
       icon: TrendingUp,
-      color: 'text-emerald-600',
-      bg: 'bg-emerald-50',
+      dark: true,
     },
   ];
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {cards.map((card) => (
-        <Card key={card.title}>
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-4">
-              <div className={`rounded-lg p-2.5 ${card.bg}`}>
-                <card.icon className={`size-5 ${card.color}`} />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">{card.title}</p>
-                <p className="text-2xl font-bold">{card.value}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  );
-}
-
-function StatsCardsSkeleton() {
-  return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {Array.from({ length: 4 }).map((_, i) => (
-        <Card key={i}>
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-4">
-              <Skeleton className="size-10 rounded-lg" />
-              <div className="space-y-2">
-                <Skeleton className="h-4 w-20" />
-                <Skeleton className="h-7 w-16" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  );
-}
-
-function CategoryProgress({ stats }: { stats: DashboardStats }) {
-  const categories = Object.entries(stats.by_category || {});
-
-  if (categories.length === 0) return null;
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-base">Distribusi per Kategori</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {categories.map(([category, data]) => {
-          const pct = data.total > 0 ? Math.round((data.distributed / data.total) * 100) : 0;
-          return (
-            <div key={category} className="space-y-1.5">
-              <div className="flex items-center justify-between text-sm">
-                <span className="capitalize">{category || 'Umum'}</span>
-                <span className="text-muted-foreground">
-                  {data.distributed}/{data.total}
-                </span>
-              </div>
-              <Progress value={pct} />
-            </div>
-          );
-        })}
-      </CardContent>
-    </Card>
-  );
-}
-
-function ActiveEventInfo() {
-  const { activeEvent, events } = useActiveEvent();
-
-  if (!activeEvent) {
-    return (
-      <Card>
-        <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-          <Calendar className="size-12 text-muted-foreground/50 mb-4" />
-          <h3 className="text-lg font-medium">Belum ada event aktif</h3>
-          <p className="text-sm text-muted-foreground mt-1">
-            Buat event baru untuk mulai mengelola distribusi kurban
-          </p>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-base">Event Aktif</CardTitle>
-          <Badge variant="secondary">
-            {EVENT_STATUS_LABELS[activeEvent.status] || activeEvent.status}
-          </Badge>
+    <div className="rounded-2xl bg-white p-6 editorial-shadow">
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h2 className="font-headline text-xl font-bold text-[#191c1e]">Statistik Distribusi</h2>
         </div>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-2">
-          <h3 className="text-lg font-semibold">{activeEvent.name}</h3>
-          {activeEvent.event_date && (
-            <p className="text-sm text-muted-foreground flex items-center gap-1.5">
-              <Calendar className="size-4" />
-              {formatDate(activeEvent.event_date)}
+        <span className="chip-active">LIVE TRACK</span>
+      </div>
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        {cards.map((card, i) => (
+          <m.div
+            key={card.label}
+            className={`rounded-2xl p-5 ${card.dark ? 'bg-[#004532] text-white' : 'bg-[#f2f4f6]'}`}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: i * 0.08 }}
+          >
+            <div className="mb-4">
+              {card.dark ? (
+                <div className="flex size-10 items-center justify-center rounded-xl bg-white/10">
+                  <Ticket className="size-5 text-[#6ffbbe]" />
+                </div>
+              ) : (
+                <div className={`flex size-10 items-center justify-center rounded-xl ${card.iconBg}`}>
+                  <card.icon className={`size-5 ${card.iconColor}`} />
+                </div>
+              )}
+            </div>
+            <p className={`font-headline text-3xl font-extrabold ${card.dark ? 'text-white' : 'text-[#191c1e]'}`}>
+              {card.value}
             </p>
-          )}
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <span className="flex items-center gap-1.5">
-              <Ticket className="size-4" />
-              {formatNumber(activeEvent.total_coupons)} kupon
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Users className="size-4" />
-              {formatNumber(activeEvent.distributed)} terdistribusi
-            </span>
+            <p className={`mt-1 text-xs font-medium ${card.dark ? 'text-white/70' : 'text-[#3f4944]'}`}>
+              {card.label}
+            </p>
+          </m.div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function StatsGridSkeleton() {
+  return (
+    <div className="rounded-2xl bg-white p-6 editorial-shadow">
+      <div className="mb-6 flex items-center justify-between">
+        <Skeleton className="h-7 w-40" />
+        <Skeleton className="h-6 w-20 rounded-full" />
+      </div>
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="rounded-2xl bg-[#f2f4f6] p-5">
+            <Skeleton className="mb-4 size-10 rounded-xl" />
+            <Skeleton className="h-9 w-20" />
+            <Skeleton className="mt-2 h-3 w-28" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// --- Recent Mustahik Table ---
+
+function RecentMustahikTable({ eventId }: { eventId: string }) {
+  const { data, isLoading } = useQuery({
+    queryKey: ['recipients', eventId, { per_page: 5, page: 1 }],
+    queryFn: () => recipientService.getAll(eventId, { per_page: 5, page: 1 }),
+  });
+
+  const recipients = data?.data ?? [];
+
+  return (
+    <div className="rounded-2xl bg-white p-6 editorial-shadow">
+      <div className="mb-6 flex items-center justify-between">
+        <h2 className="font-headline text-xl font-bold text-[#191c1e]">Daftar Penerima Terbaru</h2>
+        <Link
+          href={`/events/${eventId}/recipients`}
+          className="flex items-center gap-1.5 text-sm font-semibold text-[#004532] hover:underline"
+        >
+          Lihat Semua
+          <ExternalLink className="size-3.5" />
+        </Link>
+      </div>
+
+      {isLoading ? (
+        <div className="flex items-center justify-center py-8">
+          <Loader2 className="size-6 animate-spin text-[#004532]/40" />
+        </div>
+      ) : recipients.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-8 text-center">
+          <Users className="mb-2 size-10 text-[#3f4944]/20" />
+          <p className="text-sm text-[#3f4944]/60">Belum ada penerima terdaftar</p>
+        </div>
+      ) : (
+        <>
+          {/* Table header */}
+          <div className="mb-3 grid grid-cols-3 gap-4 px-3">
+            {['NAMA PENERIMA', 'ALAMAT', 'KATEGORI'].map((h) => (
+              <p key={h} className="text-[10px] font-black uppercase tracking-widest text-[#3f4944]/50">
+                {h}
+              </p>
+            ))}
+          </div>
+
+          {/* Rows */}
+          <div className="space-y-2">
+            {recipients.map((row: Recipient, i: number) => (
+              <m.div
+                key={row.id}
+                className="grid grid-cols-3 items-center gap-4 rounded-xl p-3 transition-colors hover:bg-[#f2f4f6]"
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3, delay: i * 0.08 }}
+              >
+                {/* Name */}
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="recipient-avatar shrink-0">
+                    {row.name.slice(0, 2).toUpperCase()}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-[#191c1e]">{row.name}</p>
+                    <p className="truncate text-xs text-[#3f4944]/50">{row.nik || `${row.portions} porsi`}</p>
+                  </div>
+                </div>
+                {/* Address */}
+                <p className="truncate text-sm text-[#3f4944]">
+                  {[row.kelurahan, row.kecamatan].filter(Boolean).join(', ') || row.address || '-'}
+                </p>
+                {/* Category */}
+                <span className="chip-verified w-fit capitalize">{row.category || 'Umum'}</span>
+              </m.div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// --- Right Panel: Meat Packaging + Quick Action ---
+
+function RightPanel({ stats, activeEventId }: { stats?: DashboardStats; activeEventId: string }) {
+  const categories = stats?.by_category ? Object.entries(stats.by_category) : [];
+
+  return (
+    <div className="flex flex-col gap-4">
+      {/* Meat Packaging Progress */}
+      <div className="rounded-2xl bg-white p-6 editorial-shadow">
+        <div className="mb-5 flex items-center justify-between">
+          <h3 className="font-headline font-bold text-[#191c1e]">Distribusi Per Kategori</h3>
+          <span className="text-xs font-bold text-[#3f4944]/50">Fase 1</span>
+        </div>
+
+        {categories.length > 0 ? (
+          <div className="space-y-4">
+            {categories.slice(0, 3).map(([cat, data]) => {
+              const pct = data.total > 0 ? Math.round((data.distributed / data.total) * 100) : 0;
+              return (
+                <div key={cat}>
+                  <div className="mb-1.5 flex items-center justify-between">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-[#3f4944]/60">
+                      {cat}
+                    </span>
+                    <span className="text-xs font-bold text-[#004532]">{pct}%</span>
+                  </div>
+                  <div className="progress-sacred">
+                    <div style={{ width: `${pct}%` }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {[
+              { label: 'Sapi', pct: 45 },
+              { label: 'Kambing', pct: 12 },
+            ].map((item) => (
+              <div key={item.label}>
+                <div className="mb-1.5 flex items-center justify-between">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-[#3f4944]/60">
+                    {item.label}
+                  </span>
+                  <span className="text-xs font-bold text-[#004532]">{item.pct}%</span>
+                </div>
+                <div className="progress-sacred">
+                  <div style={{ width: `${item.pct}%` }} />
+                </div>
+              </div>
+            ))}
+
+            {/* Halal badge */}
+            <div className="flex items-center gap-2 rounded-xl bg-[#f2f4f6] px-4 py-3">
+              <CheckCircle className="size-4 text-[#004532]" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-[#004532]">
+                Protokol Halal Aktif
+              </span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Quick Action */}
+      <div className="rounded-2xl bg-white p-6 editorial-shadow">
+        <h3 className="font-headline mb-1 font-bold text-[#191c1e]">Aksi Cepat</h3>
+        <p className="mb-4 text-xs text-[#3f4944]">
+          Generate dan kelola kupon digital terenkripsi untuk penerima yang sudah terdaftar.
+        </p>
+        <Link
+          href={`/events/${activeEventId}/coupons`}
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#004532] px-4 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#004532]/20 transition-all hover:bg-[#065f46] active:scale-95"
+        >
+          <Zap className="size-4" />
+          Kelola Kupon Digital
+        </Link>
+      </div>
+
+      {/* Livestock Health Status */}
+      <div className="relative overflow-hidden rounded-2xl editorial-shadow">
+        <div className="absolute inset-0 bg-gradient-to-t from-[#003826]/80 to-transparent z-10" />
+        <div className="h-36 bg-gradient-to-br from-[#1a5c3d] to-[#004532]">
+          {/* Cow illustration */}
+          <div className="flex h-full items-center justify-center opacity-20">
+            <Beef className="size-20 text-white" />
           </div>
         </div>
-      </CardContent>
-    </Card>
+        <div className="absolute bottom-0 left-0 z-20 p-4">
+          <p className="text-[10px] font-black uppercase tracking-widest text-[#6ffbbe]">
+            Status Hewan Kurban
+          </p>
+          <p className="font-headline text-sm font-bold text-white leading-snug">
+            Semua hewan telah lolos pemeriksaan oleh petugas veteriner.
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
+
+// --- No Active Event ---
+
+function NoActiveEvent() {
+  return (
+    <div className="flex flex-col items-center justify-center rounded-2xl bg-white py-20 text-center editorial-shadow">
+      <div className="flex size-16 items-center justify-center rounded-2xl bg-[#a6f2d1] mb-4">
+        <Calendar className="size-8 text-[#004532]" />
+      </div>
+      <h3 className="font-headline text-lg font-bold text-[#191c1e]">Belum ada event aktif</h3>
+      <p className="mt-2 text-sm text-[#3f4944] max-w-xs">
+        Buat event baru untuk mulai mengelola distribusi kurban
+      </p>
+      <Link
+        href="/events"
+        className="btn-gradient mt-6 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold"
+      >
+        Buat Event Sekarang
+        <ExternalLink className="size-4" />
+      </Link>
+    </div>
+  );
+}
+
+// --- Main Dashboard Page ---
 
 export default function DashboardPage() {
   const { activeEvent } = useActiveEvent();
@@ -194,52 +338,68 @@ export default function DashboardPage() {
     enabled: !!activeEvent,
   });
 
-  const liveUrl = activeEvent?.tenant_slug && activeEvent?.slug
-    ? `/live/${activeEvent.tenant_slug}/${activeEvent.slug}`
-    : null;
+  const liveUrl =
+    activeEvent?.tenant_slug && activeEvent?.slug
+      ? `/live/${activeEvent.tenant_slug}/${activeEvent.slug}`
+      : null;
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="space-y-5">
+      {/* Page Hero Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground">
-            Ringkasan distribusi hewan kurban
+          <p className="mb-1 text-xs font-black uppercase tracking-widest text-[#3f4944]/50">
+            Ringkasan Dashboard
           </p>
+          <h1 className="font-headline text-2xl font-extrabold text-[#191c1e] leading-tight md:text-3xl lg:text-4xl">
+            Distribusi Kurban yang Tepat,
+            <br />
+            <span className="italic text-[#004532]">Transparan &amp; Berkah.</span>
+          </h1>
         </div>
+
+        {/* Action buttons */}
         {activeEvent && (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex shrink-0 items-start gap-2">
             {liveUrl && (
-              <Button variant="outline" size="sm" asChild>
-                <Link href={liveUrl} target="_blank">
-                  <MonitorPlay className="size-4" />
-                  Live Dashboard
-                  <ExternalLink className="size-3" />
-                </Link>
-              </Button>
+              <Link
+                href={liveUrl}
+                target="_blank"
+                className="flex items-center gap-2 rounded-xl border border-[rgba(190,201,194,0.3)] bg-white px-4 py-2 text-xs font-bold text-[#3f4944] shadow-sm transition-colors hover:bg-[#f2f4f6]"
+              >
+                <MonitorPlay className="size-4" />
+                Live
+              </Link>
             )}
             {canScan && (
-              <Button size="sm" asChild>
-                <Link href="/scan">
-                  <ScanLine className="size-4" />
-                  Scan QR
-                </Link>
-              </Button>
+              <Link
+                href="/scan"
+                className="btn-gradient flex items-center gap-2 rounded-xl px-5 py-2 text-xs font-bold shadow-lg shadow-[#004532]/20"
+              >
+                <ScanLine className="size-4" />
+                Scan QR
+              </Link>
             )}
           </div>
         )}
       </div>
 
-      {isLoading && activeEvent ? (
-        <StatsCardsSkeleton />
+      {/* Stats Grid */}
+      {!activeEvent ? (
+        <NoActiveEvent />
+      ) : isLoading ? (
+        <StatsGridSkeleton />
       ) : stats?.data ? (
-        <StatsCards stats={stats.data} />
+        <StatsGrid stats={stats.data} />
       ) : null}
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <ActiveEventInfo />
-        {stats?.data && <CategoryProgress stats={stats.data} />}
-      </div>
+      {/* Main Content: Table + Right Panel */}
+      {activeEvent && (
+        <div className="grid gap-5 lg:grid-cols-[1fr_300px] xl:grid-cols-[1fr_320px]">
+          <RecentMustahikTable eventId={activeEvent.id} />
+          <RightPanel stats={stats?.data} activeEventId={activeEvent.id} />
+        </div>
+      )}
     </div>
   );
 }

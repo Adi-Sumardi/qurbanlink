@@ -102,29 +102,27 @@ function StatCard({
   sub?: string;
 }) {
   return (
-    <Card>
-      <CardContent className="pt-6">
-        <div className="flex items-center gap-3">
-          <div className={`rounded-lg p-2 ${color}`}>
-            <Icon className="size-5 text-white" />
-          </div>
-          <div>
-            <p className="text-xs font-medium text-muted-foreground">{title}</p>
-            <p className="text-xl font-bold">
-              {typeof value === 'number' ? formatNumber(value) : value}
-            </p>
-            {sub && <p className="text-xs text-muted-foreground">{sub}</p>}
-          </div>
+    <div className="rounded-2xl bg-white p-5 editorial-shadow">
+      <div className="flex items-center gap-3">
+        <div className={`flex size-10 items-center justify-center rounded-xl ${color}`}>
+          <Icon className="size-5 text-white" />
         </div>
-      </CardContent>
-    </Card>
+        <div>
+          <p className="text-xs font-black uppercase tracking-widest text-[#3f4944]/50">{title}</p>
+          <p className="font-headline text-2xl font-extrabold text-[#191c1e]">
+            {typeof value === 'number' ? formatNumber(value) : value}
+          </p>
+          {sub && <p className="text-xs text-[#3f4944]/60">{sub}</p>}
+        </div>
+      </div>
+    </div>
   );
 }
 
 function LoadingState() {
   return (
     <div className="flex justify-center py-12">
-      <Loader2 className="size-6 animate-spin text-muted-foreground" />
+      <Loader2 className="size-8 animate-spin text-[#004532]/40" />
     </div>
   );
 }
@@ -143,104 +141,97 @@ function DistributionTab({ data }: { data: DistributionData }) {
       </div>
 
       {/* Overall Progress */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-base">Progress Distribusi</CardTitle>
-            <span className="text-2xl font-bold text-primary">{summary.percentage}%</span>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <Progress value={summary.percentage} className="h-3" />
-          <p className="mt-2 text-center text-sm text-muted-foreground">
-            {formatNumber(summary.total_claimed)} dari {formatNumber(summary.total_coupons)} kupon terdistribusi
-          </p>
-        </CardContent>
-      </Card>
+      <div className="rounded-2xl bg-white p-6 editorial-shadow">
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="font-headline font-bold text-[#191c1e]">Distribution Progress</h3>
+          <span className="font-headline text-3xl font-extrabold text-[#004532]">{summary.percentage}%</span>
+        </div>
+        <div className="progress-sacred">
+          <div style={{ width: `${summary.percentage}%` }} />
+        </div>
+        <p className="mt-3 text-center text-sm text-[#3f4944]">
+          {formatNumber(summary.total_claimed)} of {formatNumber(summary.total_coupons)} coupons distributed
+        </p>
+      </div>
 
       {/* Per Category Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Distribusi Per Kategori</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <div className="rounded-2xl bg-white editorial-shadow overflow-hidden">
+        <div className="px-6 py-4 border-b border-[rgba(190,201,194,0.2)]">
+          <h3 className="font-headline font-bold text-[#191c1e]">Distribution per Category</h3>
+        </div>
+        <div className="p-6">
           {categories.length === 0 ? (
-            <p className="py-4 text-center text-sm text-muted-foreground">Belum ada data kategori</p>
+            <p className="py-4 text-center text-sm text-[#3f4944]/60">No category data yet</p>
           ) : (
             <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Kategori</TableHead>
-                    <TableHead className="text-right">Penerima</TableHead>
-                    <TableHead className="text-right">Porsi</TableHead>
-                    <TableHead className="text-right">Kupon</TableHead>
-                    <TableHead className="text-right">Diklaim</TableHead>
-                    <TableHead className="text-right">Belum</TableHead>
-                    <TableHead className="w-35">Progress</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-[rgba(190,201,194,0.2)]">
+                    {['Category', 'Recipients', 'Portions', 'Coupons', 'Claimed', 'Pending', 'Progress'].map((h) => (
+                      <th key={h} className="pb-3 text-left text-[10px] font-black uppercase tracking-widest text-[#3f4944]/50">{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[rgba(190,201,194,0.15)]">
                   {categories.map((cat) => (
-                    <TableRow key={cat.category}>
-                      <TableCell className="font-medium capitalize">{cat.category || 'Umum'}</TableCell>
-                      <TableCell className="text-right">{formatNumber(cat.total_recipients)}</TableCell>
-                      <TableCell className="text-right">{formatNumber(cat.total_portions)}</TableCell>
-                      <TableCell className="text-right">{formatNumber(cat.total_coupons)}</TableCell>
-                      <TableCell className="text-right font-medium text-green-600">{formatNumber(cat.claimed)}</TableCell>
-                      <TableCell className="text-right text-amber-600">{formatNumber(cat.unclaimed)}</TableCell>
-                      <TableCell>
+                    <tr key={cat.category} className="hover:bg-[#f2f4f6] transition-colors">
+                      <td className="py-3 font-semibold capitalize text-[#191c1e]">{cat.category || 'Umum'}</td>
+                      <td className="py-3 text-right text-[#3f4944]">{formatNumber(cat.total_recipients)}</td>
+                      <td className="py-3 text-right text-[#3f4944]">{formatNumber(cat.total_portions)}</td>
+                      <td className="py-3 text-right text-[#3f4944]">{formatNumber(cat.total_coupons)}</td>
+                      <td className="py-3 text-right font-semibold text-[#004532]">{formatNumber(cat.claimed)}</td>
+                      <td className="py-3 text-right text-amber-600">{formatNumber(cat.unclaimed)}</td>
+                      <td className="py-3">
                         <div className="flex items-center gap-2">
-                          <Progress value={cat.percentage} className="h-2 flex-1" />
-                          <span className="w-10 text-right text-xs text-muted-foreground">{cat.percentage}%</span>
+                          <div className="progress-sacred flex-1">
+                            <div style={{ width: `${cat.percentage}%` }} />
+                          </div>
+                          <span className="w-10 text-right text-xs text-[#3f4944]/60">{cat.percentage}%</span>
                         </div>
-                      </TableCell>
-                    </TableRow>
+                      </td>
+                    </tr>
                   ))}
-                  {/* Total row */}
-                  <TableRow className="border-t-2 font-semibold">
-                    <TableCell>Total</TableCell>
-                    <TableCell className="text-right">{formatNumber(summary.total_recipients)}</TableCell>
-                    <TableCell className="text-right">{formatNumber(summary.total_portions)}</TableCell>
-                    <TableCell className="text-right">{formatNumber(summary.total_coupons)}</TableCell>
-                    <TableCell className="text-right text-green-600">{formatNumber(summary.total_claimed)}</TableCell>
-                    <TableCell className="text-right text-amber-600">{formatNumber(summary.total_unclaimed)}</TableCell>
-                    <TableCell>
+                  <tr className="border-t-2 border-[#004532]/20 font-bold bg-[#f2f4f6]">
+                    <td className="py-3 text-[#191c1e]">Total</td>
+                    <td className="py-3 text-right text-[#191c1e]">{formatNumber(summary.total_recipients)}</td>
+                    <td className="py-3 text-right text-[#191c1e]">{formatNumber(summary.total_portions)}</td>
+                    <td className="py-3 text-right text-[#191c1e]">{formatNumber(summary.total_coupons)}</td>
+                    <td className="py-3 text-right text-[#004532]">{formatNumber(summary.total_claimed)}</td>
+                    <td className="py-3 text-right text-amber-600">{formatNumber(summary.total_unclaimed)}</td>
+                    <td className="py-3">
                       <div className="flex items-center gap-2">
-                        <Progress value={summary.percentage} className="h-2 flex-1" />
-                        <span className="w-10 text-right text-xs">{summary.percentage}%</span>
+                        <div className="progress-sacred flex-1">
+                          <div style={{ width: `${summary.percentage}%` }} />
+                        </div>
+                        <span className="w-10 text-right text-xs font-semibold text-[#004532]">{summary.percentage}%</span>
                       </div>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Hourly Distribution */}
       {hourly_distribution.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Distribusi Per Jam</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-end gap-1" style={{ height: 160 }}>
-              {hourly_distribution.map((h) => {
-                const max = Math.max(...hourly_distribution.map((x) => x.count), 1);
-                const pct = (h.count / max) * 100;
-                return (
-                  <div key={h.hour} className="flex flex-1 flex-col items-center gap-1">
-                    <span className="text-xs font-medium">{h.count}</span>
-                    <div className="w-full rounded-t bg-primary/80" style={{ height: `${pct}%`, minHeight: 4 }} />
-                    <span className="text-[10px] text-muted-foreground">{h.hour}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
+        <div className="rounded-2xl bg-white p-6 editorial-shadow">
+          <h3 className="font-headline mb-5 font-bold text-[#191c1e]">Hourly Distribution</h3>
+          <div className="flex items-end gap-1" style={{ height: 160 }}>
+            {hourly_distribution.map((h) => {
+              const max = Math.max(...hourly_distribution.map((x) => x.count), 1);
+              const pct = (h.count / max) * 100;
+              return (
+                <div key={h.hour} className="flex flex-1 flex-col items-center gap-1">
+                  <span className="text-xs font-semibold text-[#004532]">{h.count}</span>
+                  <div className="w-full rounded-t bg-[#004532]/80" style={{ height: `${pct}%`, minHeight: 4 }} />
+                  <span className="text-[10px] text-[#3f4944]/50">{h.hour}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       )}
     </div>
   );
@@ -441,8 +432,11 @@ export default function ReportsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Laporan</h1>
-        <p className="text-muted-foreground">{activeEvent.name}</p>
+        <p className="mb-1 text-xs font-black uppercase tracking-widest text-[#3f4944]/50">
+          Distribution Analytics
+        </p>
+        <h1 className="font-headline text-3xl font-extrabold text-[#191c1e]">Reports</h1>
+        <p className="mt-1 text-sm text-[#3f4944]">{activeEvent.name}</p>
       </div>
 
       <Tabs defaultValue="distribution">

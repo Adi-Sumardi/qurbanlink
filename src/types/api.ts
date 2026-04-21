@@ -37,7 +37,7 @@ export interface RegisterRequest {
   email: string;
   password: string;
   password_confirmation: string;
-  tenant_name: string;
+  organization_name: string;
   phone?: string;
 }
 

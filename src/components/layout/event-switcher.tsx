@@ -1,16 +1,13 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { ChevronsUpDown, Check, Plus } from 'lucide-react';
-import Link from 'next/link';
+import { ChevronsUpDown, Check } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { SidebarMenuButton } from '@/components/ui/sidebar';
 import { useEventStore } from '@/stores/event.store';
 import { eventService } from '@/services/event.service';
 import type { Event } from '@/types';
@@ -28,12 +25,12 @@ export function EventSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <SidebarMenuButton className="w-full justify-between">
-          <span className="truncate text-sm">
+        <button className="flex w-full items-center justify-between rounded-xl bg-[#f2f4f6] px-3 py-2.5 text-left text-sm text-[#191c1e] transition-colors hover:bg-[#e6e8ea]">
+          <span className="truncate font-medium">
             {activeEvent?.name || 'Pilih Event'}
           </span>
-          <ChevronsUpDown className="size-4 shrink-0 opacity-50" />
-        </SidebarMenuButton>
+          <ChevronsUpDown className="ml-2 size-3.5 shrink-0 text-[#3f4944]/50" />
+        </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-[--radix-dropdown-menu-trigger-width]" align="start">
         {events.map((event: Event) => (
@@ -47,13 +44,6 @@ export function EventSwitcher() {
             )}
           </DropdownMenuItem>
         ))}
-        {events.length > 0 && <DropdownMenuSeparator />}
-        <DropdownMenuItem asChild>
-          <Link href="/events/new">
-            <Plus className="size-4" />
-            <span>Buat Event Baru</span>
-          </Link>
-        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

@@ -7,7 +7,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-inter), "Inter", sans-serif;
+  --font-headline: var(--font-manrope), "Manrope", sans-serif;
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -42,6 +43,21 @@
   --color-success-foreground: var(--success-foreground);
   --color-warning: var(--warning);
   --color-warning-foreground: var(--warning-foreground);
+  /* Design System: Mesjid Digital */
+  --color-surface: var(--surface);
+  --color-surface-low: var(--surface-low);
+  --color-surface-container: var(--surface-container);
+  --color-surface-high: var(--surface-high);
+  --color-surface-highest: var(--surface-highest);
+  --color-on-surface: var(--on-surface);
+  --color-on-surface-variant: var(--on-surface-variant);
+  --color-primary-container: var(--primary-container);
+  --color-secondary-fixed: var(--secondary-fixed);
+  --color-primary-fixed: var(--primary-fixed);
+  --color-primary-fixed-dim: var(--primary-fixed-dim);
+  --color-tertiary: var(--tertiary);
+  --color-tertiary-fixed: var(--tertiary-fixed);
+  --color-outline-variant: var(--outline-variant);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -52,81 +68,121 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  /* Green primary - QurbanLink brand */
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0.014 285.823);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0.014 285.823);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0.014 285.823);
-  --primary: oklch(0.527 0.154 150.069);
-  --primary-foreground: oklch(0.985 0.002 150.069);
-  --secondary: oklch(0.967 0.001 286.375);
-  --secondary-foreground: oklch(0.21 0.014 285.823);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.553 0.013 285.938);
-  --accent: oklch(0.967 0.001 286.375);
-  --accent-foreground: oklch(0.21 0.014 285.823);
-  --destructive: oklch(0.577 0.245 27.325);
-  --success: oklch(0.527 0.154 150.069);
-  --success-foreground: oklch(0.985 0.002 150.069);
-  --warning: oklch(0.769 0.188 70.08);
-  --warning-foreground: oklch(0.21 0.014 285.823);
-  --border: oklch(0.922 0.004 286.375);
-  --input: oklch(0.922 0.004 286.375);
-  --ring: oklch(0.527 0.154 150.069);
-  --chart-1: oklch(0.527 0.154 150.069);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0.002 150.069);
-  --sidebar-foreground: oklch(0.145 0.014 285.823);
-  --sidebar-primary: oklch(0.527 0.154 150.069);
-  --sidebar-primary-foreground: oklch(0.985 0.002 150.069);
-  --sidebar-accent: oklch(0.967 0.001 286.375);
-  --sidebar-accent-foreground: oklch(0.21 0.014 285.823);
-  --sidebar-border: oklch(0.922 0.004 286.375);
-  --sidebar-ring: oklch(0.527 0.154 150.069);
+  --radius: 0.75rem;
+
+  /* === SACRED STEWARD DESIGN TOKENS === */
+  /* Primary: Deep Emerald */
+  --primary: #004532;
+  --primary-foreground: #ffffff;
+  --primary-container: #065f46;
+  --primary-fixed: #a6f2d1;
+  --primary-fixed-dim: #8bd6b6;
+
+  /* Secondary: Vibrant Mint */
+  --secondary: #006c49;
+  --secondary-foreground: #ffffff;
+  --secondary-fixed: #6ffbbe;
+  --secondary-fixed-dim: #4edea3;
+
+  /* Tertiary: Warm Red */
+  --tertiary: #652925;
+  --tertiary-fixed: #ffdad6;
+  --tertiary-fixed-dim: #ffb3ac;
+
+  /* Surface System (Tonal Layering) */
+  --surface: #f7f9fb;
+  --surface-low: #f2f4f6;
+  --surface-container: #eceef0;
+  --surface-high: #e6e8ea;
+  --surface-highest: #e0e3e5;
+
+  /* On-Surface Text */
+  --on-surface: #191c1e;
+  --on-surface-variant: #3f4944;
+
+  /* Outline */
+  --outline-variant: rgba(190, 201, 194, 0.15);
+
+  /* Background */
+  --background: #f7f9fb;
+  --foreground: #191c1e;
+
+  /* Card */
+  --card: #ffffff;
+  --card-foreground: #191c1e;
+
+  /* Popover */
+  --popover: #ffffff;
+  --popover-foreground: #191c1e;
+
+  /* Muted */
+  --muted: #f2f4f6;
+  --muted-foreground: #3f4944;
+
+  /* Accent */
+  --accent: #f2f4f6;
+  --accent-foreground: #191c1e;
+
+  /* Destructive */
+  --destructive: #ba1a1a;
+
+  /* Success */
+  --success: #004532;
+  --success-foreground: #ffffff;
+
+  /* Warning */
+  --warning: #f59e0b;
+  --warning-foreground: #191c1e;
+
+  /* Border & Input */
+  --border: rgba(190, 201, 194, 0.25);
+  --input: #f2f4f6;
+  --ring: #004532;
+
+  /* Charts */
+  --chart-1: #004532;
+  --chart-2: #006c49;
+  --chart-3: #6ffbbe;
+  --chart-4: #8bd6b6;
+  --chart-5: #652925;
+
+  /* Sidebar */
+  --sidebar: #ffffff;
+  --sidebar-foreground: #191c1e;
+  --sidebar-primary: #004532;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f2f4f6;
+  --sidebar-accent-foreground: #191c1e;
+  --sidebar-border: rgba(190, 201, 194, 0.2);
+  --sidebar-ring: #004532;
 }
 
 .dark {
-  --background: oklch(0.145 0.014 285.823);
-  --foreground: oklch(0.985 0.002 150.069);
-  --card: oklch(0.21 0.014 285.823);
-  --card-foreground: oklch(0.985 0.002 150.069);
-  --popover: oklch(0.21 0.014 285.823);
-  --popover-foreground: oklch(0.985 0.002 150.069);
-  --primary: oklch(0.627 0.154 150.069);
-  --primary-foreground: oklch(0.145 0.014 285.823);
-  --secondary: oklch(0.269 0.014 285.823);
-  --secondary-foreground: oklch(0.985 0.002 150.069);
-  --muted: oklch(0.269 0.014 285.823);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.269 0.014 285.823);
-  --accent-foreground: oklch(0.985 0.002 150.069);
-  --destructive: oklch(0.704 0.191 22.216);
-  --success: oklch(0.627 0.154 150.069);
-  --success-foreground: oklch(0.145 0.014 285.823);
-  --warning: oklch(0.828 0.189 84.429);
-  --warning-foreground: oklch(0.145 0.014 285.823);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.627 0.154 150.069);
-  --chart-1: oklch(0.627 0.154 150.069);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.21 0.014 285.823);
-  --sidebar-foreground: oklch(0.985 0.002 150.069);
-  --sidebar-primary: oklch(0.627 0.154 150.069);
-  --sidebar-primary-foreground: oklch(0.985 0.002 150.069);
-  --sidebar-accent: oklch(0.269 0.014 285.823);
-  --sidebar-accent-foreground: oklch(0.985 0.002 150.069);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.627 0.154 150.069);
+  --background: #0f1a15;
+  --foreground: #e6f0ea;
+  --card: #1a2b21;
+  --card-foreground: #e6f0ea;
+  --popover: #1a2b21;
+  --popover-foreground: #e6f0ea;
+  --primary: #8bd6b6;
+  --primary-foreground: #003826;
+  --primary-container: #065f46;
+  --muted: #1e2e25;
+  --muted-foreground: #8aad96;
+  --accent: #1e2e25;
+  --accent-foreground: #e6f0ea;
+  --destructive: #ff6b6b;
+  --border: rgba(139, 214, 182, 0.12);
+  --input: rgba(139, 214, 182, 0.08);
+  --ring: #8bd6b6;
+  --sidebar: #1a2b21;
+  --sidebar-foreground: #e6f0ea;
+  --sidebar-primary: #8bd6b6;
+  --sidebar-primary-foreground: #003826;
+  --sidebar-accent: #1e2e25;
+  --sidebar-accent-foreground: #e6f0ea;
+  --sidebar-border: rgba(139, 214, 182, 0.12);
+  --sidebar-ring: #8bd6b6;
 }
 
 @layer base {
@@ -135,7 +191,136 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: "Inter", "Geist Sans", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
+}
+
+/* ===== SACRED STEWARD CUSTOM STYLES ===== */
+
+/* Headline font */
+.font-headline {
+  font-family: "Manrope", "Inter", sans-serif;
+}
+
+/* Editorial shadow (no borders, just ambient light) */
+.editorial-shadow {
+  box-shadow: 0 4px 32px 0 rgba(0, 69, 50, 0.06);
+}
+
+/* Glass morphism for nav & overlays */
+.glass {
+  background: rgba(247, 249, 251, 0.8);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+/* Primary gradient button */
+.btn-gradient {
+  background: linear-gradient(135deg, #004532 0%, #065f46 100%);
+  color: #ffffff;
+}
+
+.btn-gradient:hover {
+  background: linear-gradient(135deg, #003826 0%, #004532 100%);
+}
+
+/* Mesjid Digital Progress Bar */
+.progress-sacred {
+  height: 8px;
+  background: #a6f2d1;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progress-sacred > div {
+  background: linear-gradient(90deg, #004532, #065f46);
+  border-radius: 9999px;
+  height: 100%;
+  transition: width 0.6s ease;
+}
+
+/* Status chips */
+.chip-active {
+  background: #6ffbbe;
+  color: #002113;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+}
+
+.chip-verified {
+  background: #a6f2d1;
+  color: #002116;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.625rem;
+  border-radius: 0.75rem;
+}
+
+.chip-pending {
+  background: #ffdad6;
+  color: #652925;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.625rem;
+  border-radius: 0.75rem;
+}
+
+/* Sidebar nav items */
+.sidebar-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #3f4944;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.sidebar-nav-item:hover {
+  background: #f2f4f6;
+  color: #004532;
+}
+
+.sidebar-nav-item.active {
+  background: #f2f4f6;
+  color: #004532;
+}
+
+/* Dashboard stat card */
+.stat-card-primary {
+  background: #004532;
+  color: #ffffff;
+  border-radius: 1.25rem;
+}
+
+/* Recipient avatar */
+.recipient-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #a6f2d1, #6ffbbe);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #003826;
+  flex-shrink: 0;
 }
 
 /* ===== COUPON PRINT STYLES ===== */
@@ -186,13 +371,13 @@
   font-weight: 600;
   cursor: pointer;
   border: none;
-  background: #166534;
+  background: #004532;
   color: white;
   transition: background 0.15s;
 }
 
 .print-toolbar-btn-primary:hover {
-  background: #14532d;
+  background: #003826;
 }
 
 .print-sheet {
@@ -214,7 +399,7 @@
 }
 
 .coupon-header {
-  background: #166534;
+  background: #004532;
   color: white;
   padding: 6px 10px;
   display: flex;
@@ -241,7 +426,7 @@
   text-transform: uppercase;
   letter-spacing: 0.1em;
   padding: 5px 8px 2px;
-  color: #166534;
+  color: #004532;
 }
 
 .coupon-event {
@@ -349,7 +534,7 @@
   }
 
   .coupon-header {
-    background: #166534 !important;
+    background: #004532 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }

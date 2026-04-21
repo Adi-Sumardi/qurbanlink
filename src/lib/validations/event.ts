@@ -3,7 +3,7 @@ import { z } from 'zod/v4';
 export const eventSchema = z.object({
   name: z.string().min(2, 'Nama event minimal 2 karakter'),
   description: z.string().optional(),
-  event_date: z.string().optional(),
+  event_date: z.string().min(1, 'Tanggal event wajib diisi'),
   start_time: z.string().optional(),
   end_time: z.string().optional(),
   year: z.number().optional(),

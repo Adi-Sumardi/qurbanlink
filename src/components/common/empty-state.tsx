@@ -1,8 +1,8 @@
-import type { LucideIcon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { LucideIcon } from 'lucide-react';
+import { motion as m } from 'motion/react';
 
 interface EmptyStateProps {
-  icon: LucideIcon;
+  icon?: LucideIcon;
   title: string;
   description?: string;
   actionLabel?: string;
@@ -17,21 +17,29 @@ export function EmptyState({
   onAction,
 }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-12 text-center">
-      <div className="mb-4 rounded-full bg-muted p-4">
-        <Icon className="size-8 text-muted-foreground" />
-      </div>
-      <h3 className="text-lg font-medium">{title}</h3>
+    <m.div
+      className="flex flex-col items-center justify-center py-16 text-center"
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+    >
+      {Icon && (
+        <div className="mb-5 flex size-16 items-center justify-center rounded-2xl bg-[#a6f2d1]">
+          <Icon className="size-8 text-[#004532]" />
+        </div>
+      )}
+      <h3 className="font-headline text-lg font-bold text-[#191c1e]">{title}</h3>
       {description && (
-        <p className="mt-1 max-w-sm text-sm text-muted-foreground">
-          {description}
-        </p>
+        <p className="mt-2 max-w-xs text-sm text-[#3f4944]">{description}</p>
       )}
       {actionLabel && onAction && (
-        <Button onClick={onAction} className="mt-4">
+        <button
+          onClick={onAction}
+          className="btn-gradient mt-6 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold shadow-lg shadow-[#004532]/20 transition-all active:scale-95"
+        >
           {actionLabel}
-        </Button>
+        </button>
       )}
-    </div>
+    </m.div>
   );
 }

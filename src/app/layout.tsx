@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Inter, Manrope } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryProvider } from "@/providers/query-provider";
@@ -10,9 +10,16 @@ import { OfflineIndicator } from "@/components/pwa/offline-indicator";
 import { ServiceWorkerRegistrar } from "@/components/pwa/sw-registrar";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const manrope = Manrope({
+  variable: "--font-manrope",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
@@ -22,15 +29,16 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "QurbanLink",
-    template: "%s | QurbanLink",
+    default: "Tawzii Digital by adilabs.id",
+    template: "%s | Tawzii Digital",
   },
-  description: "Platform distribusi daging hewan kurban digital",
+  description:
+    "Tawzii Digital by adilabs.id — Platform distribusi kurban digital yang presisi, transparan, dan bermartabat untuk masjid di seluruh Indonesia.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "QurbanLink",
+    title: "Tawzii Digital",
   },
 };
 
@@ -38,7 +46,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  themeColor: "#16a34a",
+  themeColor: "#004532",
 };
 
 export default function RootLayout({
@@ -49,7 +57,7 @@ export default function RootLayout({
   return (
     <html lang="id" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.variable} ${manrope.variable} ${geistMono.variable} antialiased`}
       >
         <QueryProvider>
           <AuthProvider>

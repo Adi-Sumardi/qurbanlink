@@ -176,22 +176,26 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Pengaturan</h1>
-        <p className="text-muted-foreground">
-          Kelola profil, akun, dan langganan organisasi
+        <p className="mb-1 text-xs font-black uppercase tracking-widest text-[#3f4944]/50">
+          Account Management
+        </p>
+        <h1 className="font-headline text-3xl font-extrabold text-[#191c1e]">Settings</h1>
+        <p className="mt-1 text-sm text-[#3f4944]">
+          Manage your profile, account security, and subscription
         </p>
       </div>
 
       {/* User Profile */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <User className="size-4" />
-            Profil Akun
-          </CardTitle>
-          <CardDescription>Informasi akun pengguna Anda</CardDescription>
-        </CardHeader>
-        <CardContent>
+      <div className="rounded-2xl bg-white p-6 editorial-shadow">
+        <div className="mb-5 flex items-center gap-3">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-[#a6f2d1]">
+            <User className="size-5 text-[#004532]" />
+          </div>
+          <div>
+            <h2 className="font-headline font-bold text-[#191c1e]">Account Profile</h2>
+            <p className="text-xs text-[#3f4944]/60">Your personal account information</p>
+          </div>
+        </div>
           <Form {...profileForm}>
             <form
               onSubmit={profileForm.handleSubmit((data) =>
@@ -244,33 +248,31 @@ export default function SettingsPage() {
                   )}
                 />
               </div>
-              <Button
+              <button
                 type="submit"
-                size="sm"
                 disabled={profileMutation.isPending}
+                className="btn-gradient inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-bold shadow-lg shadow-[#004532]/20 transition-all hover:opacity-90 active:scale-95 disabled:opacity-70"
               >
                 {profileMutation.isPending && (
-                  <Loader2 className="mr-2 size-4 animate-spin" />
+                  <Loader2 className="size-4 animate-spin" />
                 )}
-                Simpan Profil
-              </Button>
+                Save Profile
+              </button>
             </form>
           </Form>
-        </CardContent>
-      </Card>
+      </div>
 
       {/* Change Password */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Lock className="size-4" />
-            Ubah Password
-          </CardTitle>
-          <CardDescription>
-            Pastikan password Anda kuat dan unik
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+      <div className="rounded-2xl bg-white p-6 editorial-shadow">
+        <div className="mb-5 flex items-center gap-3">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-[#ffdad6]">
+            <Lock className="size-5 text-[#652925]" />
+          </div>
+          <div>
+            <h2 className="font-headline font-bold text-[#191c1e]">Security Password</h2>
+            <p className="text-xs text-[#3f4944]/60">Ensure your password is strong and unique</p>
+          </div>
+        </div>
           <Form {...passwordForm}>
             <form
               onSubmit={passwordForm.handleSubmit((data) =>
@@ -346,33 +348,31 @@ export default function SettingsPage() {
                   )}
                 />
               </div>
-              <Button
+              <button
                 type="submit"
-                size="sm"
                 disabled={passwordMutation.isPending}
+                className="btn-gradient inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-bold shadow-lg shadow-[#004532]/20 transition-all hover:opacity-90 active:scale-95 disabled:opacity-70"
               >
                 {passwordMutation.isPending && (
-                  <Loader2 className="mr-2 size-4 animate-spin" />
+                  <Loader2 className="size-4 animate-spin" />
                 )}
-                Ubah Password
-              </Button>
+                Update Password
+              </button>
             </form>
           </Form>
-        </CardContent>
-      </Card>
-
-      <Separator />
+      </div>
 
       {/* Tenant Profile */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Building2 className="size-4" />
-            Profil Organisasi
-          </CardTitle>
-          <CardDescription>Informasi dasar organisasi Anda</CardDescription>
-        </CardHeader>
-        <CardContent>
+      <div className="rounded-2xl bg-white p-6 editorial-shadow">
+        <div className="mb-5 flex items-center gap-3">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-[#a6f2d1]">
+            <Building2 className="size-5 text-[#004532]" />
+          </div>
+          <div>
+            <h2 className="font-headline font-bold text-[#191c1e]">Organization Profile</h2>
+            <p className="text-xs text-[#3f4944]/60">Basic information about your mosque</p>
+          </div>
+        </div>
           {loadingTenant ? (
             <div className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
@@ -470,34 +470,32 @@ export default function SettingsPage() {
                     </FormItem>
                   )}
                 />
-                <Button
+                <button
                   type="submit"
-                  size="sm"
                   disabled={tenantMutation.isPending}
+                  className="btn-gradient inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-bold shadow-lg shadow-[#004532]/20 transition-all hover:opacity-90 active:scale-95 disabled:opacity-70"
                 >
                   {tenantMutation.isPending && (
-                    <Loader2 className="mr-2 size-4 animate-spin" />
+                    <Loader2 className="size-4 animate-spin" />
                   )}
-                  Simpan Organisasi
-                </Button>
+                  Save Organization
+                </button>
               </form>
             </Form>
           )}
-        </CardContent>
-      </Card>
-
-      <Separator />
+      </div>
 
       {/* Subscription */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <CreditCard className="size-4" />
-            Langganan
-          </CardTitle>
-          <CardDescription>Status langganan Anda saat ini</CardDescription>
-        </CardHeader>
-        <CardContent>
+      <div className="rounded-2xl bg-white p-6 editorial-shadow">
+        <div className="mb-5 flex items-center gap-3">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-[#a6f2d1]">
+            <CreditCard className="size-5 text-[#004532]" />
+          </div>
+          <div>
+            <h2 className="font-headline font-bold text-[#191c1e]">Subscription Plan</h2>
+            <p className="text-xs text-[#3f4944]/60">Your current plan and usage quota</p>
+          </div>
+        </div>
           {loadingSub ? (
             <div className="space-y-3">
               <Skeleton className="h-8 w-40" />
@@ -517,37 +515,39 @@ export default function SettingsPage() {
               {/* Quota Usage */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Kuota Kupon</span>
-                  <span className="font-medium">
+                  <span className="text-[#3f4944]">Coupon Quota</span>
+                  <span className="font-semibold text-[#191c1e]">
                     {quotaUsed} / {quotaTotal} ({quotaPct}%)
                   </span>
                 </div>
-                <Progress value={quotaPct} className="h-2" />
+                <div className="progress-sacred">
+                  <div style={{ width: `${quotaPct}%` }} />
+                </div>
               </div>
 
               {/* Plan Details Grid */}
               <div className="grid gap-3 text-sm sm:grid-cols-2">
-                <div className="flex justify-between rounded-lg border p-3">
-                  <span className="text-muted-foreground">Harga</span>
-                  <span className="font-medium">
+                <div className="flex justify-between rounded-xl bg-[#f2f4f6] px-4 py-3">
+                  <span className="text-[#3f4944]">Price</span>
+                  <span className="font-semibold text-[#191c1e]">
                     {formatCurrency(Number(sub.price))}
-                    <span className="text-xs text-muted-foreground">
-                      /{sub.billing_cycle === 'yearly' ? 'tahun' : 'bulan'}
+                    <span className="text-xs text-[#3f4944]/60">
+                      /{sub.billing_cycle === 'yearly' ? 'yr' : 'mo'}
                     </span>
                   </span>
                 </div>
                 {sub.starts_at && (
-                  <div className="flex justify-between rounded-lg border p-3">
-                    <span className="text-muted-foreground">Mulai</span>
-                    <span className="font-medium">
+                  <div className="flex justify-between rounded-xl bg-[#f2f4f6] px-4 py-3">
+                    <span className="text-[#3f4944]">Start Date</span>
+                    <span className="font-semibold text-[#191c1e]">
                       {formatDate(sub.starts_at)}
                     </span>
                   </div>
                 )}
                 {sub.expires_at && (
-                  <div className="flex justify-between rounded-lg border p-3">
-                    <span className="text-muted-foreground">Berakhir</span>
-                    <span className="font-medium">
+                  <div className="flex justify-between rounded-xl bg-[#f2f4f6] px-4 py-3">
+                    <span className="text-[#3f4944]">Expires</span>
+                    <span className="font-semibold text-[#191c1e]">
                       {formatDate(sub.expires_at)}
                     </span>
                   </div>
@@ -557,25 +557,23 @@ export default function SettingsPage() {
               {/* Features */}
               {features && Object.keys(features).length > 0 && (
                 <div>
-                  <p className="mb-2 text-sm font-medium text-muted-foreground">
-                    Fitur
+                  <p className="mb-3 text-xs font-black uppercase tracking-widest text-[#3f4944]/50">
+                    Plan Features
                   </p>
-                  <div className="grid gap-1.5 sm:grid-cols-2">
+                  <div className="grid gap-2 sm:grid-cols-2">
                     {Object.entries(features).map(([key, enabled]) => (
                       <div
                         key={key}
-                        className="flex items-center gap-2 text-sm"
+                        className={`flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm ${
+                          enabled ? 'bg-[#f2f4f6]' : 'opacity-40'
+                        }`}
                       >
                         {enabled ? (
-                          <Check className="size-4 text-green-500" />
+                          <Check className="size-4 text-[#004532]" />
                         ) : (
-                          <X className="size-4 text-muted-foreground/40" />
+                          <X className="size-4 text-[#3f4944]/40" />
                         )}
-                        <span
-                          className={
-                            enabled ? '' : 'text-muted-foreground/60'
-                          }
-                        >
+                        <span className={enabled ? 'text-[#191c1e] font-medium' : 'text-[#3f4944]/60'}>
                           {FEATURE_LABELS[key] || key}
                         </span>
                       </div>
@@ -585,12 +583,11 @@ export default function SettingsPage() {
               )}
             </div>
           ) : (
-            <p className="text-sm text-muted-foreground">
-              Tidak ada data langganan
+            <p className="text-sm text-[#3f4944]/60">
+              No subscription data available.
             </p>
           )}
-        </CardContent>
-      </Card>
+      </div>
     </div>
   );
 }

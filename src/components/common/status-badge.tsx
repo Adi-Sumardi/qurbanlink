@@ -1,43 +1,38 @@
-import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
-const STATUS_COLORS: Record<string, string> = {
+const STATUS_CONFIG: Record<string, { bg: string; text: string; dot: string }> = {
   // Event statuses
-  draft: 'bg-slate-100 text-slate-700',
-  active: 'bg-green-100 text-green-700',
-  ongoing: 'bg-blue-100 text-blue-700',
-  completed: 'bg-emerald-100 text-emerald-700',
-  archived: 'bg-gray-100 text-gray-500',
+  draft:        { bg: 'bg-[#e6e8ea]',   text: 'text-[#3f4944]',  dot: 'bg-[#3f4944]/50' },
+  active:       { bg: 'bg-[#a6f2d1]',   text: 'text-[#003826]',  dot: 'bg-[#004532]' },
+  ongoing:      { bg: 'bg-[#a6f2d1]',   text: 'text-[#003826]',  dot: 'bg-[#004532]' },
+  completed:    { bg: 'bg-[#eceef0]',   text: 'text-[#004532]',  dot: 'bg-[#065f46]' },
+  archived:     { bg: 'bg-[#e6e8ea]',   text: 'text-[#3f4944]/60', dot: 'bg-[#3f4944]/30' },
 
   // Coupon statuses
-  generated: 'bg-blue-100 text-blue-700',
-  claimed: 'bg-green-100 text-green-700',
-  voided: 'bg-red-100 text-red-700',
-  expired: 'bg-amber-100 text-amber-700',
+  generated:    { bg: 'bg-[#a6f2d1]',   text: 'text-[#003826]',  dot: 'bg-[#004532]' },
+  claimed:      { bg: 'bg-[#6ffbbe]/30', text: 'text-[#002113]', dot: 'bg-[#006c49]' },
+  voided:       { bg: 'bg-[#ffdad6]',   text: 'text-[#652925]',  dot: 'bg-[#ba1a1a]' },
+  expired:      { bg: 'bg-amber-100',    text: 'text-amber-800',  dot: 'bg-amber-500' },
 
   // Animal statuses
-  registered: 'bg-slate-100 text-slate-700',
-  slaughtered: 'bg-orange-100 text-orange-700',
-  processed: 'bg-blue-100 text-blue-700',
-  distributed: 'bg-green-100 text-green-700',
+  registered:   { bg: 'bg-[#e6e8ea]',   text: 'text-[#3f4944]',  dot: 'bg-[#3f4944]/50' },
+  slaughtered:  { bg: 'bg-orange-100',   text: 'text-orange-800', dot: 'bg-orange-500' },
+  processed:    { bg: 'bg-[#a6f2d1]',   text: 'text-[#003826]',  dot: 'bg-[#004532]' },
+  distributed:  { bg: 'bg-[#6ffbbe]/30', text: 'text-[#002113]', dot: 'bg-[#006c49]' },
 
   // Payment statuses
-  pending: 'bg-amber-100 text-amber-700',
-  paid: 'bg-green-100 text-green-700',
-  failed: 'bg-red-100 text-red-700',
-  refunded: 'bg-purple-100 text-purple-700',
+  pending:      { bg: 'bg-amber-100',    text: 'text-amber-800',  dot: 'bg-amber-500' },
+  paid:         { bg: 'bg-[#a6f2d1]',   text: 'text-[#003826]',  dot: 'bg-[#004532]' },
+  failed:       { bg: 'bg-[#ffdad6]',   text: 'text-[#652925]',  dot: 'bg-[#ba1a1a]' },
+  refunded:     { bg: 'bg-[#ffdad6]',   text: 'text-[#73332f]',  dot: 'bg-[#652925]' },
 
-  // Subscription statuses
-  cancelled: 'bg-red-100 text-red-700',
-  suspended: 'bg-orange-100 text-orange-700',
-
-  // Donor statuses
-  submitted: 'bg-green-100 text-green-700',
-
-  // Scan results
-  success: 'bg-green-100 text-green-700',
-  already_claimed: 'bg-amber-100 text-amber-700',
-  invalid: 'bg-red-100 text-red-700',
+  // Other
+  cancelled:    { bg: 'bg-[#ffdad6]',   text: 'text-[#652925]',  dot: 'bg-[#ba1a1a]' },
+  suspended:    { bg: 'bg-orange-100',   text: 'text-orange-800', dot: 'bg-orange-500' },
+  submitted:    { bg: 'bg-[#a6f2d1]',   text: 'text-[#003826]',  dot: 'bg-[#004532]' },
+  success:      { bg: 'bg-[#a6f2d1]',   text: 'text-[#003826]',  dot: 'bg-[#004532]' },
+  already_claimed: { bg: 'bg-amber-100', text: 'text-amber-800', dot: 'bg-amber-500' },
+  invalid:      { bg: 'bg-[#ffdad6]',   text: 'text-[#652925]',  dot: 'bg-[#ba1a1a]' },
 };
 
 interface StatusBadgeProps {
@@ -47,14 +42,23 @@ interface StatusBadgeProps {
 }
 
 export function StatusBadge({ status, label, className }: StatusBadgeProps) {
-  const colorClass = STATUS_COLORS[status] || 'bg-slate-100 text-slate-700';
+  const config = STATUS_CONFIG[status] || {
+    bg: 'bg-[#e6e8ea]',
+    text: 'text-[#3f4944]',
+    dot: 'bg-[#3f4944]/50',
+  };
 
   return (
-    <Badge
-      variant="secondary"
-      className={cn('font-medium border-0', colorClass, className)}
+    <span
+      className={cn(
+        'inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-black uppercase tracking-widest',
+        config.bg,
+        config.text,
+        className
+      )}
     >
+      <span className={cn('size-1.5 rounded-full flex-shrink-0', config.dot)} />
       {label || status}
-    </Badge>
+    </span>
   );
 }

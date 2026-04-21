@@ -1,4 +1,4 @@
-export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'QurbanLink';
+export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'Tawzii Digital';
 
 export const ANIMAL_TYPE_LABELS: Record<string, string> = {
   sapi: 'Sapi',

@@ -43,7 +43,7 @@ function SidebarNav({ pathname, onNavigate }: { pathname: string; onNavigate?: (
             Q
           </div>
           <div>
-            <h2 className="text-sm font-bold text-primary">QurbanLink</h2>
+            <h2 className="text-sm font-bold text-primary">Tawzii Digital</h2>
             <p className="text-[10px] text-muted-foreground">Super Admin Panel</p>
           </div>
         </div>

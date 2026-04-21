@@ -50,7 +50,7 @@ export function InstallPrompt() {
       <div className="flex items-center gap-3 rounded-lg border bg-background p-4 shadow-lg">
         <Download className="size-5 shrink-0 text-green-600" />
         <div className="flex-1 text-sm">
-          <p className="font-medium">Install QurbanLink</p>
+          <p className="font-medium">Install Tawzii Digital</p>
           <p className="text-muted-foreground">
             Akses lebih cepat dari layar utama
           </p>
