@@ -129,6 +129,7 @@ Route::middleware(['auth:sanctum', 'tenant', 'check-subscription'])->group(funct
     Route::post('/subscriptions/subscribe', [\App\Http\Controllers\Api\V1\SubscriptionController::class, 'subscribe']);
     Route::get('/subscriptions/payments', [\App\Http\Controllers\Api\V1\SubscriptionController::class, 'payments']);
     Route::get('/subscriptions/payment-status', [\App\Http\Controllers\Api\V1\SubscriptionController::class, 'paymentStatus']);
+    Route::post('/subscriptions/payments/{payment}/resume', [\App\Http\Controllers\Api\V1\SubscriptionController::class, 'resumePayment']);
 });
 
 // Public live dashboard (no auth, tenant resolved from slug)

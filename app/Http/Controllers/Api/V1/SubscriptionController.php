@@ -221,6 +221,61 @@ class SubscriptionController extends Controller
     }
 
     /**
+     * Resume a pending payment — generate a new Snap token using the same invoice number.
+     */
+    public function resumePayment(Request $request, Payment $payment, MidtransService $midtrans): JsonResponse
+    {
+        $tenant = app()->has('current_tenant') ? app('current_tenant') : $request->user()->tenant;
+
+        // Security: payment must belong to current tenant
+        if ($payment->tenant_id !== $tenant->id) {
+            return $this->error('Payment not found.', 404);
+        }
+
+        if ($payment->status !== PaymentStatus::Pending) {
+            return $this->error('Only pending payments can be resumed.', 422);
+        }
+
+        if ($payment->expired_at && now()->isAfter($payment->expired_at)) {
+            return $this->error('This payment has expired. Please create a new payment.', 422);
+        }
+
+        $user = $request->user();
+        $meta = $payment->metadata ?? [];
+
+        try {
+            $snapResult = $midtrans->createSnapToken([
+                'order_id'      => $payment->midtrans_order_id ?? $payment->invoice_number,
+                'amount'        => (int) $payment->amount,
+                'first_name'    => $user->name,
+                'email'         => $user->email,
+                'plan_name'     => $meta['plan_name'] ?? 'Langganan',
+                'billing_cycle' => ($meta['billing_cycle'] ?? 'monthly') === 'yearly' ? 'Tahunan' : 'Bulanan',
+            ]);
+
+            $payment->update([
+                'snap_token'        => $snapResult->token ?? null,
+                'snap_redirect_url' => $snapResult->redirect_url ?? null,
+            ]);
+
+            return $this->success([
+                'snap_token'     => $snapResult->token,
+                'payment_url'    => $snapResult->redirect_url,
+                'invoice_number' => $payment->invoice_number,
+                'amount'         => $payment->amount,
+                'is_free'        => false,
+            ], 'Payment session resumed successfully.');
+        } catch (\Exception $e) {
+            \Log::error('Midtrans resume payment error', [
+                'error'      => $e->getMessage(),
+                'payment_id' => $payment->id,
+            ]);
+
+            return $this->error('Gagal membuat ulang sesi pembayaran. ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
      * List payments for current tenant.
      */
     public function payments(Request $request): JsonResponse
