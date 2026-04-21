@@ -85,7 +85,10 @@ export function AppHeader({ onMenuToggle }: { onMenuToggle?: () => void } = {}) 
         {/* Avatar */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-[#6ffbbe] to-[#a6f2d1] text-xs font-bold text-[#003826] shadow-sm transition-all hover:scale-105">
+            <button
+              suppressHydrationWarning
+              className="flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-[#6ffbbe] to-[#a6f2d1] text-xs font-bold text-[#003826] shadow-sm transition-all hover:scale-105"
+            >
               {initials}
             </button>
           </DropdownMenuTrigger>
