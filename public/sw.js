@@ -63,8 +63,10 @@ self.addEventListener('fetch', (event) => {
               request.destination === 'image');
 
           if (shouldCache) {
+            // Clone BEFORE returning — body can only be consumed once
+            const cloned = response.clone();
             caches.open(CACHE_NAME).then((cache) =>
-              safeCachePut(cache, request, response.clone())
+              safeCachePut(cache, request, cloned)
             );
           }
           return response;
