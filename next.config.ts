@@ -4,19 +4,20 @@ const isDev = process.env.NODE_ENV === 'development';
 
 // Midtrans domains — wildcard covers all subdomains (snap, api, assets, app, etc.)
 const midtransWild    = '*.sandbox.midtrans.com *.midtrans.com';
+const midtransCdn     = '*.cdn.gtflabs.io *.gtflabs.io';
 const midtransFonts   = 'https://fonts.gstatic.com';
 
 const ContentSecurityPolicy = `
   default-src 'self';
-  script-src 'self' 'unsafe-inline' 'unsafe-eval' ${midtransWild};
-  style-src 'self' 'unsafe-inline' ${midtransWild} https://fonts.googleapis.com;
-  font-src 'self' ${midtransFonts} ${midtransWild};
+  script-src 'self' 'unsafe-inline' 'unsafe-eval' ${midtransWild} ${midtransCdn};
+  style-src 'self' 'unsafe-inline' ${midtransWild} ${midtransCdn} https://fonts.googleapis.com;
+  font-src 'self' ${midtransFonts} ${midtransWild} ${midtransCdn};
   img-src 'self' data: blob:
     https://images.unsplash.com
     https://source.unsplash.com
-    ${midtransWild};
-  frame-src 'self' ${midtransWild};
-  connect-src 'self' ${midtransWild}
+    ${midtransWild} ${midtransCdn};
+  frame-src 'self' ${midtransWild} ${midtransCdn};
+  connect-src 'self' ${midtransWild} ${midtransCdn}
     ${isDev ? 'ws://localhost:* http://localhost:*' : ''};
   worker-src 'self' blob:;
   object-src 'none';
@@ -37,6 +38,11 @@ const securityHeaders = [
   // HSTS — only for production (browsers ignore it on HTTP/localhost)
   ...(!isDev ? [
     { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
+  ] : []),
+  // Allow Midtrans Sandbox popup (hosted on public domain) to access localhost
+  // Chrome Private Network Access policy blocks this by default
+  ...(isDev ? [
+    { key: 'Access-Control-Allow-Private-Network', value: 'true' },
   ] : []),
 ];
 
