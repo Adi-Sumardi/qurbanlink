@@ -1,21 +1,24 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { useEventStore } from '../event.store';
+import { EventStatus } from '@/types';
 import type { Event } from '@/types';
 
 const mockEvent: Event = {
   id: 'event-1',
-  tenant_id: 'tenant-1',
-  created_by: 'user-1',
+  slug: 'kurban-2025',
+  tenant_slug: null,
+  created_by: null,
   name: 'Kurban 2025',
   description: null,
   event_date: '2025-06-15',
   start_time: null,
   end_time: null,
   year: 2025,
-  status: 'active',
+  status: EventStatus.Active,
   settings: {},
   total_coupons: 100,
   distributed: 25,
+  locations: null,
   created_at: '2025-01-01',
   updated_at: '2025-01-01',
 };

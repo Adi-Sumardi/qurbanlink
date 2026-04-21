@@ -146,7 +146,9 @@ export function AppSidebar({ onNavigate }: { onNavigate?: () => void } = {}) {
       {/* Footer */}
       <div className="border-t border-[rgba(190,201,194,0.2)] px-3 py-3 space-y-0.5">
         <a
-          href="#"
+          href="https://wa.me/6285121379697?text=Halo%2C%20saya%20butuh%20bantuan%20mengenai%20Tawzii%20Digital"
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-[#3f4944] transition-colors hover:bg-[#f2f4f6] hover:text-[#004532]"
         >
           <HelpCircle className="size-4" />
