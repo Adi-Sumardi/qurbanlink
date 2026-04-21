@@ -18,6 +18,7 @@ import {
   ArrowRight,
   RefreshCw,
   Zap,
+  PlayCircle,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -92,7 +93,7 @@ export default function SubscriptionPage() {
   const [showPlans, setShowPlans] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlanInfo | null>(null);
 
-  const { pay, isBusy, isCreating } = usePayment({
+  const { pay, resumePayment, isBusy, isCreating } = usePayment({
     onClosed: () => {
       // Jika user tutup Snap tanpa bayar, biarkan mereka buka dialog lagi manual
     },
@@ -477,20 +478,46 @@ export default function SubscriptionPage() {
                       {payment.expired_at ? formatDate(payment.expired_at) : '-'}
                     </TableCell>
                     <TableCell className="text-right">
-                      {payment.invoice_url ? (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="gap-1.5 text-[#004532] hover:text-[#004532]"
-                          onClick={() => handleDownloadInvoice(payment)}
-                        >
-                          <Download className="size-3.5" />
-                          Unduh
-                          <ExternalLink className="size-3" />
-                        </Button>
-                      ) : (
-                        <span className="text-xs text-muted-foreground">Tidak tersedia</span>
-                      )}
+                      <div className="flex items-center justify-end gap-1.5">
+                        {payment.status === 'pending' && (payment.snap_token || payment.snap_redirect_url) && (
+                          <Button
+                            variant="default"
+                            size="sm"
+                            className="gap-1.5 bg-[#004532] text-white hover:bg-[#003526]"
+                            disabled={isBusy}
+                            onClick={() =>
+                              resumePayment(
+                                payment.snap_token ?? '',
+                                payment.invoice_number,
+                                payment.snap_redirect_url
+                              )
+                            }
+                          >
+                            {isBusy ? (
+                              <Loader2 className="size-3.5 animate-spin" />
+                            ) : (
+                              <PlayCircle className="size-3.5" />
+                            )}
+                            Lanjutkan
+                          </Button>
+                        )}
+                        {payment.invoice_url ? (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="gap-1.5 text-[#004532] hover:text-[#004532]"
+                            onClick={() => handleDownloadInvoice(payment)}
+                          >
+                            <Download className="size-3.5" />
+                            Unduh
+                            <ExternalLink className="size-3" />
+                          </Button>
+                        ) : (
+                          payment.status !== 'pending' && (
+                            <span className="text-xs text-muted-foreground">Tidak tersedia</span>
+                          )
+                        )}
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}

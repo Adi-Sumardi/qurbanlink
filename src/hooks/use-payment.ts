@@ -131,6 +131,52 @@ export function usePayment(options: UsePaymentOptions = {}) {
     }
   }, [invalidateSubscription, options]);
 
+  /** Re-open Snap for an existing pending payment using its stored snap_token */
+  const resumePayment = useCallback(
+    (snapToken: string, invoiceNumber: string, redirectUrl?: string | null) => {
+      invoiceRef.current = invoiceNumber;
+
+      if (snapToken) {
+        setStatus('pending');
+        openSnap(snapToken, {
+          onSuccess: () => {
+            setStatus('success');
+            toast.success('🎉 Pembayaran berhasil! Langganan Anda telah diperbarui.');
+            invalidateSubscription();
+            options.onSuccess?.(invoiceNumber);
+          },
+          onPending: () => {
+            setStatus('pending');
+            toast.info('⏳ Pembayaran sedang diproses.', { duration: 6000 });
+            invalidateSubscription();
+            options.onPending?.(invoiceNumber);
+          },
+          onError: (result: unknown) => {
+            setStatus('failed');
+            const msg =
+              typeof result === 'object' && result !== null
+                ? (result as Record<string, string>)?.status_message ?? 'Pembayaran gagal.'
+                : 'Pembayaran gagal.';
+            setErrorMessage(msg);
+            toast.error(`❌ ${msg}`);
+            options.onFailed?.(invoiceNumber);
+          },
+          onClose: () => {
+            setStatus('closed');
+            toast.info('Jendela pembayaran ditutup. Lanjutkan kapan saja.');
+            options.onClosed?.();
+          },
+        });
+      } else if (redirectUrl) {
+        window.open(redirectUrl, '_blank', 'noopener,noreferrer');
+        toast.info('Halaman pembayaran dibuka di tab baru.');
+      } else {
+        toast.error('Sesi pembayaran telah kadaluarsa. Silakan buat pembayaran baru.');
+      }
+    },
+    [openSnap, invalidateSubscription, options]
+  );
+
   const reset = useCallback(() => {
     setStatus('idle');
     setErrorMessage(null);
@@ -139,6 +185,7 @@ export function usePayment(options: UsePaymentOptions = {}) {
 
   return {
     pay,
+    resumePayment,
     checkStatus,
     reset,
     status,

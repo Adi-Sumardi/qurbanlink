@@ -68,6 +68,8 @@ export interface Payment {
   payment_method: string | null;
   invoice_number: string;
   invoice_url: string | null;
+  snap_token: string | null;
+  snap_redirect_url: string | null;
   paid_at: string | null;
   expired_at: string | null;
   created_at: string;
