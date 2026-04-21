@@ -7,8 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\AnimalResource;
 use App\Http\Resources\CouponResource;
 use App\Models\Event;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class ReportController extends Controller
 {
@@ -102,16 +104,102 @@ class ReportController extends Controller
     }
 
     /**
-     * Export report as PDF/Excel (placeholder).
+     * Export full report as PDF.
      */
-    public function export(Request $request, Event $event): JsonResponse
+    public function export(Request $request, Event $event): Response
     {
-        $request->validate([
-            'format' => ['nullable', 'string', 'in:pdf,xlsx,csv'],
-            'type' => ['nullable', 'string', 'in:distribution,unclaimed,per_animal'],
-        ]);
+        $event->load('tenant');
 
-        // TODO: Implement actual PDF/Excel export logic
-        return $this->success(null, 'Report export initiated successfully.');
+        // Distribution summary
+        $totalRecipients = $event->recipients()->count();
+        $totalCoupons    = $event->coupons()->count();
+        $totalClaimed    = $event->coupons()->where('status', CouponStatus::Claimed)->count();
+        $totalUnclaimed  = $totalCoupons - $totalClaimed;
+        $totalPortions   = (int) $event->recipients()->sum('portions');
+
+        $recipientStats = $event->recipients()
+            ->selectRaw('category, count(*) as total_recipients, sum(portions) as total_portions')
+            ->groupBy('category')
+            ->get();
+
+        $categories = [];
+        foreach ($recipientStats as $row) {
+            $claimed = $event->coupons()
+                ->where('status', CouponStatus::Claimed)
+                ->whereHas('recipient', fn ($q) => $q->where('category', $row->category))
+                ->count();
+            $total = $event->coupons()
+                ->whereHas('recipient', fn ($q) => $q->where('category', $row->category))
+                ->count();
+
+            $categories[] = [
+                'category'         => $row->category,
+                'total_recipients' => (int) $row->total_recipients,
+                'total_portions'   => (int) $row->total_portions,
+                'total_coupons'    => $total,
+                'claimed'          => $claimed,
+                'unclaimed'        => $total - $claimed,
+                'percentage'       => $total > 0 ? round(($claimed / $total) * 100, 1) : 0,
+            ];
+        }
+
+        $distribution = [
+            'summary' => [
+                'total_recipients' => $totalRecipients,
+                'total_portions'   => $totalPortions,
+                'total_coupons'    => $totalCoupons,
+                'total_claimed'    => $totalClaimed,
+                'total_unclaimed'  => $totalUnclaimed,
+                'percentage'       => $totalCoupons > 0 ? round(($totalClaimed / $totalCoupons) * 100, 1) : 0,
+            ],
+            'categories' => $categories,
+        ];
+
+        // Animals
+        $animals = $event->animals()->with('donor')->orderBy('created_at')->get()
+            ->map(fn ($a) => [
+                'type'               => $a->type instanceof \BackedEnum ? $a->type->value : (string) $a->type,
+                'breed'              => $a->breed,
+                'color'              => $a->color,
+                'weight'             => $a->weight,
+                'estimated_portions' => $a->estimated_portions,
+                'status'             => $a->status instanceof \BackedEnum ? $a->status->value : (string) $a->status,
+                'donor'              => $a->donor ? ['name' => $a->donor->name] : null,
+            ])->toArray();
+
+        // Unclaimed coupons
+        $unclaimed = $event->coupons()
+            ->where('status', CouponStatus::Generated)
+            ->with('recipient')
+            ->orderBy('coupon_number')
+            ->get()
+            ->map(fn ($c) => [
+                'coupon_number' => $c->coupon_number,
+                'recipient'     => $c->recipient ? [
+                    'name'      => $c->recipient->name,
+                    'category'  => $c->recipient->category,
+                    'portions'  => $c->recipient->portions,
+                    'phone'     => $c->recipient->phone,
+                    'address'   => $c->recipient->address,
+                    'kelurahan' => $c->recipient->kelurahan,
+                    'kecamatan' => $c->recipient->kecamatan,
+                ] : null,
+            ])->toArray();
+
+        $animalTypeLabels = [
+            'sapi'    => 'Sapi',
+            'kambing' => 'Kambing',
+            'domba'   => 'Domba',
+            'unta'    => 'Unta',
+            'kerbau'  => 'Kerbau',
+        ];
+
+        $pdf = Pdf::loadView('pdf.report', compact(
+            'event', 'distribution', 'animals', 'unclaimed', 'animalTypeLabels'
+        ))->setPaper('a4', 'portrait');
+
+        $filename = 'laporan-distribusi-' . str($event->name)->slug() . '-' . now()->format('Ymd') . '.pdf';
+
+        return $pdf->download($filename);
     }
 }

@@ -73,13 +73,14 @@ Route::middleware(['auth:sanctum', 'tenant', 'check-subscription'])->group(funct
     Route::patch('/events/{event}/animals/{animal}/status', [\App\Http\Controllers\Api\V1\AnimalController::class, 'updateStatus'])
         ->middleware('permission:update-animal-status');
 
-    // Recipients (nested under event)
-    Route::apiResource('events.recipients', \App\Http\Controllers\Api\V1\RecipientController::class);
-    Route::post('/events/{event}/recipients/import', [\App\Http\Controllers\Api\V1\RecipientController::class, 'import'])
-        ->middleware('permission:import-recipients');
+    // Recipients — specific routes MUST come before apiResource to avoid {recipient} wildcard clash
+    Route::get('/recipients/template', [\App\Http\Controllers\Api\V1\RecipientController::class, 'template']);
     Route::get('/events/{event}/recipients/export', [\App\Http\Controllers\Api\V1\RecipientController::class, 'export'])
         ->middleware('permission:export-recipients');
+    Route::post('/events/{event}/recipients/import', [\App\Http\Controllers\Api\V1\RecipientController::class, 'import'])
+        ->middleware('permission:import-recipients');
     Route::post('/events/{event}/recipients/check-duplicates', [\App\Http\Controllers\Api\V1\RecipientController::class, 'checkDuplicates']);
+    Route::apiResource('events.recipients', \App\Http\Controllers\Api\V1\RecipientController::class);
 
     // Coupons (nested under event)
     Route::get('/events/{event}/coupons', [\App\Http\Controllers\Api\V1\CouponController::class, 'index'])

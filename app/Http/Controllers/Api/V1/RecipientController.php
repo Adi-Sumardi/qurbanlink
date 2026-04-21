@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Exports\RecipientsExport;
+use App\Exports\RecipientsTemplateExport;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\RecipientResource;
+use App\Imports\RecipientsImport;
 use App\Models\Event;
 use App\Models\Recipient;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class RecipientController extends Controller
 {
@@ -96,7 +101,7 @@ class RecipientController extends Controller
     }
 
     /**
-     * Import recipients from file upload (placeholder).
+     * Import recipients from CSV/Excel file.
      */
     public function import(Request $request, Event $event): JsonResponse
     {
@@ -104,17 +109,33 @@ class RecipientController extends Controller
             'file' => ['required', 'file', 'mimes:csv,xlsx,xls', 'max:5120'],
         ]);
 
-        // TODO: Implement actual file import logic
-        return $this->success(null, 'Recipient import initiated successfully. Processing in background.');
+        $import = new RecipientsImport($event);
+        Excel::import($import, $request->file('file'));
+
+        $errorCount = count($import->errors());
+
+        return $this->success([
+            'imported' => $import->imported,
+            'errors'   => collect($import->errors())->map(fn($e) => $e->getMessage())->values()->toArray(),
+        ], "{$import->imported} penerima berhasil diimpor.");
     }
 
     /**
-     * Export recipients (placeholder).
+     * Export recipients as Excel file.
      */
-    public function export(Event $event): JsonResponse
+    public function export(Event $event): BinaryFileResponse
     {
-        // TODO: Implement actual export logic (CSV/Excel)
-        return $this->success(null, 'Recipient export initiated successfully.');
+        $filename = 'penerima-' . str($event->name)->slug() . '-' . now()->format('Ymd') . '.xlsx';
+
+        return Excel::download(new RecipientsExport($event), $filename);
+    }
+
+    /**
+     * Download blank import template.
+     */
+    public function template(): BinaryFileResponse
+    {
+        return Excel::download(new RecipientsTemplateExport(), 'template-import-penerima.xlsx');
     }
 
     /**
