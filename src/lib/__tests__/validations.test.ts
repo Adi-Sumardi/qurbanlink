@@ -24,7 +24,7 @@ describe('loginSchema', () => {
 
 describe('registerSchema', () => {
   const validData = {
-    tenant_name: 'Masjid Al-Ikhlas',
+    organization_name: 'Masjid Al-Ikhlas',
     name: 'Ahmad',
     email: 'ahmad@example.com',
     password: 'password123',
@@ -95,7 +95,7 @@ describe('resetPasswordSchema', () => {
 
 describe('eventSchema', () => {
   it('accepts valid data', () => {
-    const result = eventSchema.safeParse({ name: 'Kurban 2025' });
+    const result = eventSchema.safeParse({ name: 'Kurban 2025', event_date: '2025-06-01' });
     expect(result.success).toBe(true);
   });
 

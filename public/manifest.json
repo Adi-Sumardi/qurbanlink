@@ -1,27 +1,57 @@
 {
   "name": "Tawzii Digital",
-  "short_name": "Tawzii Digital",
-  "description": "Platform distribusi daging hewan kurban digital",
-  "start_url": "/",
+  "short_name": "Tawzii",
+  "description": "Platform distribusi daging hewan kurban digital untuk masjid",
+  "start_url": "/dashboard",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#16a34a",
-  "orientation": "portrait-primary",
+  "background_color": "#f2f4f6",
+  "theme_color": "#004532",
+  "orientation": "portrait",
+  "lang": "id",
+  "dir": "ltr",
+  "categories": ["business", "productivity"],
   "icons": [
     {
       "src": "/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
-  "categories": ["business", "productivity"],
-  "lang": "id",
-  "dir": "ltr"
+  "shortcuts": [
+    {
+      "name": "Scan Kupon",
+      "short_name": "Scan",
+      "description": "Scan kupon QR distribusi kurban",
+      "url": "/scan",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Lihat ringkasan distribusi",
+      "url": "/dashboard",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Penerima",
+      "short_name": "Penerima",
+      "description": "Kelola data penerima kurban",
+      "url": "/events",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
 }

@@ -37,8 +37,13 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
+    statusBarStyle: "black-translucent",
     title: "Tawzii Digital",
+    startupImage: "/icons/icon-512.png",
+  },
+  icons: {
+    apple: "/icons/icon-192.png",
+    icon: "/icons/icon-192.png",
   },
 };
 

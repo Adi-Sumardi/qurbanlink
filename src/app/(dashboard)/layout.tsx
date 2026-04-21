@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { AppHeader } from '@/components/layout/app-header';
 import { AppSidebar } from '@/components/layout/app-sidebar';
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
+import { BottomNav } from '@/components/pwa/bottom-nav';
 
 export default function DashboardLayout({
   children,
@@ -29,10 +30,14 @@ export default function DashboardLayout({
 
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         <AppHeader onMenuToggle={() => setSidebarOpen(true)} />
-        <main className="flex-1 overflow-y-auto p-4 md:p-6">
+        {/* pb-20 on mobile to clear the bottom nav bar */}
+        <main className="flex-1 overflow-y-auto p-4 pb-20 md:p-6 md:pb-6">
           {children}
         </main>
       </div>
+
+      {/* Mobile bottom navigation */}
+      <BottomNav />
     </div>
   );
 }
