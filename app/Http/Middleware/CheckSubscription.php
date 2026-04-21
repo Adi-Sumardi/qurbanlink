@@ -14,11 +14,17 @@ class CheckSubscription
             return $next($request);
         }
 
+        // Subscription management routes must always be accessible
+        // so users can subscribe/resume even without an active plan
+        if ($request->is('api/v1/subscriptions/*') || $request->is('api/v1/subscriptions')) {
+            return $next($request);
+        }
+
         $tenant = app('current_tenant');
         $subscription = $tenant->activeSubscription;
 
         if (!$subscription) {
-            abort(403, 'Tidak ada subscription aktif. Silakan pilih paket.');
+            abort(403, 'Tidak ada subscription aktif. Silakan pilih paket terlebih dahulu.');
         }
 
         return $next($request);
