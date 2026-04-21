@@ -65,6 +65,14 @@ export const recipientService = {
     return res.data;
   },
 
+  async downloadTemplate() {
+    const res = await api.get<Blob>(
+      `/recipients/template`,
+      { responseType: 'blob' }
+    );
+    return res.data;
+  },
+
   async checkDuplicates(eventId: string) {
     const res = await api.post<ApiResponse<{ duplicates: Recipient[] }>>(
       `/events/${eventId}/recipients/check-duplicates`

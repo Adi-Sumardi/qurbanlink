@@ -42,14 +42,9 @@ function SidebarNav({ pathname, onNavigate }: { pathname: string; onNavigate?: (
   return (
     <div className="flex h-full flex-col">
       <div className="p-4">
-        <div className="flex items-center gap-2">
-          <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-sm font-bold text-primary-foreground">
-            Q
-          </div>
-          <div>
-            <h2 className="text-sm font-bold text-primary">Tawzii Digital</h2>
-            <p className="text-[10px] text-muted-foreground">Super Admin Panel</p>
-          </div>
+        <div className="flex flex-col gap-1">
+          <img src="/logo.png" alt="Tawzii Digital" className="h-10 w-10 rounded-full object-cover" />
+          <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Super Admin Panel</p>
         </div>
       </div>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import {
   BarChart3,
   Loader2,
@@ -10,7 +10,9 @@ import {
   Clock,
   TrendingUp,
   Package,
+  FileDown,
 } from 'lucide-react';
+import { toast } from 'sonner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   Table,
@@ -415,6 +417,20 @@ export default function ReportsPage() {
     enabled: !!activeEvent,
   });
 
+  const exportPdfMutation = useMutation({
+    mutationFn: () => reportService.export(activeEvent!.id, { format: 'pdf' }),
+    onSuccess: (blob) => {
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `laporan-distribusi-${activeEvent!.id}-${new Date().toISOString().slice(0, 10)}.pdf`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+      toast.success('PDF berhasil diunduh');
+    },
+    onError: () => toast.error('Gagal mengunduh PDF'),
+  });
+
   if (!activeEvent) {
     return (
       <EmptyState
@@ -431,12 +447,26 @@ export default function ReportsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <p className="mb-1 text-xs font-black uppercase tracking-widest text-[#3f4944]/50">
-          Distribution Analytics
-        </p>
-        <h1 className="font-headline text-3xl font-extrabold text-[#191c1e]">Reports</h1>
-        <p className="mt-1 text-sm text-[#3f4944]">{activeEvent.name}</p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="mb-1 text-xs font-black uppercase tracking-widest text-[#3f4944]/50">
+            Distribution Analytics
+          </p>
+          <h1 className="font-headline text-3xl font-extrabold text-[#191c1e]">Reports</h1>
+          <p className="mt-1 text-sm text-[#3f4944]">{activeEvent.name}</p>
+        </div>
+        <button
+          onClick={() => exportPdfMutation.mutate()}
+          disabled={exportPdfMutation.isPending}
+          className="flex items-center gap-2 rounded-xl bg-[#004532] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#003526] disabled:opacity-60"
+        >
+          {exportPdfMutation.isPending ? (
+            <Loader2 className="size-4 animate-spin" />
+          ) : (
+            <FileDown className="size-4" />
+          )}
+          Export PDF
+        </button>
       </div>
 
       <Tabs defaultValue="distribution">

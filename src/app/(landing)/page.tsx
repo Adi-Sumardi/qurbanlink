@@ -64,12 +64,11 @@ function Navbar() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 lg:px-8">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
-          <div className="flex size-9 items-center justify-center rounded-xl bg-[#004532] shadow-lg shadow-[#004532]/20">
-            <svg viewBox="0 0 24 24" className="size-5 fill-white" xmlns="http://www.w3.org/2000/svg">
-              <path d="M10.5 6a.5.5 0 0 0-.5.5v11a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-11a.5.5 0 0 0-.5-.5h-3ZM6 10.5a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.5-.5H6Zm9 3a.5.5 0 0 0-.5.5v4a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V14a.5.5 0 0 0-.5-.5h-3Z"/>
-            </svg>
+          <img src="/logo.png" alt="Tawzii Digital" className="h-10 w-10 rounded-full object-cover" />
+          <div className="leading-tight">
+            <p className="font-headline text-sm font-extrabold text-[#004532]">Tawzii Digital</p>
+            <p className="text-[10px] text-[#3f4944]/60">by adilabs.id</p>
           </div>
-          <span className="font-headline text-lg font-bold text-[#004532]">Tawzii Digital</span>
         </Link>
 
         {/* Nav Links */}
@@ -202,7 +201,7 @@ function HeroSection() {
                 >
                   <div className="relative aspect-[3/4]">
                     <img
-                      src="https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?w=600&q=80&fit=crop"
+                      src="https://images.unsplash.com/photo-1654224933022-a4916680a657?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                       alt="Sapi Kurban"
                       className="h-full w-full object-cover"
                     />
@@ -224,7 +223,7 @@ function HeroSection() {
                 >
                   <div className="relative aspect-[3/4]">
                     <img
-                      src="https://images.unsplash.com/photo-1533318087102-b3ad366ed041?w=600&q=80&fit=crop"
+                      src="https://images.unsplash.com/photo-1588466585717-f8041aec7875?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                       alt="Kambing Kurban"
                       className="h-full w-full object-cover"
                     />
@@ -741,7 +740,9 @@ function CtaSection() {
                 <ArrowRight className="size-5" />
               </Link>
               <a
-                href="#"
+                href="https://wa.me/6285121379697?text=Halo%2C%20saya%20ingin%20konsultasi%20mengenai%20Tawzii%20Digital"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 rounded-full border-2 border-[#f0faf5]/20 px-10 py-5 text-lg font-black font-headline text-[#f0faf5] transition-all hover:bg-[#f0faf5]/10"
               >
                 Konsultasi dengan Tim
@@ -769,13 +770,13 @@ function Footer() {
           </div>
           <div className="flex flex-wrap justify-center gap-8">
             {[
-              'Kebijakan Privasi',
-              'Syarat & Ketentuan',
-              'Laporan Keberlanjutan',
+              { label: 'Kebijakan Privasi', href: '/kebijakan-privasi' },
+              { label: 'Syarat & Ketentuan', href: '/syarat-ketentuan' },
+              { label: 'Laporan Keberlanjutan', href: '/laporan-keberlanjutan' },
             ].map((l) => (
-              <a key={l} href="#" className="text-xs text-[#3f4944]/60 hover:text-[#004532] transition-colors">
-                {l}
-              </a>
+              <Link key={l.label} href={l.href} className="text-xs text-[#3f4944]/60 hover:text-[#004532] transition-colors">
+                {l.label}
+              </Link>
             ))}
           </div>
         </div>

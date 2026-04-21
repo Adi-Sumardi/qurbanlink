@@ -4,7 +4,16 @@ import { useEffect, type ReactNode } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth.store';
 
-const PUBLIC_PATHS = ['/login', '/register', '/forgot-password', '/reset-password', '/verify-email'];
+const PUBLIC_PATHS = [
+  '/login',
+  '/register',
+  '/forgot-password',
+  '/reset-password',
+  '/verify-email',
+  '/kebijakan-privasi',
+  '/syarat-ketentuan',
+  '/laporan-keberlanjutan',
+];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();

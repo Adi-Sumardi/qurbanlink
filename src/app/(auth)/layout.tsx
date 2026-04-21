@@ -22,15 +22,8 @@ export default function AuthLayout({
         <div className="relative z-10 flex flex-col justify-between p-12 xl:p-16">
           {/* Top: Logo badge */}
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#6ffbbe]/30 bg-[#6ffbbe]/10 px-4 py-2">
-              <div className="flex size-5 items-center justify-center rounded-md bg-[#6ffbbe]">
-                <svg viewBox="0 0 24 24" className="size-3 fill-[#002113]">
-                  <path d="M4.5 6.375a4.125 4.125 0 1 1 8.25 0 4.125 4.125 0 0 1-8.25 0ZM14.25 8.625a3.375 3.375 0 1 1 6.75 0 3.375 3.375 0 0 1-6.75 0ZM1.5 19.125a7.125 7.125 0 0 1 14.25 0v.003l-.001.119a.75.75 0 0 1-.363.63 13.067 13.067 0 0 1-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 0 1-.364-.63l-.001-.122ZM17.25 19.128l-.001.144a2.25 2.25 0 0 1-.233.96 10.088 10.088 0 0 0 5.06-1.01.75.75 0 0 0 .42-.643 4.875 4.875 0 0 0-6.957-4.611 8.586 8.586 0 0 1 1.71 5.157v.003Z"/>
-                </svg>
-              </div>
-              <span className="text-xs font-black uppercase tracking-widest text-[#6ffbbe]">
-                Mesjid Digital
-              </span>
+            <div className="inline-block rounded-2xl bg-white p-2 shadow-xl">
+              <img src="/logo.png" alt="Tawzii Digital" className="h-14 w-14 rounded-full object-cover" />
             </div>
           </div>
 

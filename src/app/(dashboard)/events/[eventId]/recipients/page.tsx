@@ -19,6 +19,7 @@ import {
   Trash2,
   Upload,
   Download,
+  FileSpreadsheet,
   Loader2,
   Users,
 } from 'lucide-react';
@@ -201,10 +202,10 @@ export default function RecipientsPage() {
   const exportMutation = useMutation({
     mutationFn: () => recipientService.export(eventId),
     onSuccess: (blob) => {
-      const url = window.URL.createObjectURL(blob);
+      const url = window.URL.createObjectURL(new Blob([blob]));
       const link = document.createElement('a');
       link.href = url;
-      link.download = `penerima-${eventId}.xlsx`;
+      link.download = `penerima-${new Date().toISOString().slice(0, 10)}.xlsx`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -213,6 +214,25 @@ export default function RecipientsPage() {
     },
     onError: () => {
       toast.error('Gagal mengekspor data penerima');
+    },
+  });
+
+  // Download import template
+  const templateMutation = useMutation({
+    mutationFn: () => recipientService.downloadTemplate(),
+    onSuccess: (blob) => {
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'template-import-penerima.xlsx';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      toast.success('Template berhasil diunduh');
+    },
+    onError: () => {
+      toast.error('Gagal mengunduh template');
     },
   });
 
@@ -326,6 +346,18 @@ export default function RecipientsPage() {
                 <Download className="mr-2 size-4" />
               )}
               Ekspor
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => templateMutation.mutate()}
+              disabled={templateMutation.isPending}
+            >
+              {templateMutation.isPending ? (
+                <Loader2 className="mr-2 size-4 animate-spin" />
+              ) : (
+                <FileSpreadsheet className="mr-2 size-4" />
+              )}
+              Unduh Template
             </Button>
             <Button
               variant="outline"
