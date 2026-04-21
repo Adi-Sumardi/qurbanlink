@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { ChevronsUpDown, Check } from 'lucide-react';
 import {
@@ -13,14 +14,35 @@ import { eventService } from '@/services/event.service';
 import type { Event } from '@/types';
 
 export function EventSwitcher() {
+  const [mounted, setMounted] = useState(false);
   const { activeEvent, setActiveEvent } = useEventStore();
 
   const { data } = useQuery({
     queryKey: ['events', 'list'],
     queryFn: () => eventService.getAll({ per_page: 50 }),
+    enabled: mounted, // Only fetch after hydration
   });
 
+  // Prevent SSR / client hydration mismatch from Zustand persisted state
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const events = data?.data ?? [];
+
+  // Render a stable placeholder on SSR / before hydration
+  if (!mounted) {
+    return (
+      <button
+        className="flex w-full items-center justify-between rounded-xl bg-[#f2f4f6] px-3 py-2.5 text-left text-sm text-[#191c1e]"
+        type="button"
+        disabled
+      >
+        <span className="truncate font-medium text-muted-foreground">Pilih Event</span>
+        <ChevronsUpDown className="ml-2 size-3.5 shrink-0 text-[#3f4944]/50" />
+      </button>
+    );
+  }
 
   return (
     <DropdownMenu>

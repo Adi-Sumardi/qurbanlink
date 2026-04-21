@@ -8,8 +8,28 @@ export function useServiceWorker() {
 
     navigator.serviceWorker
       .register('/sw.js')
+      .then((registration) => {
+        // Check for updates on every page load
+        registration.update();
+
+        // If new SW is already waiting (installed but not yet active), activate it
+        if (registration.waiting) {
+          registration.waiting.postMessage('SKIP_WAITING');
+        }
+
+        // When a new SW installs, send SKIP_WAITING so it takes over immediately
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          if (!newWorker) return;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              newWorker.postMessage('SKIP_WAITING');
+            }
+          });
+        });
+      })
       .catch(() => {
-        // Service worker registration failed — non-critical
+        // SW registration failed — non-critical
       });
   }, []);
 }

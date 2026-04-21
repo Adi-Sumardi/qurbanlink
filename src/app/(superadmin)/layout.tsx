@@ -5,14 +5,16 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
-  Building2,
   ScrollText,
+  TrendingUp,
+  UserCog,
+  Package,
   LogOut,
   Menu,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { useAuthStore } from '@/stores/auth.store';
@@ -20,8 +22,10 @@ import { useLogout } from '@/hooks/use-auth';
 
 const adminNav = [
   { title: 'Dashboard', href: '/admin', icon: LayoutDashboard },
-  { title: 'Tenant', href: '/admin/tenants', icon: Building2 },
   { title: 'Audit Log', href: '/admin/audit-logs', icon: ScrollText },
+  { title: 'Penghasilan SaaS', href: '/admin/revenue', icon: TrendingUp },
+  { title: 'Akses Tenant Admin', href: '/admin/tenant-admins', icon: UserCog },
+  { title: 'Kelola Paket', href: '/admin/plans', icon: Package },
 ];
 
 function SidebarNav({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
@@ -124,6 +128,7 @@ export default function SuperAdminLayout({
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-64 p-0 [&>button]:hidden">
+              <SheetTitle className="sr-only">Menu Navigasi Admin</SheetTitle>
               <SidebarNav pathname={pathname} onNavigate={() => setOpen(false)} />
             </SheetContent>
           </Sheet>

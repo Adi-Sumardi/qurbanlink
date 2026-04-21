@@ -82,6 +82,11 @@ export const adminService = {
     return res.data;
   },
 
+  async createPlan(data: Omit<PlanConfig, 'id'>) {
+    const res = await api.post<ApiResponse<PlanConfig>>('/admin/plans', data);
+    return res.data;
+  },
+
   async updatePlan(planId: string, data: Partial<PlanConfig>) {
     const res = await api.put<ApiResponse<PlanConfig>>(
       `/admin/plans/${planId}`,
@@ -90,9 +95,22 @@ export const adminService = {
     return res.data;
   },
 
+  async deletePlan(planId: string) {
+    const res = await api.delete<ApiResponse<null>>(`/admin/plans/${planId}`);
+    return res.data;
+  },
+
   async activatePayment(paymentId: string) {
     const res = await api.post<ApiResponse<Payment>>(
       `/admin/payments/${paymentId}/activate`
+    );
+    return res.data;
+  },
+
+  async getPayments(params?: QueryParams) {
+    const res = await api.get<PaginatedResponse<Payment>>(
+      '/admin/payments',
+      { params }
     );
     return res.data;
   },

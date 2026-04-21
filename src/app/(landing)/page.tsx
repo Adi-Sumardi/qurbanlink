@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import {
   Users,
@@ -14,8 +15,13 @@ import {
   BarChart3,
   Camera,
   FileText,
+  Loader2,
 } from 'lucide-react';
 import { motion as m, useInView } from 'motion/react';
+import { publicService } from '@/services/public.service';
+import { formatCurrency, formatNumber } from '@/lib/format';
+import { SUBSCRIPTION_PLAN_LABELS } from '@/lib/constants';
+import type { SubscriptionPlanInfo } from '@/services/subscription.service';
 
 // --- Animation Variants ---
 
@@ -524,55 +530,38 @@ function TransparencySection() {
 
 // --- Pricing Section ---
 
-const PLANS = [
-  {
-    name: 'Dasar',
-    price: 'Rp 299rb',
-    period: '/event',
-    desc: 'Cocok untuk Musholla kecil',
-    features: ['Hingga 500 Mustahik', 'Sistem Kupon Digital', 'Dasbor Admin Dasar'],
-    missing: ['Pelacakan Logistik Real-time'],
-    cta: 'Mulai Gratis',
-    dark: false,
-    popular: false,
-  },
-  {
-    name: 'Profesional',
-    price: 'Rp 799rb',
-    period: '/event',
-    desc: 'Untuk Masjid komunitas besar',
-    features: [
-      'Mustahik Tak Terbatas',
-      'Integrasi Notifikasi SMS',
-      'Portal Transparansi Donatur',
-      'Pelacakan Logistik Real-time',
-      'Verifikasi Bukti Foto',
-    ],
-    missing: [],
-    cta: 'Upgrade ke Pro',
-    dark: true,
-    popular: true,
-  },
-  {
-    name: 'Enterprise',
-    price: 'Kustom',
-    period: '',
-    desc: 'Untuk Jaringan Masjid & Yayasan',
-    features: [
-      'Manajemen Multi-lokasi',
-      'Aplikasi Donatur White-label',
-      'Account Manager Khusus',
-      'Akses API untuk Integrasi',
-    ],
-    missing: [],
-    cta: 'Hubungi Tim Kami',
-    dark: false,
-    popular: false,
-  },
-];
+
+const FEATURE_LABELS: Record<string, string> = {
+  qr_code: 'QR Code Scan',
+  manual_scan: 'Manual Scan',
+  live_dashboard: 'Live Dashboard',
+  export_pdf: 'Export PDF',
+  export_excel: 'Export Excel',
+  custom_branding: 'Custom Branding',
+  email_notifications: 'Notifikasi Email',
+  api_access: 'Akses API',
+  priority_support: 'Priority Support',
+};
+
+const POPULAR_PLAN = 'professional';
 
 function PricingSection() {
   const { ref, inView } = useSectionView();
+
+  const { data: plansRes, isLoading } = useQuery({
+    queryKey: ['subscription', 'plans'],
+    queryFn: () => publicService.getPlans(),
+    staleTime: 5 * 60 * 1000,
+  });
+
+  function extractPlans(raw: unknown): SubscriptionPlanInfo[] {
+    if (Array.isArray(raw)) return raw as SubscriptionPlanInfo[];
+    const r = raw as Record<string, unknown>;
+    if (Array.isArray(r?.data)) return r.data as SubscriptionPlanInfo[];
+    return [];
+  }
+
+  const plans = extractPlans(plansRes);
 
   return (
     <section id="harga" className="bg-[#f7f9fb] py-32 px-6 lg:px-8" ref={ref}>
@@ -599,77 +588,100 @@ function PricingSection() {
           </div>
         </m.div>
 
-        <m.div
-          className="grid grid-cols-1 gap-8 md:grid-cols-3"
-          initial="hidden"
-          animate={inView ? 'visible' : 'hidden'}
-          variants={stagger}
-        >
-          {PLANS.map((plan) => (
-            <m.div
-              key={plan.name}
-              className={`relative flex flex-col rounded-[2rem] p-8 editorial-shadow ${
-                plan.dark
-                  ? 'bg-[#004532] text-white scale-105 shadow-2xl shadow-[#004532]/25'
-                  : 'bg-white'
-              }`}
-              variants={scaleUp}
-              transition={{ duration: 0.5 }}
-              whileHover={{ y: plan.dark ? -4 : -6, transition: { duration: 0.25 } }}
-            >
-              {plan.popular && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-[#6ffbbe] px-4 py-1 text-[10px] font-black uppercase tracking-widest text-[#002113]">
-                  Paling Populer
-                </div>
-              )}
+        {isLoading ? (
+          <div className="flex justify-center py-16">
+            <Loader2 className="size-8 animate-spin text-[#004532]/40" />
+          </div>
+        ) : plans.length === 0 ? (
+          <div className="text-center text-sm text-[#3f4944]/60 py-10">
+            Paket belum tersedia
+          </div>
+        ) : (
+          <m.div
+            className="grid grid-cols-1 gap-8 md:grid-cols-3"
+            initial="hidden"
+            animate={inView ? 'visible' : 'hidden'}
+            variants={stagger}
+          >
+            {plans.map((plan) => {
+              const isPopular = plan.slug === POPULAR_PLAN;
+              const features = plan.features ?? {};
+              const enabledFeatures = Object.entries(features).filter(([, v]) => v);
+              const disabledFeatures = Object.entries(features).filter(([, v]) => !v);
 
-              <div className="mb-8">
-                <h3 className={`font-headline mb-2 text-xl font-bold ${plan.dark ? 'text-white' : 'text-[#004532]'}`}>
-                  {plan.name}
-                </h3>
-                <p className={`text-sm ${plan.dark ? 'text-white/70' : 'text-[#3f4944]'}`}>
-                  {plan.desc}
-                </p>
-                <div className="mt-4 flex items-baseline gap-1">
-                  <span className={`font-headline text-4xl font-black ${plan.dark ? 'text-white' : 'text-[#004532]'}`}>
-                    {plan.price}
-                  </span>
-                  {plan.period && (
-                    <span className={plan.dark ? 'text-white/60' : 'text-[#3f4944]'}>
-                      {plan.period}
-                    </span>
+              return (
+                <m.div
+                  key={plan.slug}
+                  className={`relative flex flex-col rounded-[2rem] p-8 editorial-shadow ${
+                    isPopular
+                      ? 'bg-[#004532] text-white scale-105 shadow-2xl shadow-[#004532]/25'
+                      : 'bg-white'
+                  }`}
+                  variants={scaleUp}
+                  transition={{ duration: 0.5 }}
+                  whileHover={{ y: isPopular ? -4 : -6, transition: { duration: 0.25 } }}
+                >
+                  {isPopular && (
+                    <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-[#6ffbbe] px-4 py-1 text-[10px] font-black uppercase tracking-widest text-[#002113]">
+                      Paling Populer
+                    </div>
                   )}
-                </div>
-              </div>
 
-              <ul className="mb-10 flex-1 space-y-3 text-sm">
-                {plan.features.map((f) => (
-                  <li key={f} className="flex items-center gap-3">
-                    <CheckCircle className={`size-4 shrink-0 ${plan.dark ? 'text-[#6ffbbe]' : 'text-[#004532]'}`} />
-                    <span className={plan.dark ? 'text-white' : 'text-[#191c1e]'}>{f}</span>
-                  </li>
-                ))}
-                {plan.missing.map((f) => (
-                  <li key={f} className="flex items-center gap-3 opacity-40">
-                    <Shield className="size-4 shrink-0" />
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
+                  <div className="mb-8">
+                    <h3 className={`font-headline mb-2 text-xl font-bold ${isPopular ? 'text-white' : 'text-[#004532]'}`}>
+                      {SUBSCRIPTION_PLAN_LABELS[plan.slug] || plan.name}
+                    </h3>
+                    <p className={`text-sm ${isPopular ? 'text-white/70' : 'text-[#3f4944]'}`}>
+                      {formatNumber(plan.coupon_quota)} kupon per periode
+                    </p>
+                    <div className="mt-4 flex items-baseline gap-1">
+                      {plan.price_monthly === 0 ? (
+                        <span className={`font-headline text-4xl font-black ${isPopular ? 'text-white' : 'text-[#004532]'}`}>
+                          Gratis
+                        </span>
+                      ) : (
+                        <>
+                          <span className={`font-headline text-4xl font-black ${isPopular ? 'text-white' : 'text-[#004532]'}`}>
+                            {formatCurrency(plan.price_monthly)}
+                          </span>
+                          <span className={isPopular ? 'text-white/60' : 'text-[#3f4944]'}>/bulan</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
 
-              <Link
-                href="/register"
-                className={`w-full rounded-full py-4 text-center text-base font-bold font-headline transition-all hover:opacity-90 active:scale-95 ${
-                  plan.dark
-                    ? 'bg-[#6ffbbe] text-[#002113] shadow-lg shadow-black/20'
-                    : 'border-2 border-[#004532] text-[#004532] hover:bg-[#004532]/5'
-                }`}
-              >
-                {plan.cta}
-              </Link>
-            </m.div>
-          ))}
-        </m.div>
+                  <ul className="mb-10 flex-1 space-y-3 text-sm">
+                    {enabledFeatures.map(([key]) => (
+                      <li key={key} className="flex items-center gap-3">
+                        <CheckCircle className={`size-4 shrink-0 ${isPopular ? 'text-[#6ffbbe]' : 'text-[#004532]'}`} />
+                        <span className={isPopular ? 'text-white' : 'text-[#191c1e]'}>
+                          {FEATURE_LABELS[key] || key}
+                        </span>
+                      </li>
+                    ))}
+                    {disabledFeatures.map(([key]) => (
+                      <li key={key} className="flex items-center gap-3 opacity-40">
+                        <Shield className="size-4 shrink-0" />
+                        <span>{FEATURE_LABELS[key] || key}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <Link
+                    href="/register"
+                    className={`w-full rounded-full py-4 text-center text-base font-bold font-headline transition-all hover:opacity-90 active:scale-95 ${
+                      isPopular
+                        ? 'bg-[#6ffbbe] text-[#002113] shadow-lg shadow-black/20'
+                        : 'border-2 border-[#004532] text-[#004532] hover:bg-[#004532]/5'
+                    }`}
+                  >
+                    {plan.price_monthly === 0 ? 'Mulai Gratis' : 'Pilih Paket'}
+                  </Link>
+                </m.div>
+              );
+            })}
+          </m.div>
+        )}
       </div>
     </section>
   );

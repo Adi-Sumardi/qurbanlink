@@ -102,7 +102,7 @@ export function AppHeader({ onMenuToggle }: { onMenuToggle?: () => void } = {}) 
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link href="/settings">
+              <Link href="/subscription">
                 <CreditCard className="size-4" />
                 Langganan
               </Link>

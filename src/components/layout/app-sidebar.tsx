@@ -14,6 +14,7 @@ import {
   Settings,
   Shield,
   ShieldCheck,
+  CreditCard,
   HelpCircle,
   LogOut,
 } from 'lucide-react';
@@ -40,6 +41,7 @@ function getEventNav(eventId: string) {
 const settingsNav = [
   { title: 'Pengaturan', href: '/settings', icon: Settings, permission: 'edit-tenant-settings' },
   { title: 'Pengguna', href: '/users', icon: Shield, permission: 'manage-tenant-users' },
+  { title: 'Langganan', href: '/subscription', icon: CreditCard, permission: 'edit-tenant-settings' },
 ];
 
 export function AppSidebar({ onNavigate }: { onNavigate?: () => void } = {}) {
