@@ -243,9 +243,20 @@ class SubscriptionController extends Controller
         $user = $request->user();
         $meta = $payment->metadata ?? [];
 
+        // Ensure we have an order_id — legacy payments may not have invoice_number
+        $orderId = $payment->midtrans_order_id
+            ?? $payment->invoice_number
+            ?? ('INV-' . now()->format('Ymd') . '-' . strtoupper(Str::random(6)));
+
+        // Persist order_id and invoice_number if they were missing
+        $updateData = [];
+        if (!$payment->midtrans_order_id) $updateData['midtrans_order_id'] = $orderId;
+        if (!$payment->invoice_number)    $updateData['invoice_number']    = $orderId;
+        if ($updateData) $payment->update($updateData);
+
         try {
             $snapResult = $midtrans->createSnapToken([
-                'order_id'      => $payment->midtrans_order_id ?? $payment->invoice_number,
+                'order_id'      => $orderId,
                 'amount'        => (int) $payment->amount,
                 'first_name'    => $user->name,
                 'email'         => $user->email,
