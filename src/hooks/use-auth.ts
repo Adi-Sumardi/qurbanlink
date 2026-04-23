@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/stores/auth.store';
 import { authService } from '@/services/auth.service';
+import { toast } from 'sonner';
 import type { LoginRequest, RegisterRequest, ForgotPasswordRequest, ResetPasswordRequest } from '@/types';
 
 export function useLogin() {
@@ -14,6 +15,9 @@ export function useLogin() {
     mutationFn: (data: LoginRequest) => authService.login(data),
     onSuccess: (response) => {
       setAuth(response.data.user, response.data.token);
+      toast.success('Selamat datang kembali!', {
+        description: `Halo, ${response.data.user.name}. Anda berhasil masuk.`,
+      });
       const isSuperAdmin = response.data.user.roles?.includes('super_admin');
       router.replace(isSuperAdmin ? '/admin' : '/dashboard');
     },
@@ -41,6 +45,11 @@ export function useLogout() {
 
   return useMutation({
     mutationFn: () => authService.logout(),
+    onSuccess: () => {
+      toast.success('Berhasil keluar', {
+        description: 'Anda telah logout dari akun Anda.',
+      });
+    },
     onSettled: () => {
       logout();
       queryClient.clear();
