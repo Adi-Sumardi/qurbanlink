@@ -58,6 +58,7 @@ export interface ResetPasswordRequest {
 export interface AuthResponse {
   user: import('./models').User;
   token: string;
+  event_id?: string;
 }
 
 export interface EventFormData {
