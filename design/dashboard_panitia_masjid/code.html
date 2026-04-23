@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Sacred Steward - Mosque Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-tint": "#1b6b51",
+                    "on-secondary-container": "#00714d",
+                    "tertiary-container": "#823f3a",
+                    "surface-container-high": "#e6e8ea",
+                    "primary": "#004532",
+                    "surface-container": "#eceef0",
+                    "inverse-on-surface": "#eff1f3",
+                    "secondary-fixed": "#6ffbbe",
+                    "surface": "#f7f9fb",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-fixed-dim": "#4edea3",
+                    "primary-fixed": "#a6f2d1",
+                    "on-error": "#ffffff",
+                    "on-surface-variant": "#3f4944",
+                    "surface-container-highest": "#e0e3e5",
+                    "outline": "#6f7973",
+                    "on-primary-container": "#8bd6b7",
+                    "on-primary-fixed": "#002116",
+                    "tertiary-fixed-dim": "#ffb3ac",
+                    "error": "#ba1a1a",
+                    "on-surface": "#191c1e",
+                    "on-primary-fixed-variant": "#00513b",
+                    "inverse-surface": "#2d3133",
+                    "on-secondary-fixed": "#002113",
+                    "inverse-primary": "#8bd6b6",
+                    "tertiary": "#652925",
+                    "surface-dim": "#d8dadc",
+                    "on-error-container": "#93000a",
+                    "secondary-container": "#6cf8bb",
+                    "error-container": "#ffdad6",
+                    "background": "#f7f9fb",
+                    "tertiary-fixed": "#ffdad6",
+                    "on-tertiary-container": "#ffb4ad",
+                    "surface-bright": "#f7f9fb",
+                    "outline-variant": "#bec9c2",
+                    "on-tertiary-fixed": "#3b0908",
+                    "surface-container-low": "#f2f4f6",
+                    "on-secondary-fixed-variant": "#005236",
+                    "surface-variant": "#e0e3e5",
+                    "primary-container": "#065f46",
+                    "primary-fixed-dim": "#8bd6b6",
+                    "on-background": "#191c1e",
+                    "on-primary": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#73332f",
+                    "secondary": "#006c49"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .tonal-layering {
+            box-shadow: none !important;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface flex min-h-screen">
+<!-- SideNavBar (Shared Component) -->
+<aside class="hidden md:flex h-screen w-72 flex-col bg-[#f2f4f6] dark:bg-emerald-950 p-6 gap-2 sticky top-0 transition-all duration-300 ease-in-out">
+<div class="flex items-center gap-3 mb-8 px-2">
+<div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">mosque</span>
+</div>
+<div>
+<h1 class="text-lg font-headline font-black text-emerald-900 dark:text-emerald-50 leading-tight">Al-Hikmah Mosque</h1>
+<p class="text-[10px] font-inter font-semibold tracking-widest uppercase text-emerald-800/60 dark:text-emerald-200/60">Qurban Portal 1445H</p>
+</div>
+</div>
+<nav class="flex flex-col gap-1 flex-1">
+<a class="flex items-center gap-3 px-4 py-3 bg-[#ffffff] dark:bg-emerald-900 text-emerald-900 dark:text-emerald-50 rounded-xl shadow-sm transition-all duration-300 ease-in-out hover:translate-x-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-inter text-sm font-semibold tracking-wide uppercase">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-emerald-800/70 dark:text-emerald-200/70 hover:bg-emerald-100/50 dark:hover:bg-emerald-800/30 rounded-xl transition-all duration-300 ease-in-out hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">volunteer_activism</span>
+<span class="font-inter text-sm font-semibold tracking-wide uppercase">Donors</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-emerald-800/70 dark:text-emerald-200/70 hover:bg-emerald-100/50 dark:hover:bg-emerald-800/30 rounded-xl transition-all duration-300 ease-in-out hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">groups</span>
+<span class="font-inter text-sm font-semibold tracking-wide uppercase">Recipients</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-emerald-800/70 dark:text-emerald-200/70 hover:bg-emerald-100/50 dark:hover:bg-emerald-800/30 rounded-xl transition-all duration-300 ease-in-out hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">cruelty_free</span>
+<span class="font-inter text-sm font-semibold tracking-wide uppercase">Livestock</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-emerald-800/70 dark:text-emerald-200/70 hover:bg-emerald-100/50 dark:hover:bg-emerald-800/30 rounded-xl transition-all duration-300 ease-in-out hover:translate-x-1" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-inter text-sm font-semibold tracking-wide uppercase">Distribution</span>
+</a>
+</nav>
+<button class="mt-4 mb-8 w-full py-4 bg-gradient-to-r from-primary to-primary-container text-white rounded-full font-headline font-bold text-sm shadow-lg shadow-primary/20 active:scale-95 transition-all">
+            Record Sacrifice
+        </button>
+<div class="flex flex-col gap-1 border-t border-emerald-900/5 pt-4">
+<a class="flex items-center gap-3 px-4 py-2 text-emerald-800/70 dark:text-emerald-200/70 hover:bg-emerald-100/50 dark:hover:bg-emerald-800/30 rounded-xl text-sm font-inter" href="#">
+<span class="material-symbols-outlined text-sm">help</span>
+<span>Help Center</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-emerald-800/70 dark:text-emerald-200/70 hover:bg-emerald-100/50 dark:hover:bg-emerald-800/30 rounded-xl text-sm font-inter" href="#">
+<span class="material-symbols-outlined text-sm">logout</span>
+<span>Logout</span>
+</a>
+</div>
+</aside>
+<main class="flex-1 flex flex-col min-w-0">
+<!-- TopNavBar (Shared Component) -->
+<header class="fixed top-0 right-0 left-0 md:left-72 z-50 h-16 bg-[#f7f9fb]/80 dark:bg-emerald-950/80 backdrop-blur-xl shadow-sm shadow-emerald-900/5">
+<div class="flex justify-between items-center px-8 h-full w-full max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-6">
+<span class="font-headline tracking-tight font-bold text-xl text-emerald-900 dark:text-emerald-50">Dashboard</span>
+<div class="hidden lg:flex items-center gap-4">
+<a class="text-emerald-900 dark:text-emerald-50 border-b-2 border-emerald-900 dark:border-emerald-50 pb-1 text-sm font-inter font-medium" href="#">Dashboard</a>
+<a class="text-emerald-800/60 dark:text-emerald-200/60 font-medium text-sm font-inter hover:text-emerald-900 dark:hover:text-emerald-50 transition-colors" href="#">Inventory</a>
+<a class="text-emerald-800/60 dark:text-emerald-200/60 font-medium text-sm font-inter hover:text-emerald-900 dark:hover:text-emerald-50 transition-colors" href="#">Logistics</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden sm:flex items-center bg-surface-container-low rounded-full px-4 py-1.5 gap-2 border border-outline-variant/15">
+<span class="material-symbols-outlined text-outline text-lg">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm font-inter w-40" placeholder="Search Mustahik..." type="text"/>
+</div>
+<button class="flex items-center gap-2 bg-primary text-white px-5 py-2 rounded-full text-sm font-headline font-bold active:scale-95 duration-200">
+                        New Distribution
+                    </button>
+<div class="flex items-center gap-2">
+<button class="p-2 text-emerald-800/70 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-emerald-800/70 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-container overflow-hidden">
+<img alt="Mosque Administrator Profile" class="w-full h-full object-cover" data-alt="portrait of a professional mosque administrator with a friendly expression in clean modern lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuy4-QR-F7Pd6YKlc_g-s-hUWEHudsA3lt2RfJv0emB4ILjERZvkLpvCmsxRg-kEL69BTNwApLMJ0MJ9H_00UIL1obP4AOjo6xkiwtOvfZYNhiaSpzYXczUG4HTZIk6EQb5ApOPetaWy3qb6VWX6vCrmr6_Cd6DWg7R7VWZTfEaRQt_2UYh5mNlgSj-bxNWagHrN-b_sgCMUUMYKWvpILHYGLeR8QTdQ4luNx1LCNAlW1UZgrx1Q9UrTy8MkYKWzecXRQf-d_nwN4"/>
+</div>
+</div>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="mt-16 p-8 max-w-screen-2xl mx-auto w-full">
+<!-- Header Section with Asymmetry -->
+<div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-8">
+<div class="max-w-xl">
+<span class="font-inter text-xs font-bold tracking-widest text-primary uppercase mb-2 block">Central Registry Overview</span>
+<h2 class="text-4xl font-headline font-extrabold text-on-surface tracking-tighter leading-tight">
+                        Orchestrating the Sacred Act with <span class="text-primary italic">Grace &amp; Precision</span>.
+                    </h2>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl flex gap-8">
+<div>
+<p class="text-outline text-xs font-bold uppercase tracking-wider mb-1">Time to Eid</p>
+<p class="text-2xl font-headline font-bold text-on-surface">12d : 04h</p>
+</div>
+<div class="h-10 w-px bg-outline-variant/30 self-center"></div>
+<div>
+<p class="text-outline text-xs font-bold uppercase tracking-wider mb-1">Active Staff</p>
+<p class="text-2xl font-headline font-bold text-on-surface">24</p>
+</div>
+</div>
+</div>
+<!-- Bento Grid Stats -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+<!-- Main Inventory Card -->
+<div class="md:col-span-2 bg-surface-container-lowest p-8 rounded-xl relative overflow-hidden group">
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-6">
+<h3 class="font-headline font-bold text-xl text-on-surface">Livestock Inventory</h3>
+<span class="bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold px-2 py-1 rounded-md uppercase">Live Track</span>
+</div>
+<div class="flex items-end gap-12">
+<div>
+<span class="material-symbols-outlined text-primary text-4xl mb-2" style="font-variation-settings: 'FILL' 1;">cruelty_free</span>
+<p class="text-4xl font-headline font-black text-on-surface">142</p>
+<p class="text-sm font-medium text-outline">Cattle Registered</p>
+</div>
+<div>
+<span class="material-symbols-outlined text-primary-fixed-dim text-4xl mb-2">potted_plant</span>
+<p class="text-4xl font-headline font-black text-on-surface">318</p>
+<p class="text-sm font-medium text-outline">Goats Registered</p>
+</div>
+</div>
+</div>
+<!-- Decorative Element -->
+<div class="absolute -bottom-10 -right-10 opacity-5 group-hover:scale-110 transition-transform duration-700">
+<span class="material-symbols-outlined text-[200px]" style="font-variation-settings: 'wght' 700;">pets</span>
+</div>
+</div>
+<!-- Mustahik Count -->
+<div class="bg-surface-container-low p-8 rounded-xl flex flex-col justify-between">
+<div class="flex justify-between">
+<span class="material-symbols-outlined text-primary bg-primary-fixed p-2 rounded-lg" style="font-variation-settings: 'FILL' 1;">groups</span>
+<span class="text-secondary font-bold text-xs">+12 today</span>
+</div>
+<div>
+<p class="text-4xl font-headline font-black text-on-surface">2,840</p>
+<p class="text-sm font-medium text-outline">Verified Mustahik</p>
+</div>
+</div>
+<!-- Digital Coupons -->
+<div class="bg-primary p-8 rounded-xl flex flex-col justify-between relative overflow-hidden">
+<div class="flex justify-between relative z-10">
+<span class="material-symbols-outlined text-primary-fixed" style="font-variation-settings: 'FILL' 1;">confirmation_number</span>
+</div>
+<div class="relative z-10">
+<p class="text-4xl font-headline font-black text-white">85%</p>
+<p class="text-sm font-medium text-primary-fixed/80">Coupons Issued</p>
+</div>
+<!-- Subtle background pattern -->
+<div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 24px 24px;"></div>
+</div>
+</div>
+<!-- Content Split: Table & Quick Actions -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Left: Recent Entries Table -->
+<div class="lg:col-span-2 space-y-6">
+<div class="flex items-center justify-between">
+<h3 class="text-2xl font-headline font-extrabold text-on-surface">Recent Mustahik Entries</h3>
+<button class="text-primary font-bold text-sm flex items-center gap-1 hover:underline">
+                            View All <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low/50">
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-outline">Recipient Name</th>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-outline">Zone</th>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-outline">Category</th>
+<th class="px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-outline">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="hover:bg-surface-container/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-fixed-dim/20 flex items-center justify-center text-primary font-bold text-xs">AH</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Ahmad Hidayat</p>
+<p class="text-[10px] text-outline">ID: 1445-0021</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-on-surface-variant">Zone A-12</td>
+<td class="px-6 py-4">
+<span class="text-[10px] font-bold py-1 px-2 bg-surface-container text-on-surface-variant rounded">Miskin</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1.5">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary"></div>
+<span class="text-xs font-semibold text-secondary">Verified</span>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-fixed-dim/20 flex items-center justify-center text-primary font-bold text-xs">SM</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Siti Maryam</p>
+<p class="text-[10px] text-outline">ID: 1445-0024</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-on-surface-variant">Zone B-03</td>
+<td class="px-6 py-4">
+<span class="text-[10px] font-bold py-1 px-2 bg-surface-container text-on-surface-variant rounded">Fakir</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1.5">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary"></div>
+<span class="text-xs font-semibold text-secondary">Verified</span>
+</div>
+</td>
+</tr>
+<tr class="hover:bg-surface-container/30 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-fixed-dim/20 flex items-center justify-center text-primary font-bold text-xs">UZ</div>
+<div>
+<p class="text-sm font-bold text-on-surface">Umar Zulkarnain</p>
+<p class="text-[10px] text-outline">ID: 1445-0032</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-on-surface-variant">Zone A-08</td>
+<td class="px-6 py-4">
+<span class="text-[10px] font-bold py-1 px-2 bg-surface-container text-on-surface-variant rounded">Yatim</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1.5">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary-fixed-dim"></div>
+<span class="text-xs font-semibold text-on-secondary-fixed-variant">Pending Review</span>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Right: Meat Packaging Progress & Quick Action -->
+<div class="space-y-8">
+<!-- Progress Card -->
+<div class="bg-surface-container-low p-8 rounded-xl">
+<div class="flex justify-between items-center mb-8">
+<h3 class="font-headline font-bold text-lg text-on-surface">Meat Packaging</h3>
+<span class="text-primary font-bold text-xs">Phase 1</span>
+</div>
+<div class="space-y-6">
+<div>
+<div class="flex justify-between text-xs font-bold mb-2">
+<span class="text-outline uppercase">Cattle Portioning</span>
+<span class="text-primary">45%</span>
+</div>
+<div class="h-2 w-full bg-outline-variant/20 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-primary-container rounded-full" style="width: 45%;"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-xs font-bold mb-2">
+<span class="text-outline uppercase">Goat Portioning</span>
+<span class="text-primary">12%</span>
+</div>
+<div class="h-2 w-full bg-outline-variant/20 rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-primary-container rounded-full" style="width: 12%;"></div>
+</div>
+</div>
+<div class="pt-4 border-t border-outline-variant/20">
+<div class="flex items-center gap-3 text-tertiary">
+<span class="material-symbols-outlined text-lg">verified_user</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Halal Packaging Protocol Active</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Action Card -->
+<div class="bg-surface-container-lowest p-8 rounded-xl border-2 border-primary/5 shadow-xl shadow-primary/5 relative">
+<h3 class="font-headline font-extrabold text-xl mb-2 text-on-surface">Quick Action</h3>
+<p class="text-sm text-outline mb-6">Instantly generate and distribute encrypted digital coupons to verified recipients.</p>
+<button class="w-full py-4 bg-gradient-to-r from-primary to-primary-container text-white rounded-full font-headline font-bold text-sm shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all flex items-center justify-center gap-2 group">
+                            Generate Digital Coupons
+                            <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">bolt</span>
+</button>
+</div>
+<!-- Livestock Health Visual (Design Detail) -->
+<div class="relative rounded-xl overflow-hidden aspect-[4/3]">
+<img alt="Healthy livestock on green pasture" class="w-full h-full object-cover" data-alt="cinematic shot of high quality brown cattle grazing on lush emerald green pasture under soft morning mist" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCspqBMMnsC8-nXy0DssYNjYIlJJMWifVJ7FyB8a99U3OrEOznKj3Iyj5-XZweJVQfA4rg3jDTwQ-sqocHSbrntQEogWYBdMMNeJiXUNGtsI2mci2Jjt3_9t8revNfvGS6L39ngjA88eRDFCfmZ63tqo2L9V3W27GgTxx5TlJyc0BOviIwjUmOjRdbIVUR9t9-DksAlBrgZyMAayTlE0i4h2qwDYS0Fx0pTmhkFyV_fTfhBZywkyaB9SeLwjtjLn4MiR38t0QHsWL8"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent flex flex-col justify-end p-6">
+<span class="text-primary-fixed text-[10px] font-bold uppercase tracking-widest mb-1">Livestock Health Status</span>
+<h4 class="text-white font-headline font-bold text-lg leading-tight">All herds cleared by local veterinary inspection.</h4>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Contextual FAB (Mobile Only) -->
+<button class="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center z-[100] active:scale-90 transition-transform">
+<span class="material-symbols-outlined">add</span>
+</button>
+</body></html>

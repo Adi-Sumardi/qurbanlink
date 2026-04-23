@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Secure Checkout | The Sacred Steward</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#00714d",
+                        "surface-variant": "#e0e3e5",
+                        "on-background": "#191c1e",
+                        "secondary-fixed-dim": "#4edea3",
+                        "surface-dim": "#d8dadc",
+                        "on-surface": "#191c1e",
+                        "on-secondary-fixed-variant": "#005236",
+                        "tertiary-fixed": "#ffdad6",
+                        "background": "#f7f9fb",
+                        "surface-container": "#eceef0",
+                        "secondary": "#006c49",
+                        "surface": "#f7f9fb",
+                        "surface-container-low": "#f2f4f6",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed": "#002113",
+                        "on-error-container": "#93000a",
+                        "tertiary": "#652925",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed": "#3b0908",
+                        "on-secondary": "#ffffff",
+                        "surface-container-high": "#e6e8ea",
+                        "on-tertiary": "#ffffff",
+                        "surface-tint": "#1b6b51",
+                        "primary-container": "#065f46",
+                        "inverse-surface": "#2d3133",
+                        "inverse-on-surface": "#eff1f3",
+                        "outline": "#6f7973",
+                        "error-container": "#ffdad6",
+                        "on-primary": "#ffffff",
+                        "secondary-container": "#6cf8bb",
+                        "on-primary-fixed": "#002116",
+                        "inverse-primary": "#8bd6b6",
+                        "outline-variant": "#bec9c2",
+                        "primary-fixed-dim": "#8bd6b6",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#a6f2d1",
+                        "on-surface-variant": "#3f4944",
+                        "on-primary-container": "#8bd6b7",
+                        "primary": "#004532",
+                        "on-tertiary-fixed-variant": "#73332f",
+                        "on-primary-fixed-variant": "#00513b",
+                        "on-tertiary-container": "#ffb4ad",
+                        "tertiary-fixed-dim": "#ffb3ac",
+                        "tertiary-container": "#823f3a",
+                        "surface-bright": "#f7f9fb",
+                        "secondary-fixed": "#6ffbbe"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Manrope', sans-serif; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col items-center justify-center p-4 md:p-8">
+<!-- Checkout Container (Asymmetric Layout) -->
+<main class="max-w-6xl w-full grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+<!-- Left Column: Branding & Summary (The Sanctuary Feel) -->
+<div class="md:col-span-5 space-y-8">
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-xl bg-primary-container flex items-center justify-center text-on-primary-container shadow-sm">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">mosque</span>
+</div>
+<div>
+<h1 class="text-2xl font-extrabold tracking-tight text-primary">The Sacred Steward</h1>
+<p class="text-sm font-medium text-outline">Management for Masjid Al-Ikhlas</p>
+</div>
+</div>
+<div class="pt-8">
+<h2 class="text-3xl font-bold text-on-surface leading-tight">Complete your <br/><span class="text-primary">Premium Tier</span> activation</h2>
+<p class="mt-4 text-on-surface-variant max-w-sm">Join the ecosystem of responsible stewardship with our full logistics and inventory suite.</p>
+</div>
+</div>
+<!-- Order Summary Card -->
+<div class="bg-surface-container-low p-8 rounded-xl space-y-6 relative overflow-hidden">
+<!-- Subtle Gradient Glow -->
+<div class="absolute -top-24 -right-24 w-48 h-48 bg-primary-fixed-dim/20 blur-3xl rounded-full"></div>
+<div class="flex justify-between items-start border-b border-outline-variant/15 pb-6">
+<div>
+<p class="text-xs font-bold uppercase tracking-widest text-outline mb-1">PLAN DETAILS</p>
+<h3 class="text-lg font-bold text-on-surface">Annual SaaS Subscription</h3>
+<p class="text-sm text-on-surface-variant">Full Inventory + Distribution Tools</p>
+</div>
+<p class="text-lg font-bold text-primary">Rp 4.500.000</p>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Service Fee</span>
+<span class="text-on-surface">Rp 5.000</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Tax (VAT 11%)</span>
+<span class="text-on-surface">Rp 495.000</span>
+</div>
+</div>
+<div class="pt-6 border-t border-outline-variant/15 flex justify-between items-end">
+<div>
+<p class="text-xs font-bold uppercase tracking-widest text-outline">TOTAL AMOUNT</p>
+<p class="text-3xl font-extrabold text-primary">Rp 5.000.000</p>
+</div>
+<span class="text-xs bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-bold">ANNUAL</span>
+</div>
+</div>
+<!-- Trust Badge -->
+<div class="flex items-center gap-4 p-4 bg-surface-container-lowest rounded-lg border border-outline-variant/10">
+<span class="material-symbols-outlined text-primary">verified_user</span>
+<p class="text-xs text-on-surface-variant">Your transaction is encrypted and secured by <strong>Midtrans</strong>. No credit card data is stored on our servers.</p>
+</div>
+</div>
+<!-- Right Column: Midtrans Gateway (Bento Grid of Payment Options) -->
+<div class="md:col-span-7 bg-surface-container-lowest rounded-xl shadow-sm overflow-hidden flex flex-col">
+<!-- Header of Gateway -->
+<div class="p-6 bg-surface-container border-b border-outline-variant/15 flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="text-sm font-bold text-on-surface">Choose Payment Method</span>
+</div>
+<div class="flex items-center gap-2 opacity-60">
+<span class="text-[10px] font-bold uppercase tracking-tighter">SECURED BY</span>
+<img alt="Midtrans" class="h-4 grayscale hover:grayscale-0 transition-all" data-alt="Official Midtrans payment gateway logo in minimalist style with deep blue and gold tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFG6RAvlfgdqOWzQhi9ukA_rViFvbd_lkWYTZM9F99w_KeZa6A0X4rUyaR8HdLTnt3GE9TsLhOt8V3RkrMeaHFOhZqSQgo8xvgIld_ZS_VI6YFoczlYwK1AInr14PCTSmm2IgST9lYTImpJluapE8eIN2cNR5lLWaZOdBBekOLADCmzluG6HbPLBqva2JFOzV6DTuDjZKmWH3mZEY0WceYMNOJXy9vKStn0yfOticN_soGrn9NnyydYzLnp-hCBqjgpS1ZfZX72P8"/>
+</div>
+</div>
+<!-- Payment Methods Bento -->
+<div class="p-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Virtual Account -->
+<button class="flex items-center gap-4 p-5 rounded-xl bg-surface-container-low hover:bg-primary-container hover:text-on-primary-container group transition-all text-left">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center group-hover:bg-primary-fixed-dim">
+<span class="material-symbols-outlined text-primary group-hover:text-primary">account_balance</span>
+</div>
+<div>
+<p class="text-sm font-bold">Virtual Account</p>
+<p class="text-xs opacity-70">BCA, Mandiri, BNI, BRI</p>
+</div>
+</button>
+<!-- Credit Card -->
+<button class="flex items-center gap-4 p-5 rounded-xl bg-surface-container-low hover:bg-primary-container hover:text-on-primary-container group transition-all text-left">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center group-hover:bg-primary-fixed-dim">
+<span class="material-symbols-outlined text-primary group-hover:text-primary">credit_card</span>
+</div>
+<div>
+<p class="text-sm font-bold">Credit / Debit Card</p>
+<p class="text-xs opacity-70">Visa, Mastercard, JCB</p>
+</div>
+</button>
+<!-- QRIS / E-Wallet -->
+<button class="md:col-span-2 flex items-center justify-between p-5 rounded-xl bg-primary-fixed/30 border border-primary-fixed-dim/50 hover:bg-primary-fixed/50 transition-all text-left">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">qr_code_2</span>
+</div>
+<div>
+<p class="text-sm font-bold text-on-primary-fixed">QRIS &amp; E-Wallets</p>
+<p class="text-xs text-on-primary-fixed-variant">Gopay, ShopeePay, OVO, Dana</p>
+</div>
+</div>
+<div class="flex items-center -space-x-2">
+<div class="w-8 h-8 rounded-full bg-white p-1 border border-surface-container shadow-sm flex items-center justify-center">
+<img alt="Gopay" class="h-2" data-alt="Gopay logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0xFS6158f41FTNbdgaIwoHSYywPqP8XFrVnViFnxZkuFzJ81rKDfHjXmsWoGv192YloY1p4i_H3fxIF2raIMnPj9l6TQMf_d6t65ChfDryCrLY7TKA0eUeU6_4B0u6x_Vd6qibzY-zaB6joyJ44_8mtxllxa2ciuHcMdCgPaj_A2TK5bVZE8VD973-ieAJCftX4r6bj2a6VUGe21faTq8-_LBPazou0jiBE0whne_Mn3eCba4KQa7DsVF_Q8p2Xe-J5W5roDbBoI"/>
+</div>
+<div class="w-8 h-8 rounded-full bg-white p-1 border border-surface-container shadow-sm flex items-center justify-center">
+<img alt="ShopeePay" class="h-2" data-alt="ShopeePay logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAQPXMptpCAueYxGYk2cPwRuikbO4AXn0yTqrtELG_ev55m7fPmaWN5oeI9xDv0Gm7qS2HCoqtRkGPb-VCQIys0WD3axH3WAs6Q7l7yx68Zm3nf4f8jQYhP6Z7XGVy1JtyCd5QEtb_O05YDBznjqwHkQWuEB-3ClLh8fw-liMl80qpCJ5GFgEO-GfHdfryvZGyC2j_azS1FwgCN3skij0Vj38hCHtaJAhdhYisdOMKsfebr2VKaMe0TkQTqIicoBeOcqdKRgiWoDcw"/>
+</div>
+</div>
+</button>
+<!-- Retail Outlets -->
+<button class="flex items-center gap-4 p-5 rounded-xl bg-surface-container-low hover:bg-primary-container hover:text-on-primary-container group transition-all text-left">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center group-hover:bg-primary-fixed-dim">
+<span class="material-symbols-outlined text-primary group-hover:text-primary">storefront</span>
+</div>
+<div>
+<p class="text-sm font-bold">Retail Outlets</p>
+<p class="text-xs opacity-70">Indomaret, Alfamart</p>
+</div>
+</button>
+<!-- Bank Transfer -->
+<button class="flex items-center gap-4 p-5 rounded-xl bg-surface-container-low hover:bg-primary-container hover:text-on-primary-container group transition-all text-left">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center group-hover:bg-primary-fixed-dim">
+<span class="material-symbols-outlined text-primary group-hover:text-primary">payments</span>
+</div>
+<div>
+<p class="text-sm font-bold">Other Transfer</p>
+<p class="text-xs opacity-70">ATM Bersama, Alto</p>
+</div>
+</button>
+</div>
+<!-- Action Area -->
+<div class="p-8 mt-auto border-t border-outline-variant/15 bg-surface-container-low/50">
+<button class="w-full bg-gradient-to-r from-primary to-primary-container text-on-primary py-4 rounded-full font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2">
+                    Proceed to Payment
+                    <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<div class="mt-6 flex justify-center items-center gap-6">
+<div class="flex items-center gap-1.5 grayscale opacity-50">
+<span class="material-symbols-outlined text-base">lock</span>
+<span class="text-[10px] font-bold uppercase tracking-widest">PCI DSS Compliant</span>
+</div>
+<div class="flex items-center gap-1.5 grayscale opacity-50">
+<span class="material-symbols-outlined text-base">verified</span>
+<span class="text-[10px] font-bold uppercase tracking-widest">Verified Merchant</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Background Decorative Elements -->
+<div class="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none overflow-hidden">
+<div class="absolute -top-1/4 -left-1/4 w-1/2 h-1/2 bg-primary-fixed/10 blur-[120px] rounded-full"></div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,rgba(0,69,50,0.02)_0%,transparent_70%)]"></div>
+<div class="absolute -bottom-1/4 -right-1/4 w-1/2 h-1/2 bg-secondary-fixed/10 blur-[120px] rounded-full"></div>
+</div>
+<!-- Footer Meta -->
+<footer class="mt-12 text-center">
+<p class="text-xs text-outline font-medium">© 2024 The Sacred Steward. All rights reserved.</p>
+<div class="flex gap-4 justify-center mt-2">
+<a class="text-[10px] text-outline hover:text-primary transition-colors uppercase tracking-widest font-bold" href="#">Terms of Service</a>
+<a class="text-[10px] text-outline hover:text-primary transition-colors uppercase tracking-widest font-bold" href="#">Privacy Policy</a>
+</div>
+</footer>
+</body></html>
