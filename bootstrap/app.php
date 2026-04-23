@@ -27,6 +27,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'sanitize'          => \App\Http\Middleware\SanitizeInput::class,
         ]);
 
+        // CORS must run before any other middleware so preflight OPTIONS requests are handled
+        $middleware->prependToGroup('api', \Illuminate\Http\Middleware\HandleCors::class);
+
         // Apply globally to all API requests
         $middleware->appendToGroup('api', [
             \App\Http\Middleware\SecurityHeaders::class,

@@ -166,11 +166,13 @@ class ProcessScanActionTest extends TestCase
     {
         EventFacade::fake([CouponScanned::class]);
 
-        $coupon = $this->createCouponWithQr(CouponStatus::Generated, 'QRB-000010');
+        // Generate a valid coupon number (charset excludes 0/1/O/I/L — 'QRB-000010' would fail)
+        $couponNumber = $this->qrCodeService->generateCouponNumber('QRB', $this->event->id);
+        $coupon = $this->createCouponWithQr(CouponStatus::Generated, $couponNumber);
 
         $result = $this->action->execute($this->event, $this->user, [
             'method' => 'manual',
-            'coupon_number' => 'QRB-000010',
+            'coupon_number' => $couponNumber,
         ]);
 
         $this->assertEquals(ScanResult::Success, $result['result']);
