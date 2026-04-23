@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import {
   CreditCard,
   Loader2,
@@ -19,6 +20,9 @@ import {
   RefreshCw,
   Zap,
   PlayCircle,
+  Plus,
+  Minus,
+  Ticket,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -42,6 +46,7 @@ import {
 import { subscriptionService } from '@/services/subscription.service';
 import type { SubscriptionPlanInfo } from '@/services/subscription.service';
 import { usePayment } from '@/hooks/use-payment';
+import { useMidtransSnap } from '@/hooks/use-midtrans';
 import { formatCurrency, formatDate, formatNumber } from '@/lib/format';
 import {
   SUBSCRIPTION_PLAN_LABELS,
@@ -93,8 +98,13 @@ export default function SubscriptionPage() {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const [showPlans, setShowPlans] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlanInfo | null>(null);
-
   const [resumingId, setResumingId] = useState<string | null>(null);
+  const [topupOpen, setTopupOpen] = useState(false);
+  const [topupQty, setTopupQty] = useState(10);
+  const [topupLoading, setTopupLoading] = useState(false);
+
+  const qc = useQueryClient();
+  const { openSnap } = useMidtransSnap();
 
   const { pay, resumePayment, isBusy, isCreating } = usePayment({
     onClosed: () => {
@@ -204,6 +214,35 @@ export default function SubscriptionPage() {
     setSelectedPlan(null);
 
     await pay(plan.slug, billingCycle);
+  }
+
+  async function handleTopup() {
+    setTopupLoading(true);
+    try {
+      const res = await subscriptionService.couponTopup(topupQty);
+      const result = res.data;
+      setTopupOpen(false);
+      if (result?.snap_token) {
+        openSnap(result.snap_token, {
+          onSuccess: () => {
+            toast.success(`${topupQty} kupon berhasil ditambahkan!`);
+            qc.invalidateQueries({ queryKey: ['subscription'] });
+          },
+          onPending: () => {
+            toast.info('Pembayaran top-up sedang diproses.');
+            qc.invalidateQueries({ queryKey: ['subscription'] });
+          },
+          onError: () => toast.error('Pembayaran top-up gagal.'),
+          onClose: () => toast.info('Jendela pembayaran ditutup.'),
+        });
+      } else if (result?.payment_url) {
+        window.open(result.payment_url, '_blank', 'noopener,noreferrer');
+      }
+    } catch {
+      toast.error('Gagal membuat sesi pembayaran top-up.');
+    } finally {
+      setTopupLoading(false);
+    }
   }
 
   function handleDownloadInvoice(payment: Payment) {
@@ -384,7 +423,20 @@ export default function SubscriptionPage() {
             {/* Coupon Quota */}
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <span className="font-medium text-[#3f4944]">Kuota Kupon</span>
+                <div className="flex items-center gap-2">
+                  <span className="font-medium text-[#3f4944]">Kuota Kupon</span>
+                  {sub && sub.plan !== 'free' && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-6 gap-1 px-2 text-[10px] font-semibold text-[#004532] border-[#004532]/30 hover:bg-[#004532]/5"
+                      onClick={() => { setTopupQty(10); setTopupOpen(true); }}
+                    >
+                      <Plus className="size-3" />
+                      Top-up
+                    </Button>
+                  )}
+                </div>
                 <span className="font-bold text-[#191c1e]">
                   {quotaUsed.toLocaleString('id-ID')} / {quotaTotal.toLocaleString('id-ID')}
                   <span className="ml-1.5 text-xs font-normal text-muted-foreground">
@@ -481,7 +533,11 @@ export default function SubscriptionPage() {
                       {payment.invoice_number}
                     </TableCell>
                     <TableCell className="capitalize text-sm text-muted-foreground">
-                      {payment.payment_type === 'subscription' ? 'Langganan' : payment.payment_type}
+                      {payment.payment_type === 'subscription'
+                        ? 'Langganan'
+                        : payment.payment_type === 'addon_coupon'
+                        ? 'Top-up Kupon'
+                        : payment.payment_type}
                     </TableCell>
                     <TableCell className="font-semibold text-[#191c1e]">
                       {formatCurrency(payment.amount)}
@@ -754,6 +810,89 @@ export default function SubscriptionPage() {
                 Pilih paket di atas untuk melanjutkan pembayaran
               </p>
             )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* ─── Coupon Top-up Dialog ───────────────────────────────── */}
+      <Dialog open={topupOpen} onOpenChange={setTopupOpen}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Ticket className="size-5 text-[#004532]" />
+              Top-up Kupon
+            </DialogTitle>
+            <DialogDescription>
+              Tambah kuota kupon Rp 1.000 per kupon, minimal 10 kupon.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-5 py-2">
+            {/* Quantity stepper */}
+            <div className="flex items-center justify-center gap-4">
+              <Button
+                variant="outline"
+                size="icon"
+                className="size-10 rounded-full"
+                onClick={() => setTopupQty((q) => Math.max(10, q - 10))}
+                disabled={topupQty <= 10}
+              >
+                <Minus className="size-4" />
+              </Button>
+              <div className="text-center">
+                <p className="text-3xl font-bold text-[#191c1e]">{topupQty}</p>
+                <p className="text-xs text-muted-foreground">kupon</p>
+              </div>
+              <Button
+                variant="outline"
+                size="icon"
+                className="size-10 rounded-full"
+                onClick={() => setTopupQty((q) => Math.min(10000, q + 10))}
+              >
+                <Plus className="size-4" />
+              </Button>
+            </div>
+
+            {/* Quick amount buttons */}
+            <div className="flex flex-wrap justify-center gap-2">
+              {[10, 50, 100, 250, 500].map((qty) => (
+                <button
+                  key={qty}
+                  onClick={() => setTopupQty(qty)}
+                  className={`rounded-full px-3 py-1 text-xs font-semibold transition-all ${
+                    topupQty === qty
+                      ? 'bg-[#004532] text-white'
+                      : 'bg-[#f2f4f6] text-[#3f4944] hover:bg-[#eceef0]'
+                  }`}
+                >
+                  {qty}
+                </button>
+              ))}
+            </div>
+
+            {/* Price summary */}
+            <div className="rounded-xl bg-[#f2f4f6] px-4 py-3 text-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">{topupQty} kupon × Rp 1.000</span>
+                <span className="font-bold text-[#191c1e]">
+                  {(topupQty * 1000).toLocaleString('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 })}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex gap-2">
+            <Button variant="outline" className="flex-1" onClick={() => setTopupOpen(false)}>
+              Batal
+            </Button>
+            <Button
+              className="flex-1 btn-gradient"
+              onClick={handleTopup}
+              disabled={topupLoading}
+            >
+              {topupLoading ? <Loader2 className="size-4 animate-spin" /> : <Zap className="size-4" />}
+              Bayar Sekarang
+            </Button>
           </div>
         </DialogContent>
       </Dialog>

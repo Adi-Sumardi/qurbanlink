@@ -64,4 +64,13 @@ export const subscriptionService = {
     );
     return res.data;
   },
+
+  /** Create Midtrans Snap payment for coupon top-up. quantity must be multiple of 10. */
+  async couponTopup(quantity: number) {
+    const res = await api.post<ApiResponse<MidtransPaymentResult & { quantity: number }>>(
+      '/subscriptions/topup-coupon',
+      { quantity }
+    );
+    return res.data;
+  },
 };

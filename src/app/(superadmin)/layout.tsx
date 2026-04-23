@@ -9,6 +9,7 @@ import {
   TrendingUp,
   UserCog,
   Package,
+  ShieldCheck,
   LogOut,
   Menu,
 } from 'lucide-react';
@@ -26,6 +27,7 @@ const adminNav = [
   { title: 'Penghasilan SaaS', href: '/admin/revenue', icon: TrendingUp },
   { title: 'Akses Tenant Admin', href: '/admin/tenant-admins', icon: UserCog },
   { title: 'Kelola Paket', href: '/admin/plans', icon: Package },
+  { title: 'Role & Permission', href: '/admin/roles', icon: ShieldCheck },
 ];
 
 function SidebarNav({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {

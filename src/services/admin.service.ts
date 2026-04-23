@@ -8,6 +8,12 @@ import type {
   Payment,
 } from '@/types';
 
+export interface RoleWithPermissions {
+  id: number;
+  name: string;
+  permissions: string[];
+}
+
 interface AdminDashboard {
   total_tenants: number;
   total_events: number;
@@ -112,6 +118,34 @@ export const adminService = {
       '/admin/payments',
       { params }
     );
+    return res.data;
+  },
+
+  async getRoles() {
+    const res = await api.get<ApiResponse<RoleWithPermissions[]>>('/admin/roles');
+    return res.data;
+  },
+
+  async getPermissions() {
+    const res = await api.get<ApiResponse<string[]>>('/admin/permissions');
+    return res.data;
+  },
+
+  async updateRolePermissions(roleId: number, permissions: string[]) {
+    const res = await api.put<ApiResponse<RoleWithPermissions>>(
+      `/admin/roles/${roleId}/permissions`,
+      { permissions }
+    );
+    return res.data;
+  },
+
+  async createRole(name: string, permissions?: string[]) {
+    const res = await api.post<ApiResponse<RoleWithPermissions>>('/admin/roles', { name, permissions });
+    return res.data;
+  },
+
+  async deleteRole(roleId: number) {
+    const res = await api.delete<ApiResponse<null>>(`/admin/roles/${roleId}`);
     return res.data;
   },
 };
