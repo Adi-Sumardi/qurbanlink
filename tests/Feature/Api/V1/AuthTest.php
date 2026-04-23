@@ -23,14 +23,16 @@ class AuthTest extends TestCase
         Notification::fake();
 
         $payload = [
-            'name' => 'Ahmad Yusuf',
-            'email' => 'ahmad@example.com',
-            'password' => 'Password123!',
+            'name'              => 'Ahmad Yusuf',
+            'email'             => 'ahmad@example.com',
+            'password'          => 'Password123!',
             'password_confirmation' => 'Password123!',
             'organization_name' => 'Masjid Al-Ikhlas',
-            'phone' => '081234567890',
-            'city' => 'Jakarta',
-            'province' => 'DKI Jakarta',
+            'phone'             => '081234567890',
+            'city'              => 'Jakarta',
+            'province'          => 'DKI Jakarta',
+            'event_name'        => 'Idul Adha 1446H',
+            'event_date'        => now()->addDays(30)->toDateString(),
         ];
 
         $response = $this->postJson($this->apiUrl('auth/register'), $payload);
@@ -39,7 +41,7 @@ class AuthTest extends TestCase
             ->assertJsonStructure([
                 'success',
                 'message',
-                'data' => ['user', 'token'],
+                'data' => ['user', 'token', 'event_id'],
             ])
             ->assertJsonPath('success', true);
 
@@ -51,14 +53,20 @@ class AuthTest extends TestCase
         // User was created
         $this->assertDatabaseHas('users', [
             'email' => 'ahmad@example.com',
-            'name' => 'Ahmad Yusuf',
+            'name'  => 'Ahmad Yusuf',
         ]);
 
         // Subscription was created
         $user = User::where('email', 'ahmad@example.com')->first();
         $this->assertDatabaseHas('subscriptions', [
             'tenant_id' => $user->tenant_id,
-            'status' => 'active',
+            'status'    => 'active',
+        ]);
+
+        // Initial event was created
+        $this->assertDatabaseHas('events', [
+            'name'      => 'Idul Adha 1446H',
+            'tenant_id' => $user->tenant_id,
         ]);
     }
 
@@ -70,8 +78,8 @@ class AuthTest extends TestCase
             ->assertJsonPath('success', false)
             ->assertJsonStructure(['errors']);
 
-        // At minimum, name, email, password, organization_name are required
-        $response->assertJsonValidationErrors(['name', 'email', 'password', 'organization_name']);
+        // At minimum, name, email, password, organization_name, event_name, event_date are required
+        $response->assertJsonValidationErrors(['name', 'email', 'password', 'organization_name', 'event_name', 'event_date']);
     }
 
     public function test_register_duplicate_email(): void
@@ -85,11 +93,13 @@ class AuthTest extends TestCase
         ]);
 
         $payload = [
-            'name' => 'New User',
-            'email' => 'existing@example.com',
-            'password' => 'Password123!',
+            'name'                  => 'New User',
+            'email'                 => 'existing@example.com',
+            'password'              => 'Password123!',
             'password_confirmation' => 'Password123!',
-            'organization_name' => 'Masjid Baru',
+            'organization_name'     => 'Masjid Baru',
+            'event_name'            => 'Idul Adha 1446H',
+            'event_date'            => now()->addDays(30)->toDateString(),
         ];
 
         $response = $this->postJson($this->apiUrl('auth/register'), $payload);
