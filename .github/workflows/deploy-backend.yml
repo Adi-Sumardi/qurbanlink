@@ -19,13 +19,11 @@ jobs:
           script: |
             cd /var/www/qurbanlink-backend
             git pull origin backend
-
-            composer install --no-dev --optimize-autoloader --no-interaction
-            php artisan migrate --force
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
-            sudo systemctl reload php8.2-fpm
+            php8.4 /usr/local/bin/composer install --no-dev --optimize-autoloader --no-interaction
+            php8.4 artisan migrate --force
+            php8.4 artisan config:cache
+            php8.4 artisan route:cache
+            php8.4 artisan view:cache
+            sudo systemctl reload php8.4-fpm
             sudo supervisorctl restart kurban-worker:*
-
             echo "✅ Backend deployed"
