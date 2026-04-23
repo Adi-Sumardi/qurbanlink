@@ -39,6 +39,9 @@ export interface RegisterRequest {
   password_confirmation: string;
   organization_name: string;
   phone?: string;
+  event_name: string;
+  event_date: string;
+  event_description?: string;
 }
 
 export interface ForgotPasswordRequest {

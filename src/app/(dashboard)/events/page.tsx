@@ -8,7 +8,6 @@ import {
   Calendar,
   Eye,
   Pencil,
-  Plus,
 } from 'lucide-react';
 import { motion as m } from 'motion/react';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -21,7 +20,7 @@ import { EVENT_STATUS_LABELS, DEFAULT_PAGE_SIZE } from '@/lib/constants';
 import type { QueryParams } from '@/types';
 
 export default function EventsPage() {
-  const { isViewer, isOperator, canManageEvents } = usePermissions();
+  const { isViewer, isOperator } = usePermissions();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   const canEdit = mounted && !isViewer && !isOperator;
@@ -67,15 +66,6 @@ export default function EventsPage() {
             Kelola event distribusi kurban dan pantau progresnya
           </p>
         </div>
-        {mounted && canManageEvents && (
-          <Link
-            href="/events/new"
-            className="flex items-center gap-2 rounded-xl bg-[#004532] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#003826] hover:shadow-md"
-          >
-            <Plus className="size-4" />
-            Buat Event
-          </Link>
-        )}
       </div>
 
       {/* Table Card */}

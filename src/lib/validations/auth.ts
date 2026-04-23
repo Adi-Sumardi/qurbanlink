@@ -13,6 +13,9 @@ export const registerSchema = z
     phone: z.string().optional(),
     password: z.string().min(8, 'Password minimal 8 karakter'),
     password_confirmation: z.string().min(1, 'Konfirmasi password wajib diisi'),
+    event_name: z.string().min(3, 'Nama event minimal 3 karakter'),
+    event_date: z.string().min(1, 'Tanggal distribusi wajib diisi'),
+    event_description: z.string().optional(),
   })
   .refine((data) => data.password === data.password_confirmation, {
     message: 'Password tidak cocok',

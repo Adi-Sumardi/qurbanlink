@@ -28,7 +28,8 @@ export function useRegister() {
     mutationFn: (data: RegisterRequest) => authService.register(data),
     onSuccess: (response) => {
       setAuth(response.data.user, response.data.token);
-      router.replace('/dashboard');
+      const eventId = response.data.event_id;
+      router.replace(eventId ? `/events/${eventId}` : '/dashboard');
     },
   });
 }
