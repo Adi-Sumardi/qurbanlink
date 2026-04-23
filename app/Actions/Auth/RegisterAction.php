@@ -2,8 +2,10 @@
 
 namespace App\Actions\Auth;
 
+use App\Enums\EventStatus;
 use App\Enums\SubscriptionPlan;
 use App\Enums\SubscriptionStatus;
+use App\Models\Event;
 use App\Models\Subscription;
 use App\Models\Tenant;
 use App\Models\User;
@@ -55,9 +57,23 @@ class RegisterAction
                 'expires_at' => null,
             ]);
 
+            // Create the initial event chosen during registration
+            $event = Event::create([
+                'tenant_id'   => $tenant->id,
+                'created_by'  => $user->id,
+                'name'        => $data['event_name'],
+                'description' => $data['event_description'] ?? null,
+                'event_date'  => $data['event_date'],
+                'year'        => date('Y', strtotime($data['event_date'])),
+                'status'      => EventStatus::Draft,
+                'total_coupons' => 0,
+                'distributed'   => 0,
+            ]);
+
             return [
                 'tenant' => $tenant,
-                'user' => $user,
+                'user'   => $user,
+                'event'  => $event,
             ];
         });
     }

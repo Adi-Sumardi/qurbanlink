@@ -35,6 +35,9 @@ class AuthController extends Controller
             'phone'             => ['nullable', 'string', 'max:20'],
             'city'              => ['nullable', 'string', 'max:100'],
             'province'          => ['nullable', 'string', 'max:100'],
+            'event_name'        => ['required', 'string', 'max:255'],
+            'event_date'        => ['required', 'date', 'after_or_equal:today'],
+            'event_description' => ['nullable', 'string', 'max:1000'],
         ]);
 
         $result = $action->execute($data);
@@ -44,8 +47,9 @@ class AuthController extends Controller
         $result['user']->load(['tenant', 'roles', 'permissions']);
 
         return $this->created([
-            'user'  => new UserResource($result['user']),
-            'token' => $token,
+            'user'     => new UserResource($result['user']),
+            'token'    => $token,
+            'event_id' => $result['event']->id,
         ], 'Registration successful. Please verify your email.');
     }
 
