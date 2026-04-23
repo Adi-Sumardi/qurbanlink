@@ -8,7 +8,7 @@ return [
     'allowed_origins' => array_filter([
         'http://localhost:3000',
         'http://127.0.0.1:3000',
-        'https://app.tawzii.id',
+        'https://tawzii.id',
         env('FRONTEND_URL'),
     ]),
 
