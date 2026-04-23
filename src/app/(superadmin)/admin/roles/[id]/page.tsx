@@ -106,6 +106,13 @@ const PERMISSION_LABEL: Record<string, string> = {
   'manual-payment-activation': 'Aktivasi pembayaran manual',
 };
 
+const ROLE_LABELS: Record<string, string> = {
+  super_admin: 'Super Admin',
+  tenant_admin: 'Tenant Admin',
+  operator: 'Operator',
+  viewer: 'Viewer',
+};
+
 const SYSTEM_ROLES = ['super_admin', 'tenant_admin', 'operator', 'viewer'];
 
 export default function RoleDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -120,16 +127,38 @@ export default function RoleDetailPage({ params }: { params: Promise<{ id: strin
   const roles = (rolesData?.data as import('@/services/admin.service').RoleWithPermissions[] | undefined) ?? [];
   const role = roles.find((r) => String(r.id) === id);
 
+  // Normalize permissions — API returns string[] but handle edge cases
+  const rolePerms: string[] = role
+    ? Array.isArray(role.permissions)
+      ? (role.permissions as unknown[]).map((p) => (typeof p === 'string' ? p : (p as { name: string }).name))
+      : []
+    : [];
+
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [initialized, setInitialized] = useState(false);
 
   useEffect(() => {
-    if (role) setSelected(new Set(role.permissions));
-  }, [role]);
+    // Only init once when role loads — use role.id to avoid re-reinit on every render
+    if (role && !initialized) {
+      setSelected(new Set(rolePerms));
+      setInitialized(true);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [role?.id]);
 
   const saveMutation = useMutation({
     mutationFn: () => adminService.updateRolePermissions(Number(id), Array.from(selected)),
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ['admin', 'roles'] });
+    onSuccess: (data) => {
+      // Update the roles query data immediately with new permissions
+      qc.setQueryData(['admin', 'roles'], (old: typeof rolesData) => {
+        if (!old?.data) return old;
+        const updatedRoles = (old.data as import('@/services/admin.service').RoleWithPermissions[]).map((r) =>
+          String(r.id) === id
+            ? { ...r, permissions: Array.from(selected) }
+            : r
+        );
+        return { ...old, data: updatedRoles };
+      });
       toast.success('Permission berhasil disimpan');
     },
     onError: () => toast.error('Gagal menyimpan permission'),
@@ -153,8 +182,8 @@ export default function RoleDetailPage({ params }: { params: Promise<{ id: strin
   }
 
   const isSystem = role ? SYSTEM_ROLES.includes(role.name) : false;
-  const isDirty = role
-    ? JSON.stringify([...selected].sort()) !== JSON.stringify([...role.permissions].sort())
+  const isDirty = initialized && role
+    ? JSON.stringify([...selected].sort()) !== JSON.stringify([...rolePerms].sort())
     : false;
 
   if (isLoading) {
@@ -186,8 +215,15 @@ export default function RoleDetailPage({ params }: { params: Promise<{ id: strin
           </Link>
         </Button>
         <div className="flex-1">
-          <h1 className="text-xl font-bold">{role.name}</h1>
-          <p className="text-sm text-muted-foreground">{selected.size} permission aktif</p>
+          <h1 className="text-xl font-bold">{ROLE_LABELS[role.name] ?? role.name}</h1>
+          <p className="text-sm text-muted-foreground">
+            {selected.size} permission aktif
+            {isSystem && (
+              <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-yellow-100 px-2 py-0.5 text-[10px] font-bold text-yellow-700">
+                Role Sistem — bisa diedit permission-nya
+              </span>
+            )}
+          </p>
         </div>
         <Button
           onClick={() => saveMutation.mutate()}

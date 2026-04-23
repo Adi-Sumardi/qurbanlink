@@ -9,13 +9,17 @@ import {
   ArrowRight,
   QrCode,
   Zap,
-  CheckCircle,
   Eye,
   Truck,
   BarChart3,
-  Camera,
+  CheckCircle,
   FileText,
   Loader2,
+  XCircle,
+  AlertTriangle,
+  ScanLine,
+  Beef,
+  ClipboardList,
 } from 'lucide-react';
 import { motion as m, useInView } from 'motion/react';
 import { publicService } from '@/services/public.service';
@@ -260,7 +264,7 @@ function HeroSection() {
   );
 }
 
-// --- Bento Features Section ---
+// --- Features Section (Problem → Solution) ---
 
 function FeaturesSection() {
   const { ref, inView } = useSectionView();
@@ -268,6 +272,8 @@ function FeaturesSection() {
   return (
     <section id="fitur" className="bg-[#f2f4f6] py-32 px-6 lg:px-8" ref={ref}>
       <div className="mx-auto max-w-7xl">
+
+        {/* Header */}
         <m.div
           className="mb-20 text-center"
           initial="hidden"
@@ -275,132 +281,394 @@ function FeaturesSection() {
           variants={fadeUp}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="font-headline text-4xl font-extrabold text-[#004532] mb-4">
-            Distribusi Tepat Sasaran
+          <div className="inline-flex items-center gap-2 rounded-full bg-[#ffdad6] px-4 py-2 text-xs font-black tracking-widest uppercase text-[#652925] mb-6">
+            <AlertTriangle className="size-3" />
+            3 Masalah Fatal yang Selalu Berulang Setiap Idul Adha
+          </div>
+          <h2 className="font-headline text-4xl font-extrabold text-[#191c1e] mb-4 md:text-5xl">
+            Distribusi Kurban Tradisional{' '}
+            <span className="text-[#73332f]">Merusak Kepercayaan Warga.</span>
           </h2>
-          <p className="mx-auto max-w-2xl text-[#3f4944]">
-            Platform kami memastikan kemuliaan kurban Anda setara dengan keunggulan
-            sistem distribusi yang kami bangun.
+          <p className="mx-auto max-w-2xl text-[#3f4944] text-lg leading-relaxed">
+            Setiap tahun, cerita yang sama berulang. Ribut antrean, kupon palsu beredar, donatur kecewa — dan
+            nama baik panitia masjid jadi taruhannya.{' '}
+            <span className="font-bold text-[#004532]">Tawzii mengakhiri siklus ini sekali untuk selamanya.</span>
           </p>
         </m.div>
 
+        {/* Bento Grid */}
         <m.div
           className="grid grid-cols-1 gap-6 md:grid-cols-12"
           initial="hidden"
           animate={inView ? 'visible' : 'hidden'}
           variants={stagger}
         >
-          {/* Large: Mustahik Management */}
+
+          {/* ── Masalah 1: Distribusi Krodit ── */}
           <m.div
-            className="relative overflow-hidden rounded-3xl bg-white p-10 editorial-shadow md:col-span-8"
+            className="relative overflow-hidden rounded-3xl bg-white p-10 editorial-shadow md:col-span-7"
+            variants={fadeUp}
+            transition={{ duration: 0.5 }}
+          >
+            {/* Problem pill */}
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-[#ffdad6] px-3 py-1.5 text-xs font-bold text-[#652925]">
+              <XCircle className="size-3.5" />
+              Masalah #1 — Distribusi Krodit & Tidak Teratur
+            </div>
+
+            <div className="mb-6 flex size-14 items-center justify-center rounded-2xl bg-[#a6f2d1]">
+              <Users className="size-7 text-[#004532]" />
+            </div>
+
+            <h3 className="font-headline mb-3 text-2xl font-extrabold text-[#004532]">
+              Distribusi Per Zona — Tidak Ada Lagi Warga Berdesak-desakan
+            </h3>
+
+            <div className="mb-6 rounded-2xl border border-[#ffdad6] bg-[#fff5f5] px-4 py-3">
+              <p className="text-sm font-bold text-[#73332f] mb-1">⚠ Dampak nyata yang sering terjadi:</p>
+              <ul className="space-y-1">
+                {[
+                  'Warga lansia jatuh terinjak di kerumunan',
+                  'Panitia kewalahan, distribusi sampai larut malam',
+                  'Hewan kurban dibagi tidak merata — ada yang dapat banyak, ada yang tidak dapat sama sekali',
+                  'Foto viral di media sosial memalukan panitia masjid',
+                ].map((t) => (
+                  <li key={t} className="flex items-start gap-2 text-xs text-[#652925]">
+                    <span className="mt-0.5 shrink-0">•</span>
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <p className="max-w-md leading-relaxed text-[#3f4944] mb-8">
+              <span className="font-semibold text-[#004532]">Dengan Tawzii:</span>{' '}
+              Setiap penerima mendapat kupon digital berzona RT/RW dengan jadwal pengambilan tersendiri. Distribusi
+              terbagi rapi ke beberapa sesi. Tidak ada lagi antrean membeludak — panitia tinggal scan, warga dilayani tertib.
+            </p>
+
+            {/* Zone progress visual */}
+            <div className="space-y-3">
+              {[
+                { zone: 'RT 01 / RW 03 — Dusun Barat', done: 85, total: 85, time: '07.00 — 09.00' },
+                { zone: 'RT 04 / RW 02 — Dusun Timur', done: 96, total: 120, time: '09.00 — 11.00' },
+                { zone: 'RT 02 / RW 01 — Dusun Tengah', done: 42, total: 60, time: '11.00 — 13.00' },
+              ].map((z) => {
+                const pct = Math.round((z.done / z.total) * 100);
+                return (
+                  <div key={z.zone} className="rounded-xl bg-[#f2f4f6] px-4 py-3">
+                    <div className="mb-1 flex items-center justify-between">
+                      <span className="text-sm font-semibold text-[#191c1e]">{z.zone}</span>
+                      <span className={`text-xs font-bold ${pct === 100 ? 'text-[#004532]' : 'text-[#3f4944]/70'}`}>
+                        {pct === 100 ? '✓ Selesai' : `${pct}%`}
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-[#3f4944]/50 mb-2">Sesi: {z.time}</p>
+                    <div className="h-2 overflow-hidden rounded-full bg-[#e0e3e5]">
+                      <div className="h-full rounded-full bg-[#004532] transition-all" style={{ width: `${pct}%` }} />
+                    </div>
+                    <p className="mt-1.5 text-xs text-[#3f4944]/50">{z.done} dari {z.total} penerima terlayani</p>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* BG decoration */}
+            <div className="pointer-events-none absolute right-0 bottom-0 select-none opacity-[0.03] text-[280px] leading-none text-[#004532]">⬤</div>
+          </m.div>
+
+          {/* ── Masalah 2: Kupon Difotokopi ── */}
+          <m.div
+            className="relative overflow-hidden rounded-3xl bg-[#004532] p-10 editorial-shadow md:col-span-5"
             variants={fadeUp}
             transition={{ duration: 0.5 }}
           >
             <div className="relative z-10">
-              <div className="mb-6 flex size-14 items-center justify-center rounded-2xl bg-[#a6f2d1]">
-                <Users className="size-7 text-[#004532]" />
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-bold text-white/60">
+                <XCircle className="size-3.5" />
+                Masalah #2 — Kupon Kertas Dipalsukan
               </div>
-              <h3 className="font-headline mb-4 text-3xl font-extrabold text-[#004532]">
-                Manajemen Mustahik Mudah
+
+              <QrCode className="mb-6 size-10 text-[#6ffbbe]" />
+
+              <h3 className="font-headline mb-3 text-2xl font-extrabold text-white">
+                Kupon QR Unik Terenkripsi — Sekali Scan, Langsung Hangus Otomatis
               </h3>
-              <p className="max-w-md leading-relaxed text-[#3f4944]">
-                Profil penerima yang canggih mencegah duplikasi dan memastikan
-                distribusi yang adil ke seluruh jaringan komunitas Anda.
+
+              <div className="mb-5 rounded-2xl bg-red-900/30 border border-red-500/20 px-4 py-3">
+                <p className="text-xs font-bold text-red-300 mb-2">⚠ Realita di lapangan:</p>
+                <p className="text-xs text-red-200/70 leading-relaxed">
+                  Satu kupon kertas difotokopi jadi 10–20 lembar. Satu porsi hewan kurban diklaim puluhan orang.
+                  Panitia tidak bisa membedakan asli dari palsu — kerugian materi <span className="font-bold text-red-200">jutaan rupiah</span> per tahun.
+                </p>
+              </div>
+
+              <p className="leading-relaxed text-white/70 mb-8">
+                <span className="font-semibold text-[#6ffbbe]">Dengan Tawzii:</span>{' '}
+                Setiap kupon memiliki kode QR unik yang dienkripsi di server. Begitu di-scan — sistem langsung
+                menandai hangus dalam <span className="font-bold text-white">hitungan milidetik</span>. Tidak bisa dipindai dua kali,
+                tidak bisa dipalsukan, tidak bisa dimanipulasi.
               </p>
-            </div>
-            <div className="mt-8 flex gap-4 overflow-hidden">
-              {[
-                { zone: 'RT 04 / RW 02', pct: 80 },
-                { zone: 'RT 01 / RW 03', pct: 45 },
-              ].map((z) => (
-                <div key={z.zone} className="min-w-[200px] rounded-xl bg-[#f2f4f6] p-4">
-                  <div className="mb-3 flex items-center gap-3">
-                    <div className="size-8 rounded-full bg-[#6ffbbe]" />
-                    <span className="text-sm font-bold text-[#191c1e]">{z.zone}</span>
+
+              {/* Kupon status visual */}
+              <div className="space-y-3">
+                <div className="rounded-2xl bg-white/10 p-4 backdrop-blur-md">
+                  <div className="mb-2 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <ScanLine className="size-3.5 text-white/60" />
+                      <span className="text-xs font-bold tracking-widest uppercase text-white/60">Kupon Asli</span>
+                    </div>
+                    <span className="chip-active">AKTIF</span>
                   </div>
-                  <div className="h-2 overflow-hidden rounded-full bg-[#e0e3e5]">
-                    <div
-                      className="h-full rounded-full bg-[#004532]"
-                      style={{ width: `${z.pct}%` }}
-                    />
+                  <div className="font-mono text-sm tracking-tight text-white">#QRB-1446-X921·k8p2</div>
+                  <div className="mt-1.5 text-xs text-white/40">Ibu Aminah · RT 04/RW 02 · 1 porsi ✓ Belum diambil</div>
+                </div>
+
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4 opacity-70">
+                  <div className="mb-2 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <XCircle className="size-3.5 text-red-400" />
+                      <span className="text-xs font-bold tracking-widest uppercase text-red-300/70">Fotokopi Ditolak</span>
+                    </div>
+                    <span className="rounded-full bg-red-500/20 px-2 py-0.5 text-[10px] font-bold text-red-300">HANGUS</span>
+                  </div>
+                  <div className="font-mono text-sm tracking-tight text-white/30 line-through">#QRB-1446-X921·k8p2</div>
+                  <div className="mt-1.5 text-xs text-red-300/50">Sudah digunakan pukul 08:32 — otomatis ditolak, alarm berbunyi</div>
+                </div>
+              </div>
+            </div>
+
+            {/* BG glow */}
+            <div className="pointer-events-none absolute -right-16 -bottom-16 size-64 rounded-full bg-[#006c49]/30 blur-3xl" />
+          </m.div>
+
+          {/* ── Masalah 3: Transparansi Data Hewan ── */}
+          <m.div
+            className="relative overflow-hidden rounded-3xl bg-[#191c1e] p-10 editorial-shadow md:col-span-12"
+            variants={fadeUp}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-center">
+              {/* Text side */}
+              <div>
+                <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-bold text-white/50">
+                  <XCircle className="size-3.5" />
+                  Masalah #3 — Donatur Ditinggal dalam Ketidaktahuan
+                </div>
+
+                <div className="mb-6 flex size-14 items-center justify-center rounded-2xl bg-[#a6f2d1]">
+                  <Eye className="size-7 text-[#004532]" />
+                </div>
+
+                <h3 className="font-headline mb-3 text-2xl font-extrabold text-white md:text-3xl">
+                  Transparansi Penuh — Donatur Bisa Pantau Hewannya Real-time dari HP
+                </h3>
+
+                <div className="mb-5 rounded-2xl bg-white/5 border border-white/10 px-4 py-4">
+                  <p className="text-xs font-bold text-white/60 mb-2">💬 Pertanyaan donatur yang tidak terjawab:</p>
+                  <div className="space-y-2">
+                    {[
+                      '"Hewan saya sudah disembelih belum? Saya tidak dapat kabar apa-apa."',
+                      '"Katanya 7 porsi, tapi saya tidak tahu ke RT berapa saja dibaginya."',
+                      '"Salah satu penerima complain tidak dapat. Bagaimana membuktikannya?"',
+                    ].map((q) => (
+                      <p key={q} className="text-xs text-white/50 italic leading-relaxed">{q}</p>
+                    ))}
                   </div>
                 </div>
-              ))}
-            </div>
-            <div className="pointer-events-none absolute right-0 bottom-0 opacity-5 text-[300px] leading-none text-[#004532] select-none">
-              ⬤
-            </div>
-          </m.div>
 
-          {/* Dark: Digital Coupons */}
-          <m.div
-            className="relative overflow-hidden rounded-3xl bg-[#004532] p-10 editorial-shadow md:col-span-4"
-            variants={fadeUp}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="relative z-10">
-              <QrCode className="mb-6 size-10 text-[#6ffbbe]" />
-              <h3 className="font-headline mb-4 text-2xl font-extrabold text-white">
-                Kupon Digital
-              </h3>
-              <p className="leading-relaxed text-white/70">
-                Kupon digital berbasis QR yang aman menghilangkan antrean panjang
-                dan klaim palsu.
-              </p>
-            </div>
-            <div className="relative z-10 mt-8 rounded-2xl bg-white/10 p-6 backdrop-blur-md">
-              <div className="mb-4 flex items-center justify-between">
-                <span className="text-xs font-bold tracking-widest uppercase text-white/80">
-                  ID Kupon Digital
-                </span>
-                <span className="chip-active">AKTIF</span>
+                <p className="leading-relaxed text-white/60 mb-2">
+                  <span className="font-semibold text-[#6ffbbe]">Dengan Tawzii:</span>{' '}
+                  Setiap hewan kurban tercatat lengkap — jenis, berat, kondisi saat tiba, waktu penyembelihan, jumlah porsi,
+                  dan nama lengkap setiap penerima. Donatur bisa pantau status real-time dari HP kapan saja.
+                  Panitia punya laporan PDF yang bisa dipertanggungjawabkan.
+                </p>
+
+                {/* Stats row */}
+                <div className="mt-8 flex flex-wrap gap-4">
+                  {[
+                    { val: '100%', label: 'Setiap porsi terlacak' },
+                    { val: 'Real-time', label: 'Pantau dari HP donatur' },
+                    { val: 'PDF', label: 'Laporan resmi otomatis' },
+                    { val: '0', label: 'Klaim tanpa bukti lolos' },
+                  ].map((s) => (
+                    <div key={s.label} className="rounded-xl bg-white/8 border border-white/10 px-4 py-3 text-center min-w-[100px]">
+                      <p className="font-headline text-lg font-black text-[#6ffbbe]">{s.val}</p>
+                      <p className="text-xs text-white/40">{s.label}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="font-mono text-xl tracking-tighter text-white">
-                #QRB-2024-X921
+
+              {/* Hewan data cards */}
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                {[
+                  {
+                    no: '001',
+                    jenis: 'Sapi Limosin',
+                    berat: '320 kg',
+                    porsi: '24 porsi',
+                    done: 24,
+                    total: 24,
+                    donatur: 'H. Sulaiman Rasyid',
+                    icon: Beef,
+                    waktu: 'Disembelih 07:15',
+                  },
+                  {
+                    no: '002',
+                    jenis: 'Kambing Etawa',
+                    berat: '38 kg',
+                    porsi: '7 porsi',
+                    done: 5,
+                    total: 7,
+                    donatur: 'Ibu Rahayu Putri',
+                    icon: ClipboardList,
+                    waktu: 'Disembelih 08:42',
+                  },
+                  {
+                    no: '003',
+                    jenis: 'Sapi Brahman',
+                    berat: '290 kg',
+                    porsi: '21 porsi',
+                    done: 21,
+                    total: 21,
+                    donatur: 'Kel. Bapak Anwar',
+                    icon: Beef,
+                    waktu: 'Disembelih 07:58',
+                  },
+                  {
+                    no: '004',
+                    jenis: 'Domba Garut',
+                    berat: '42 kg',
+                    porsi: '8 porsi',
+                    done: 3,
+                    total: 8,
+                    donatur: 'Ibu Siti Maryam',
+                    icon: ClipboardList,
+                    waktu: 'Disembelih 09:10',
+                  },
+                ].map((h) => {
+                  const pct = Math.round((h.done / h.total) * 100);
+                  const done = pct === 100;
+                  return (
+                    <div key={h.no} className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                      <div className="mb-3 flex items-center justify-between">
+                        <span className="text-[10px] font-black tracking-widest uppercase text-white/30">
+                          Hewan #{h.no}
+                        </span>
+                        <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${done ? 'bg-[#6ffbbe]/20 text-[#6ffbbe]' : 'bg-yellow-400/15 text-yellow-300'}`}>
+                          {done ? '✓ Tersalurkan' : 'Dalam Proses'}
+                        </span>
+                      </div>
+                      <p className="font-headline text-base font-bold text-white mb-0.5">{h.jenis}</p>
+                      <p className="text-xs text-white/40 mb-0.5">{h.berat} · {h.porsi}</p>
+                      <p className="text-xs text-[#6ffbbe]/60 mb-1">{h.waktu}</p>
+                      <p className="text-xs text-white/30 mb-3 truncate">Donatur: {h.donatur}</p>
+                      <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
+                        <div
+                          className={`h-full rounded-full transition-all ${done ? 'bg-[#6ffbbe]' : 'bg-yellow-400'}`}
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                      <p className="mt-1.5 text-[10px] text-white/30">{h.done}/{h.total} porsi tersalurkan</p>
+                    </div>
+                  );
+                })}
               </div>
             </div>
-          </m.div>
 
-          {/* Small: Transparency */}
-          <m.div
-            className="flex items-start gap-6 rounded-3xl bg-white p-8 editorial-shadow md:col-span-6"
-            variants={fadeUp}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="flex size-16 shrink-0 items-center justify-center rounded-2xl bg-[#ffdad6]">
-              <Eye className="size-7 text-[#652925]" />
-            </div>
-            <div>
-              <h3 className="font-headline mb-2 text-xl font-extrabold text-[#004532]">
-                Transparansi Penuh
-              </h3>
-              <p className="text-sm leading-relaxed text-[#3f4944]">
-                Dasbor real-time untuk donatur memantau kurban mereka dari pemilihan
-                hewan hingga foto distribusi akhir.
-              </p>
-            </div>
-          </m.div>
-
-          {/* Small: Smart Logistics */}
-          <m.div
-            className="flex items-start gap-6 rounded-3xl bg-white p-8 editorial-shadow md:col-span-6"
-            variants={fadeUp}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="flex size-16 shrink-0 items-center justify-center rounded-2xl bg-[#8bd6b6]">
-              <Truck className="size-7 text-[#004532]" />
-            </div>
-            <div>
-              <h3 className="font-headline mb-2 text-xl font-extrabold text-[#004532]">
-                Logistik Cerdas
-              </h3>
-              <p className="text-sm leading-relaxed text-[#3f4944]">
-                Rute pengiriman daging yang dioptimalkan untuk memastikan kesegaran
-                maksimal dan kecepatan sampai ke penerima.
-              </p>
-            </div>
+            {/* BG glow */}
+            <div className="pointer-events-none absolute -left-20 -top-20 size-80 rounded-full bg-[#004532]/20 blur-[80px]" />
+            <div className="pointer-events-none absolute -right-20 -bottom-20 size-80 rounded-full bg-[#6ffbbe]/5 blur-[80px]" />
           </m.div>
         </m.div>
+
+        {/* ── Why Tawzii Strip ── */}
+        <m.div
+          className="mt-10 rounded-3xl bg-[#004532] p-10 editorial-shadow"
+          initial="hidden"
+          animate={inView ? 'visible' : 'hidden'}
+          variants={fadeUp}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <div className="mb-8 text-center">
+            <p className="text-xs font-black uppercase tracking-widest text-[#6ffbbe]/60 mb-2">Kenapa Pilih Tawzii?</p>
+            <h3 className="font-headline text-2xl font-extrabold text-white md:text-3xl">
+              Satu Platform. Semua yang Panitia Masjid Butuhkan.
+            </h3>
+          </div>
+          <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-6">
+            {[
+              { icon: QrCode, title: 'Kupon QR Anti-Palsu', desc: 'Setiap kupon unik & hangus otomatis setelah scan pertama' },
+              { icon: ScanLine, title: 'Scan Offline Tetap Jalan', desc: 'Internet putus? Scan tetap bisa. Data sync otomatis saat online' },
+              { icon: Truck, title: 'Distribusi Per Zona', desc: 'Warga dibagi per RT/RW/dusun dengan jadwal sesi terpisah' },
+              { icon: Eye, title: 'Donatur Bisa Pantau', desc: 'Dashboard transparan. Donatur lihat status hewan realtime' },
+              { icon: BarChart3, title: 'Laporan PDF Otomatis', desc: 'Laporan resmi siap cetak, tidak perlu input manual lagi' },
+              { icon: Shield, title: 'Data Aman & Terenkripsi', desc: 'Server Indonesia, backup otomatis, privasi data terjaga' },
+            ].map((f) => (
+              <div key={f.title} className="flex flex-col items-center text-center gap-3 p-4 rounded-2xl bg-white/5 border border-white/10">
+                <div className="flex size-10 items-center justify-center rounded-xl bg-[#6ffbbe]/15">
+                  <f.icon className="size-5 text-[#6ffbbe]" />
+                </div>
+                <div>
+                  <p className="font-headline text-sm font-bold text-white mb-1">{f.title}</p>
+                  <p className="text-xs text-white/40 leading-relaxed">{f.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </m.div>
+
+        {/* Bottom proof strip */}
+        <m.div
+          className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-3"
+          initial="hidden"
+          animate={inView ? 'visible' : 'hidden'}
+          variants={stagger}
+        >
+          {[
+            {
+              icon: Shield,
+              value: '0%',
+              label: 'Kupon palsu berhasil lolos verifikasi',
+              bg: 'bg-[#004532]',
+              valueColor: 'text-[#6ffbbe]',
+              labelColor: 'text-white/60',
+            },
+            {
+              icon: ScanLine,
+              value: '100%',
+              label: 'Setiap distribusi terverifikasi QR scan',
+              bg: 'bg-[#a6f2d1]',
+              valueColor: 'text-[#004532]',
+              labelColor: 'text-[#3f4944]',
+            },
+            {
+              icon: BarChart3,
+              value: 'Real-time',
+              label: 'Laporan hewan & penerima kurban tersedia',
+              bg: 'bg-white',
+              valueColor: 'text-[#004532]',
+              labelColor: 'text-[#3f4944]',
+            },
+          ].map((s) => (
+            <m.div
+              key={s.label}
+              className={`flex items-center gap-4 rounded-2xl ${s.bg} p-6 editorial-shadow`}
+              variants={fadeUp}
+              transition={{ duration: 0.4 }}
+            >
+              <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-black/5">
+                <s.icon className={`size-6 ${s.valueColor}`} />
+              </div>
+              <div>
+                <p className={`font-headline text-2xl font-black ${s.valueColor}`}>{s.value}</p>
+                <p className={`text-sm leading-tight ${s.labelColor}`}>{s.label}</p>
+              </div>
+            </m.div>
+          ))}
+        </m.div>
+
       </div>
     </section>
   );
@@ -413,19 +681,24 @@ function TransparencySection() {
 
   const items = [
     {
-      icon: CheckCircle,
-      title: 'Data Penerima Terverifikasi',
-      desc: 'Setiap mustahik diverifikasi melalui integrasi KTP nasional.',
-    },
-    {
-      icon: Camera,
-      title: 'Dokumentasi Bukti Foto',
-      desc: 'Unggahan foto otomatis untuk setiap paket yang diserahkan.',
+      icon: QrCode,
+      title: 'Scan QR Code — Verifikasi Instan',
+      desc: 'Setiap penerima diverifikasi dengan scan QR unik. Tidak ada yang bisa klaim dua kali. Proses cepat, akurat, dan bisa dilakukan offline.',
     },
     {
       icon: FileText,
-      title: 'Laporan Pasca-Event',
-      desc: 'Laporan PDF profesional instan untuk panitia masjid dan donatur.',
+      title: 'Export Laporan PDF & Excel Otomatis',
+      desc: 'Laporan distribusi lengkap — per penerima, per zona, per hewan — siap unduh kapan saja. Tidak perlu rekap manual.',
+    },
+    {
+      icon: BarChart3,
+      title: 'Live Dashboard Real-time',
+      desc: 'Pantau progres distribusi langsung dari layar. Berapa yang sudah klaim, berapa yang belum — semua terlihat jelas secara real-time.',
+    },
+    {
+      icon: Shield,
+      title: 'Hak Akses Berbasis Role',
+      desc: 'Kelola siapa yang bisa scan, input data, atau hanya melihat laporan. Panitia, operator lapangan, dan admin punya akses yang tepat.',
     },
   ];
 
@@ -441,8 +714,8 @@ function TransparencySection() {
             variants={stagger}
           >
             <m.div variants={fadeUp} transition={{ duration: 0.5 }}>
-              <div className="inline-block rounded-full bg-[#ffdad6] px-4 py-1 text-xs font-black uppercase tracking-widest text-[#652925]">
-                Jaminan Amanah
+              <div className="inline-block rounded-full bg-[#a6f2d1] px-4 py-1 text-xs font-black uppercase tracking-widest text-[#004532]">
+                Fitur Unggulan
               </div>
             </m.div>
             <m.h2
@@ -450,11 +723,20 @@ function TransparencySection() {
               variants={fadeUp}
               transition={{ duration: 0.6 }}
             >
-              Distribusi Langsung
+              Semua Alat yang{' '}
               <br />
-              <span className="italic text-[#73332f]">Dapat Diaudit.</span>
+              <span className="italic text-[#73332f]">Panitia Butuhkan.</span>
             </m.h2>
-            <m.div className="space-y-6" variants={stagger}>
+            <m.p
+              className="max-w-md text-lg leading-relaxed text-[#3f4944]"
+              variants={fadeUp}
+              transition={{ duration: 0.5 }}
+            >
+              Dari scan di lapangan hingga laporan akhir — Tawzii menyediakan semua
+              fitur yang dibutuhkan panitia masjid untuk mengelola distribusi kurban
+              secara profesional.
+            </m.p>
+            <m.div className="space-y-5" variants={stagger}>
               {items.map((item) => (
                 <m.div
                   key={item.title}
@@ -466,57 +748,83 @@ function TransparencySection() {
                     <item.icon className="size-5 text-[#004532]" />
                   </div>
                   <div>
-                    <p className="font-headline font-bold text-lg text-[#191c1e]">{item.title}</p>
-                    <p className="text-[#3f4944]">{item.desc}</p>
+                    <p className="font-headline font-bold text-base text-[#191c1e]">{item.title}</p>
+                    <p className="mt-0.5 text-sm leading-relaxed text-[#3f4944]">{item.desc}</p>
                   </div>
                 </m.div>
               ))}
             </m.div>
           </m.div>
 
-          {/* Right: Dashboard mockup */}
+          {/* Right: App mockup */}
           <m.div
-            className="relative flex-1"
+            className="relative w-full flex-1"
             initial={{ opacity: 0, x: 40 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.3 }}
           >
             <div className="pointer-events-none absolute -right-10 -top-10 -z-10 size-80 rounded-full bg-gradient-to-tr from-[#eceef0] to-white" />
-            <div className="overflow-hidden rounded-3xl bg-white editorial-shadow p-4">
+            <div className="overflow-hidden rounded-3xl bg-white editorial-shadow p-4 space-y-3">
+
+              {/* Live dashboard card */}
               <div className="rounded-2xl bg-[#004532] p-6">
                 <p className="mb-1 text-xs font-bold tracking-widest uppercase text-[#6ffbbe]">
-                  Data Distribusi Langsung
+                  Live Dashboard
                 </p>
-                <p className="font-headline text-2xl font-extrabold text-white mb-6">
-                  Progres Real-time
+                <p className="font-headline text-xl font-extrabold text-white mb-5">
+                  Progres Distribusi Real-time
                 </p>
-                <div className="flex h-32 items-end gap-2">
+                <div className="flex h-24 items-end gap-1.5">
                   {[40, 65, 80, 55, 90, 100, 85, 70, 50, 35, 20, 10].map((h, i) => (
                     <m.div
                       key={i}
-                      className="flex-1 rounded-t-sm bg-[#6ffbbe]/30"
+                      className="flex-1 rounded-t-sm bg-[#6ffbbe]/20"
                       initial={{ height: 0 }}
                       animate={inView ? { height: `${h}%` } : { height: 0 }}
                       transition={{ duration: 0.8, delay: 0.5 + i * 0.05 }}
                     >
-                      <div
-                        className="w-full rounded-t-sm bg-[#6ffbbe]"
-                        style={{ height: '60%' }}
-                      />
+                      <div className="w-full rounded-t-sm bg-[#6ffbbe]" style={{ height: '60%' }} />
                     </m.div>
                   ))}
                 </div>
-                <div className="mt-4 grid grid-cols-3 gap-3">
+                <div className="mt-4 grid grid-cols-3 gap-2">
                   {[
                     { label: 'Total Penerima', val: '2.840' },
                     { label: 'Terdistribusi', val: '2.180' },
-                    { label: 'Progress', val: '85%' },
+                    { label: 'Progress', val: '77%' },
                   ].map((s) => (
                     <div key={s.label} className="rounded-xl bg-white/10 p-3">
                       <p className="text-xs text-white/60">{s.label}</p>
                       <p className="font-headline text-lg font-bold text-white">{s.val}</p>
                     </div>
                   ))}
+                </div>
+              </div>
+
+              {/* QR Scan result card */}
+              <div className="flex items-center gap-4 rounded-2xl border border-[#e0e3e5] bg-[#f8faf8] px-4 py-3">
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#a6f2d1]">
+                  <QrCode className="size-5 text-[#004532]" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-bold text-[#004532]">✓ Scan Berhasil</p>
+                  <p className="truncate text-xs text-[#3f4944]/60">Bapak Suherman · RT 03/RW 01 · 1 porsi</p>
+                </div>
+                <span className="rounded-full bg-[#a6f2d1] px-2 py-0.5 text-[10px] font-black text-[#004532]">VALID</span>
+              </div>
+
+              {/* Export row */}
+              <div className="flex items-center gap-3 rounded-2xl border border-[#e0e3e5] bg-white px-4 py-3">
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#f2f4f6]">
+                  <FileText className="size-5 text-[#3f4944]" />
+                </div>
+                <div className="flex-1">
+                  <p className="text-xs font-bold text-[#191c1e]">Laporan Distribusi Idul Adha 1446H</p>
+                  <p className="text-[10px] text-[#3f4944]/50">2.180 penerima · PDF &amp; Excel tersedia</p>
+                </div>
+                <div className="flex gap-1.5">
+                  <span className="rounded-lg bg-red-50 px-2 py-1 text-[10px] font-bold text-red-600">PDF</span>
+                  <span className="rounded-lg bg-green-50 px-2 py-1 text-[10px] font-bold text-green-700">XLS</span>
                 </div>
               </div>
             </div>
@@ -527,6 +835,7 @@ function TransparencySection() {
   );
 }
 
+
 // --- Pricing Section ---
 
 
@@ -536,11 +845,15 @@ const FEATURE_LABELS: Record<string, string> = {
   live_dashboard: 'Live Dashboard',
   export_pdf: 'Export PDF',
   export_excel: 'Export Excel',
-  custom_branding: 'Custom Branding',
-  email_notifications: 'Notifikasi Email',
-  api_access: 'Akses API',
-  priority_support: 'Priority Support',
 };
+
+// Fitur yang tidak tersedia — tidak ditampilkan di kartu harga
+const HIDDEN_FEATURES = new Set([
+  'custom_branding',
+  'email_notifications',
+  'api_access',
+  'priority_support',
+]);
 
 const POPULAR_PLAN = 'professional';
 
@@ -605,8 +918,8 @@ function PricingSection() {
             {plans.map((plan) => {
               const isPopular = plan.slug === POPULAR_PLAN;
               const features = plan.features ?? {};
-              const enabledFeatures = Object.entries(features).filter(([, v]) => v);
-              const disabledFeatures = Object.entries(features).filter(([, v]) => !v);
+              const enabledFeatures = Object.entries(features).filter(([k, v]) => v && !HIDDEN_FEATURES.has(k));
+              const disabledFeatures = Object.entries(features).filter(([k, v]) => !v && !HIDDEN_FEATURES.has(k));
 
               return (
                 <m.div

@@ -60,7 +60,8 @@ function SidebarNav({ pathname, onNavigate }: { pathname: string; onNavigate?: (
             onClick={onNavigate}
             className={cn(
               'flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-colors',
-              pathname === item.href
+              // /admin is exact-match only; all other nav items use startsWith
+              (item.href === '/admin' ? pathname === item.href : pathname.startsWith(item.href))
                 ? 'bg-primary/10 font-medium text-primary'
                 : 'text-muted-foreground hover:bg-accent hover:text-foreground'
             )}

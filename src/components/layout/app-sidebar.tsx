@@ -17,6 +17,9 @@ import {
   CreditCard,
   HelpCircle,
   LogOut,
+  HeartHandshake,
+  MapPin,
+  FileBarChart2,
 } from 'lucide-react';
 import { usePermissions } from '@/hooks/use-permissions';
 import { useEventStore } from '@/stores/event.store';
@@ -30,24 +33,26 @@ const mainNav = [
 
 function getEventNav(eventId: string) {
   return [
+    { title: 'Donatur', href: `/events/${eventId}/donors`, icon: HeartHandshake, permission: 'view-donors' },
     { title: 'Penerima', href: `/events/${eventId}/recipients`, icon: UserCheck, permission: 'view-recipients' },
     { title: 'Hewan Kurban', href: `/events/${eventId}/animals`, icon: Beef, permission: 'view-animals' },
     { title: 'Distribusi', href: `/events/${eventId}/coupons`, icon: Ticket, permission: 'view-coupons' },
+    { title: 'Lokasi', href: `/events/${eventId}/locations`, icon: MapPin, permission: 'manage-locations' },
     { title: 'Scan QR', href: '/scan', icon: ScanLine, permission: 'scan-coupons' },
-    { title: 'Laporan', href: '/reports', icon: BarChart3, permission: 'view-reports' },
+    { title: 'Laporan', href: '/reports', icon: FileBarChart2, permission: 'view-reports' },
   ];
 }
 
 const settingsNav = [
   { title: 'Pengaturan', href: '/settings', icon: Settings, permission: 'edit-tenant-settings' },
   { title: 'Pengguna', href: '/users', icon: Shield, permission: 'manage-tenant-users' },
-  { title: 'Langganan', href: '/subscription', icon: CreditCard, permission: 'edit-tenant-settings' },
+  { title: 'Langganan', href: '/subscription', icon: CreditCard, permission: 'manage-subscription' },
 ];
 
 export function AppSidebar({ onNavigate }: { onNavigate?: () => void } = {}) {
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
-  const { hasPermission, isSuperAdmin, isViewer } = usePermissions();
+  const { hasPermission, isSuperAdmin, isTenantAdmin, isViewer } = usePermissions();
   const { activeEvent } = useEventStore();
   const logout = useLogout();
 
@@ -62,7 +67,11 @@ export function AppSidebar({ onNavigate }: { onNavigate?: () => void } = {}) {
 
   function canAccess(permission?: string) {
     if (!mounted || !permission) return true;
-    return isSuperAdmin || hasPermission(permission);
+    // Super admin bypasses all checks
+    if (isSuperAdmin) return true;
+    // Tenant admin has access to all tenant-level permissions by default
+    if (isTenantAdmin) return true;
+    return hasPermission(permission);
   }
 
   return (
@@ -91,7 +100,7 @@ export function AppSidebar({ onNavigate }: { onNavigate?: () => void } = {}) {
         ))}
 
         {/* Event Nav */}
-        {activeEvent && !isViewer && eventNav.length > 0 && (
+        {activeEvent && eventNav.filter((item) => canAccess(item.permission)).length > 0 && (
           <>
             <div className="px-3 pb-1 pt-5">
               <p className="text-[10px] font-black uppercase tracking-widest text-[#3f4944]/40">
@@ -101,6 +110,20 @@ export function AppSidebar({ onNavigate }: { onNavigate?: () => void } = {}) {
             {eventNav.filter((item) => canAccess(item.permission)).map((item) => (
               <NavItem key={item.href} item={item} active={isActive(item.href)} onClick={onNavigate} />
             ))}
+          </>
+        )}
+
+        {/* No active event hint for tenant admin */}
+        {!activeEvent && mounted && (isTenantAdmin || isSuperAdmin) && (
+          <>
+            <div className="px-3 pb-1 pt-5">
+              <p className="text-[10px] font-black uppercase tracking-widest text-[#3f4944]/40">
+                Event Aktif
+              </p>
+            </div>
+            <div className="mx-3 rounded-xl border border-dashed border-[#bec9c2]/40 px-3 py-3 text-center">
+              <p className="text-[10px] text-[#3f4944]/50">Pilih event untuk mengakses menu distribusi</p>
+            </div>
           </>
         )}
 
@@ -131,17 +154,19 @@ export function AppSidebar({ onNavigate }: { onNavigate?: () => void } = {}) {
         })()}
       </nav>
 
-      {/* Scan Kupon CTA */}
-      <div className="px-3 pb-4">
-        <Link
-          href="/scan"
-          onClick={onNavigate}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#004532] px-4 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#004532]/20 transition-all hover:bg-[#065f46] active:scale-95"
-        >
-          <ScanLine className="size-4" />
-          Scan Kupon
-        </Link>
-      </div>
+      {/* Scan Kupon CTA — hanya tampil jika punya akses scan */}
+      {mounted && canAccess('scan-coupons') && (
+        <div className="px-3 pb-4">
+          <Link
+            href="/scan"
+            onClick={onNavigate}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#004532] px-4 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#004532]/20 transition-all hover:bg-[#065f46] active:scale-95"
+          >
+            <ScanLine className="size-4" />
+            Scan Kupon
+          </Link>
+        </div>
+      )}
 
       {/* Footer */}
       <div className="border-t border-[rgba(190,201,194,0.2)] px-3 py-3 space-y-0.5">
