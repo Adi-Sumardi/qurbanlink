@@ -442,7 +442,7 @@ function FeaturesSection() {
             <div className="pointer-events-none absolute -right-16 -bottom-16 size-64 rounded-full bg-[#006c49]/30 blur-3xl" />
           </m.div>
 
-          {/* ── Masalah 3: Transparansi Data Hewan ── */}
+          {/* ── Masalah 3: Panitia Kewalahan Tanpa Data ── */}
           <m.div
             className="relative overflow-hidden rounded-3xl bg-[#191c1e] p-10 editorial-shadow md:col-span-12"
             variants={fadeUp}
@@ -453,24 +453,24 @@ function FeaturesSection() {
               <div>
                 <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1.5 text-xs font-bold text-white/50">
                   <XCircle className="size-3.5" />
-                  Masalah #3 — Donatur Ditinggal dalam Ketidaktahuan
+                  Masalah #3 — Panitia Kewalahan, Laporan Tidak Ada
                 </div>
 
                 <div className="mb-6 flex size-14 items-center justify-center rounded-2xl bg-[#a6f2d1]">
-                  <Eye className="size-7 text-[#004532]" />
+                  <ClipboardList className="size-7 text-[#004532]" />
                 </div>
 
                 <h3 className="font-headline mb-3 text-2xl font-extrabold text-white md:text-3xl">
-                  Transparansi Penuh — Donatur Bisa Pantau Hewannya Real-time dari HP
+                  Laporan Otomatis — Panitia Tidak Perlu Rekap Manual Lagi
                 </h3>
 
                 <div className="mb-5 rounded-2xl bg-white/5 border border-white/10 px-4 py-4">
-                  <p className="text-xs font-bold text-white/60 mb-2">💬 Pertanyaan donatur yang tidak terjawab:</p>
+                  <p className="text-xs font-bold text-white/60 mb-2">⚠ Keluhan panitia yang sering terjadi:</p>
                   <div className="space-y-2">
                     {[
-                      '"Hewan saya sudah disembelih belum? Saya tidak dapat kabar apa-apa."',
-                      '"Katanya 7 porsi, tapi saya tidak tahu ke RT berapa saja dibaginya."',
-                      '"Salah satu penerima complain tidak dapat. Bagaimana membuktikannya?"',
+                      '"Sampai jam 11 malam masih rekap data di Excel — besok Senin sudah harus laporan ke DKM."',
+                      '"Berapa total porsi yang sudah dibagi? Hitungan kami beda-beda karena catatannya manual."',
+                      '"Ketua takmir tanya bukti distribusi — kami tidak punya karena tidak sempat foto semua."',
                     ].map((q) => (
                       <p key={q} className="text-xs text-white/50 italic leading-relaxed">{q}</p>
                     ))}
@@ -479,18 +479,18 @@ function FeaturesSection() {
 
                 <p className="leading-relaxed text-white/60 mb-2">
                   <span className="font-semibold text-[#6ffbbe]">Dengan Tawzii:</span>{' '}
-                  Setiap hewan kurban tercatat lengkap — jenis, berat, kondisi saat tiba, waktu penyembelihan, jumlah porsi,
-                  dan nama lengkap setiap penerima. Donatur bisa pantau status real-time dari HP kapan saja.
-                  Panitia punya laporan PDF yang bisa dipertanggungjawabkan.
+                  Setiap scan kupon otomatis tercatat di sistem. Laporan distribusi per RT, per zona, dan per hewan
+                  langsung tersedia — bisa diunduh PDF atau Excel kapan saja tanpa perlu input manual satu pun.
+                  Panitia bisa fokus di lapangan, bukan di depan laptop.
                 </p>
 
                 {/* Stats row */}
                 <div className="mt-8 flex flex-wrap gap-4">
                   {[
-                    { val: '100%', label: 'Setiap porsi terlacak' },
-                    { val: 'Real-time', label: 'Pantau dari HP donatur' },
-                    { val: 'PDF', label: 'Laporan resmi otomatis' },
-                    { val: '0', label: 'Klaim tanpa bukti lolos' },
+                    { val: '0 menit', label: 'Waktu rekap manual' },
+                    { val: 'Otomatis', label: 'Laporan PDF & Excel' },
+                    { val: 'Real-time', label: 'Data terupdate tiap scan' },
+                    { val: '100%', label: 'Akurasi data terjamin' },
                   ].map((s) => (
                     <div key={s.label} className="rounded-xl bg-white/8 border border-white/10 px-4 py-3 text-center min-w-[100px]">
                       <p className="font-headline text-lg font-black text-[#6ffbbe]">{s.val}</p>
@@ -500,80 +500,53 @@ function FeaturesSection() {
                 </div>
               </div>
 
-              {/* Hewan data cards */}
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {[
-                  {
-                    no: '001',
-                    jenis: 'Sapi Limosin',
-                    berat: '320 kg',
-                    porsi: '24 porsi',
-                    done: 24,
-                    total: 24,
-                    donatur: 'H. Sulaiman Rasyid',
-                    icon: Beef,
-                    waktu: 'Disembelih 07:15',
-                  },
-                  {
-                    no: '002',
-                    jenis: 'Kambing Etawa',
-                    berat: '38 kg',
-                    porsi: '7 porsi',
-                    done: 5,
-                    total: 7,
-                    donatur: 'Ibu Rahayu Putri',
-                    icon: ClipboardList,
-                    waktu: 'Disembelih 08:42',
-                  },
-                  {
-                    no: '003',
-                    jenis: 'Sapi Brahman',
-                    berat: '290 kg',
-                    porsi: '21 porsi',
-                    done: 21,
-                    total: 21,
-                    donatur: 'Kel. Bapak Anwar',
-                    icon: Beef,
-                    waktu: 'Disembelih 07:58',
-                  },
-                  {
-                    no: '004',
-                    jenis: 'Domba Garut',
-                    berat: '42 kg',
-                    porsi: '8 porsi',
-                    done: 3,
-                    total: 8,
-                    donatur: 'Ibu Siti Maryam',
-                    icon: ClipboardList,
-                    waktu: 'Disembelih 09:10',
-                  },
-                ].map((h) => {
-                  const pct = Math.round((h.done / h.total) * 100);
-                  const done = pct === 100;
-                  return (
-                    <div key={h.no} className="rounded-2xl border border-white/10 bg-white/5 p-5">
-                      <div className="mb-3 flex items-center justify-between">
-                        <span className="text-[10px] font-black tracking-widest uppercase text-white/30">
-                          Hewan #{h.no}
-                        </span>
-                        <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${done ? 'bg-[#6ffbbe]/20 text-[#6ffbbe]' : 'bg-yellow-400/15 text-yellow-300'}`}>
-                          {done ? '✓ Tersalurkan' : 'Dalam Proses'}
-                        </span>
+              {/* Laporan & aktivitas cards */}
+              <div className="space-y-4">
+                {/* Rekap distribusi card */}
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                  <p className="text-[10px] font-black tracking-widest uppercase text-white/30 mb-3">Rekap Distribusi Hari Ini</p>
+                  <div className="space-y-3">
+                    {[
+                      { zona: 'RT 01–03 / Dusun Barat', total: 85, done: 85, warna: '#6ffbbe' },
+                      { zona: 'RT 04–06 / Dusun Timur', total: 120, done: 96, warna: '#6ffbbe' },
+                      { zona: 'RT 07–09 / Dusun Tengah', total: 60, done: 42, warna: '#facc15' },
+                    ].map((z) => {
+                      const pct = Math.round((z.done / z.total) * 100);
+                      return (
+                        <div key={z.zona}>
+                          <div className="flex justify-between mb-1">
+                            <span className="text-xs text-white/70">{z.zona}</span>
+                            <span className="text-xs font-bold" style={{ color: z.warna }}>{pct}%</span>
+                          </div>
+                          <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
+                            <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: z.warna }} />
+                          </div>
+                          <p className="text-[10px] text-white/30 mt-1">{z.done}/{z.total} penerima terlayani</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Export card */}
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                  <p className="text-[10px] font-black tracking-widest uppercase text-white/30 mb-3">Laporan Siap Unduh</p>
+                  <div className="space-y-2">
+                    {[
+                      { label: 'Laporan Distribusi Lengkap', sub: '265 penerima · semua zona', badge: 'PDF', badgeColor: 'bg-red-500/20 text-red-300' },
+                      { label: 'Rekap Per Hewan Kurban', sub: '8 hewan · total 265 porsi', badge: 'Excel', badgeColor: 'bg-green-500/20 text-green-300' },
+                      { label: 'Daftar Penerima Lengkap', sub: 'Nama, RT/RW, status kupon', badge: 'PDF', badgeColor: 'bg-red-500/20 text-red-300' },
+                    ].map((r) => (
+                      <div key={r.label} className="flex items-center justify-between gap-3 rounded-xl bg-white/5 px-4 py-2.5">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-semibold text-white truncate">{r.label}</p>
+                          <p className="text-[10px] text-white/30">{r.sub}</p>
+                        </div>
+                        <span className={`shrink-0 rounded-lg px-2 py-1 text-[10px] font-bold ${r.badgeColor}`}>{r.badge}</span>
                       </div>
-                      <p className="font-headline text-base font-bold text-white mb-0.5">{h.jenis}</p>
-                      <p className="text-xs text-white/40 mb-0.5">{h.berat} · {h.porsi}</p>
-                      <p className="text-xs text-[#6ffbbe]/60 mb-1">{h.waktu}</p>
-                      <p className="text-xs text-white/30 mb-3 truncate">Donatur: {h.donatur}</p>
-                      <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
-                        <div
-                          className={`h-full rounded-full transition-all ${done ? 'bg-[#6ffbbe]' : 'bg-yellow-400'}`}
-                          style={{ width: `${pct}%` }}
-                        />
-                      </div>
-                      <p className="mt-1.5 text-[10px] text-white/30">{h.done}/{h.total} porsi tersalurkan</p>
-                    </div>
-                  );
-                })}
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -597,12 +570,11 @@ function FeaturesSection() {
               Satu Platform. Semua yang Panitia Masjid Butuhkan.
             </h3>
           </div>
-          <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-6">
+          <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-5">
             {[
               { icon: QrCode, title: 'Kupon QR Anti-Palsu', desc: 'Setiap kupon unik & hangus otomatis setelah scan pertama' },
               { icon: ScanLine, title: 'Scan Offline Tetap Jalan', desc: 'Internet putus? Scan tetap bisa. Data sync otomatis saat online' },
               { icon: Truck, title: 'Distribusi Per Zona', desc: 'Warga dibagi per RT/RW/dusun dengan jadwal sesi terpisah' },
-              { icon: Eye, title: 'Donatur Bisa Pantau', desc: 'Dashboard transparan. Donatur lihat status hewan realtime' },
               { icon: BarChart3, title: 'Laporan PDF Otomatis', desc: 'Laporan resmi siap cetak, tidak perlu input manual lagi' },
               { icon: Shield, title: 'Data Aman & Terenkripsi', desc: 'Server Indonesia, backup otomatis, privasi data terjaga' },
             ].map((f) => (
@@ -892,12 +864,21 @@ function PricingSection() {
             Pilih paket yang sesuai dengan ukuran dan kebutuhan distribusi masjid Anda.
             Semua paket termasuk dukungan prioritas 24/7.
           </p>
-          <div className="flex items-center justify-center gap-3 pt-2">
-            <BarChart3 className="size-4 text-[#3f4944]/50" />
-            <span className="text-xs font-bold uppercase tracking-widest text-[#3f4944]/60">
-              Pembayaran Aman via Midtrans
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-3">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#e6e8ea] px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-[#3f4944]/70">
+              <span>🔒</span> Pembayaran Aman via Midtrans
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#d4f5e9] px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-[#004532]">
+              <span>📱</span> QRIS & E-Wallet
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#d4f5e9] px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-[#004532]">
+              <span>🏦</span> Virtual Account
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#d4f5e9] px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-[#004532]">
+              <span>💳</span> Transfer Bank
             </span>
           </div>
+          <p className="text-xs text-[#3f4944]/50 mt-2">Bayar pakai QRIS, GoPay, OVO, DANA, atau transfer bank — semua bisa</p>
         </m.div>
 
         {isLoading ? (
@@ -946,6 +927,15 @@ function PricingSection() {
                     <p className={`text-sm ${isPopular ? 'text-white/70' : 'text-[#3f4944]'}`}>
                       {formatNumber(plan.coupon_quota)} kupon per periode
                     </p>
+                    {/* Label top-up khusus paket Professional */}
+                    {isPopular && (
+                      <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-[#6ffbbe]/20 border border-[#6ffbbe]/40 px-3 py-1.5">
+                        <span className="text-[11px]">⚡</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-[#6ffbbe]">
+                          Bisa Top-up Kupon Tambahan
+                        </span>
+                      </div>
+                    )}
                     <div className="mt-4 flex items-baseline gap-1">
                       {plan.price_monthly === 0 ? (
                         <span className={`font-headline text-4xl font-black ${isPopular ? 'text-white' : 'text-[#004532]'}`}>

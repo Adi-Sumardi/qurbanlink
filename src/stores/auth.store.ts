@@ -6,6 +6,7 @@ interface AuthState {
   user: User | null;
   token: string | null;
   isAuthenticated: boolean;
+  isLoggingOut: boolean;
   setAuth: (user: User, token: string) => void;
   setUser: (user: User) => void;
   logout: () => void;
@@ -21,10 +22,11 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       token: null,
       isAuthenticated: false,
+      isLoggingOut: false,
 
       setAuth: (user, token) => {
         localStorage.setItem('token', token);
-        set({ user, token, isAuthenticated: true });
+        set({ user, token, isAuthenticated: true, isLoggingOut: false });
       },
 
       setUser: (user) => {
@@ -32,6 +34,7 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
+        set({ isLoggingOut: true });
         localStorage.removeItem('token');
         localStorage.removeItem('event-storage');
         set({ user: null, token: null, isAuthenticated: false });

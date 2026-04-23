@@ -34,6 +34,11 @@ api.interceptors.response.use(
     const message = error.response?.data?.message;
 
     if (status === 401) {
+      const { isLoggingOut } = useAuthStore.getState();
+
+      // Skip if user intentionally logged out — in-flight requests briefly return 401
+      if (isLoggingOut) return Promise.reject(error);
+
       // Only handle once — parallel requests may all return 401 simultaneously
       if (!sessionExpiredHandled && typeof window !== 'undefined') {
         sessionExpiredHandled = true;
@@ -41,6 +46,7 @@ api.interceptors.response.use(
         toast.error('Sesi habis. Silakan login kembali.', { id: 'session-expired' });
         // Replace navigation so user cannot press Back to protected page
         setTimeout(() => {
+          sessionExpiredHandled = false; // reset for next login session
           window.location.replace('/login');
         }, 1200);
       }
