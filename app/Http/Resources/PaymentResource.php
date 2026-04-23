@@ -23,6 +23,7 @@ class PaymentResource extends JsonResource
         return [
             'id'                => $this->id,
             'payment_type'      => $paymentTypeValue,
+            'coupon_quantity'   => $this->coupon_quantity,
             'amount'            => (float) $this->amount,
             'currency'          => $this->currency ?? 'IDR',
             'status'            => $statusValue,
