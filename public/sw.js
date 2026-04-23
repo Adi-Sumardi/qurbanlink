@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tawzii-v3';
+const CACHE_NAME = 'tawzii-v4';
 const STATIC_ASSETS = [
   '/',
   '/manifest.json',
@@ -50,6 +50,10 @@ self.addEventListener('fetch', (event) => {
   // Skip API requests
   if (request.url.includes('/api/')) return;
 
+  // Skip external origins — CSP connect-src doesn't apply to direct <img> fetches,
+  // but SW fetch() goes through connect-src which may block external domains.
+  if (!request.url.startsWith(self.location.origin)) return;
+
   event.respondWith(
     caches.match(request).then((cached) => {
       const fetched = fetch(request)
@@ -75,7 +79,7 @@ self.addEventListener('fetch', (event) => {
           if (request.mode === 'navigate') {
             return caches.match('/');
           }
-          return undefined;
+          return new Response('', { status: 408, statusText: 'Network timeout' });
         });
 
       return cached || fetched;

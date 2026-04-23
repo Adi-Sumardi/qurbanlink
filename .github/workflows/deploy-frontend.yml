@@ -1,0 +1,28 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Deploy Frontend ke VPS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: 22
+          script: |
+            cd /var/www/qurbanlink-frontend
+            git pull origin main
+
+            npm ci
+            npm run build
+            pm2 reload frontend-tawzii --update-env || pm2 start npm --name frontend-tawzii -- start
+            pm2 save
+
+            echo "✅ Frontend deployed"

@@ -48,6 +48,7 @@ import {
   PAYMENT_STATUS_LABELS,
 } from '@/lib/constants';
 import { StatusBadge } from '@/components/common/status-badge';
+import { PaymentStatus } from '@/types/enums';
 import type { Payment } from '@/types';
 
 /* ─── Constants ───────────────────────────────────────────────── */
@@ -142,15 +143,15 @@ export default function SubscriptionPage() {
 
 
   // Handle semua kemungkinan format API response:
-  // 1. plansRes langsung adalah array (jika service tidak wrap response)
+  // 1. plansRes langsung adalah array
   // 2. plansRes.data adalah array (format ApiResponse standar)
-  // 3. plansRes.data.data adalah array (doubly-nested)
+  // 3. plansRes.data.data adalah array (paginated / doubly-nested)
   function extractArray<T>(raw: unknown): T[] {
     if (Array.isArray(raw)) return raw as T[];
     const r = raw as Record<string, unknown>;
     if (Array.isArray(r?.data)) return r.data as T[];
-    const nested = r?.data as Record<string, unknown>;
-    if (Array.isArray(nested?.data)) return nested.data as T[];
+    const nested = r?.data as Record<string, unknown> | undefined;
+    if (Array.isArray(nested?.data)) return nested!.data as T[];
     return [];
   }
 
@@ -498,7 +499,9 @@ export default function SubscriptionPage() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-1.5">
-                        {payment.status === 'pending' && (
+                        {/* Tombol lanjut bayar: tampil jika status pending (string maupun enum value) */}
+                        {(payment.status === PaymentStatus.Pending ||
+                          (payment.status as string) === 'pending') && (
                           <Button
                             variant="default"
                             size="sm"
@@ -526,7 +529,8 @@ export default function SubscriptionPage() {
                             <ExternalLink className="size-3" />
                           </Button>
                         ) : (
-                          payment.status !== 'pending' && (
+                          payment.status !== PaymentStatus.Pending &&
+                          (payment.status as string) !== 'pending' && (
                             <span className="text-xs text-muted-foreground">Tidak tersedia</span>
                           )
                         )}

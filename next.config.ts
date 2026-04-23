@@ -7,6 +7,10 @@ const midtransWild    = '*.sandbox.midtrans.com *.midtrans.com';
 const midtransCdn     = '*.cdn.gtflabs.io *.gtflabs.io';
 const midtransFonts   = 'https://fonts.gstatic.com';
 
+// Extract API origin from env so CSP always matches the configured backend URL
+const apiUrl    = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000/api/v1';
+const apiOrigin = new URL(apiUrl).origin;
+
 const ContentSecurityPolicy = `
   default-src 'self';
   script-src 'self' 'unsafe-inline' 'unsafe-eval' ${midtransWild} ${midtransCdn};
@@ -17,8 +21,10 @@ const ContentSecurityPolicy = `
     https://source.unsplash.com
     ${midtransWild} ${midtransCdn};
   frame-src 'self' ${midtransWild} ${midtransCdn};
-  connect-src 'self' ${midtransWild} ${midtransCdn}
-    ${isDev ? 'ws://localhost:* http://localhost:*' : ''};
+  connect-src 'self' ${apiOrigin} ${midtransWild} ${midtransCdn}
+    https://images.unsplash.com https://source.unsplash.com
+    https://api.tawzii.id
+    ${isDev ? 'ws://localhost:* http://localhost:* https://*.trycloudflare.com wss://*.trycloudflare.com https://*.ngrok-free.app ws://*.ngrok-free.app' : ''};
   worker-src 'self' blob:;
   object-src 'none';
   base-uri 'self';
