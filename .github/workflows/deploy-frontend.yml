@@ -19,10 +19,8 @@ jobs:
           script: |
             cd /var/www/qurbanlink-frontend
             git pull origin main
-
-            npm ci
-            npm run build
-            pm2 reload frontend-tawzii --update-env || pm2 start npm --name frontend-tawzii -- start
+            pnpm install
+            pnpm build
+            pm2 reload frontend-tawzii --update-env || pm2 start pnpm --name frontend-tawzii -- start
             pm2 save
-
             echo "✅ Frontend deployed"
