@@ -127,6 +127,7 @@ Route::middleware(['auth:sanctum', 'tenant', 'check-subscription'])->group(funct
     // Subscription & Payments
     Route::get('/subscriptions/current', [\App\Http\Controllers\Api\V1\SubscriptionController::class, 'current']);
     Route::post('/subscriptions/subscribe', [\App\Http\Controllers\Api\V1\SubscriptionController::class, 'subscribe']);
+    Route::post('/subscriptions/topup-coupon', [\App\Http\Controllers\Api\V1\SubscriptionController::class, 'couponTopup']);
     Route::get('/subscriptions/payments', [\App\Http\Controllers\Api\V1\SubscriptionController::class, 'payments']);
     Route::get('/subscriptions/payment-status', [\App\Http\Controllers\Api\V1\SubscriptionController::class, 'paymentStatus']);
     Route::post('/subscriptions/payments/{payment}/resume', [\App\Http\Controllers\Api\V1\SubscriptionController::class, 'resumePayment']);
@@ -147,6 +148,12 @@ Route::middleware(['auth:sanctum', 'role:super_admin'])->prefix('admin')->group(
     Route::get('/audit-logs', [\App\Http\Controllers\Api\V1\Admin\AdminAuditController::class, 'index']);
     Route::apiResource('plans', \App\Http\Controllers\Api\V1\Admin\AdminPlanController::class);
     Route::post('/payments/{payment}/activate', [\App\Http\Controllers\Api\V1\Admin\AdminPaymentController::class, 'manualActivation']);
+    // Role & Permission management
+    Route::get('/roles', [\App\Http\Controllers\Api\V1\Admin\AdminRoleController::class, 'roles']);
+    Route::get('/permissions', [\App\Http\Controllers\Api\V1\Admin\AdminRoleController::class, 'permissions']);
+    Route::post('/roles', [\App\Http\Controllers\Api\V1\Admin\AdminRoleController::class, 'createRole']);
+    Route::put('/roles/{role}/permissions', [\App\Http\Controllers\Api\V1\Admin\AdminRoleController::class, 'updateRolePermissions']);
+    Route::delete('/roles/{role}', [\App\Http\Controllers\Api\V1\Admin\AdminRoleController::class, 'deleteRole']);
 });
 
 // Midtrans payment notification webhook (no auth, signature verified in controller)

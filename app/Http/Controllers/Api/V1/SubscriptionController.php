@@ -301,10 +301,85 @@ class SubscriptionController extends Controller
     }
 
     /**
+     * Create a Midtrans Snap payment session for coupon top-up.
+     * Price: Rp 1.000 per coupon, minimum 10, multiples of 10.
+     */
+    public function couponTopup(Request $request, MidtransService $midtrans): JsonResponse
+    {
+        $validated = $request->validate([
+            'quantity' => ['required', 'integer', 'min:10', 'max:10000', 'multiple_of:10'],
+        ]);
+
+        $tenant   = app()->has('current_tenant') ? app('current_tenant') : $request->user()->tenant;
+        $user     = $request->user();
+        $quantity = (int) $validated['quantity'];
+        $amount   = $quantity * 1000;
+
+        $invoiceNumber = 'INV-TOPUP-' . now()->format('Ymd') . '-' . strtoupper(Str::random(6));
+
+        $payment = Payment::create([
+            'tenant_id'       => $tenant->id,
+            'payment_type'    => PaymentType::AddonCoupon,
+            'coupon_quantity' => $quantity,
+            'amount'          => $amount,
+            'status'          => PaymentStatus::Pending,
+            'invoice_number'  => $invoiceNumber,
+            'expired_at'      => now()->addHours(24),
+            'metadata'        => [
+                'coupon_quantity'  => $quantity,
+                'price_per_coupon' => 1000,
+            ],
+        ]);
+
+        try {
+            $snapResult = $midtrans->createSnapToken([
+                'order_id'      => $invoiceNumber,
+                'amount'        => $amount,
+                'first_name'    => $user->name,
+                'email'         => $user->email,
+                'plan_name'     => "Top-up {$quantity} Kupon",
+                'billing_cycle' => 'Sekali Bayar',
+            ]);
+
+            $payment->update([
+                'snap_token'        => $snapResult->token ?? null,
+                'snap_redirect_url' => $snapResult->redirect_url ?? null,
+                'midtrans_order_id' => $invoiceNumber,
+            ]);
+
+            return $this->success([
+                'snap_token'     => $snapResult->token,
+                'payment_url'    => $snapResult->redirect_url,
+                'invoice_number' => $invoiceNumber,
+                'amount'         => $amount,
+                'quantity'       => $quantity,
+                'is_free'        => false,
+            ], 'Sesi pembayaran top-up kupon berhasil dibuat.');
+        } catch (\Exception $e) {
+            $payment->delete();
+            \Log::error('Midtrans Snap topup error', ['error' => $e->getMessage(), 'tenant' => $tenant->id]);
+            return $this->error('Gagal membuat sesi pembayaran. ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
      * Activate or create a subscription after payment success.
      */
     private function activateSubscription(Payment $payment): void
     {
+        // Handle coupon top-up — increment quota on active subscription
+        if ($payment->payment_type === PaymentType::AddonCoupon) {
+            $quantity = $payment->coupon_quantity ?? ($payment->metadata['coupon_quantity'] ?? 0);
+            if ($quantity > 0) {
+                $subscription = $payment->tenant->activeSubscription;
+                if ($subscription) {
+                    $subscription->increment('coupon_quota', $quantity);
+                    $payment->update(['subscription_id' => $subscription->id]);
+                }
+            }
+            return;
+        }
+
         $meta         = $payment->metadata ?? [];
         $planSlug     = $meta['plan'] ?? null;
         $billingCycle = $meta['billing_cycle'] ?? 'monthly';

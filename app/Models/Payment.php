@@ -38,6 +38,7 @@ class Payment extends Model
         'paid_at',
         'expired_at',
         'metadata',
+        'coupon_quantity',
     ];
 
     /**
