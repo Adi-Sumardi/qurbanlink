@@ -214,9 +214,8 @@ export default function RoleDetailPage({ params }: { params: Promise<{ id: strin
               <div className="flex items-center gap-3 border-b bg-muted/30 px-4 py-3">
                 <Checkbox
                   id={`group-${group}`}
-                  checked={allChecked}
-                  data-state={someChecked ? 'indeterminate' : undefined}
-                  onCheckedChange={(v) => toggleGroup(perms, !!v)}
+                  checked={someChecked ? 'indeterminate' : allChecked}
+                  onCheckedChange={(v) => toggleGroup(perms, v === 'indeterminate' ? false : !!v)}
                 />
                 <label
                   htmlFor={`group-${group}`}
@@ -228,15 +227,11 @@ export default function RoleDetailPage({ params }: { params: Promise<{ id: strin
                   {groupSelected.length}/{perms.length}
                 </span>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-0 divide-y sm:divide-y-0">
-                {perms.map((perm, i) => (
+              <div className="divide-y">
+                {perms.map((perm) => (
                   <div
                     key={perm}
-                    className={`flex items-center gap-3 px-4 py-3 hover:bg-muted/20 ${
-                      i % 2 === 0 ? 'sm:border-r' : ''
-                    } ${i < perms.length - 2 ? 'sm:border-b' : ''} ${
-                      i < perms.length - 1 && i % 2 === 0 ? 'sm:border-b' : ''
-                    }`}
+                    className="flex items-center gap-3 px-4 py-3 hover:bg-muted/20"
                   >
                     <Checkbox
                       id={perm}
