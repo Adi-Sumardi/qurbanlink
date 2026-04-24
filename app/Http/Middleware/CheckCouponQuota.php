@@ -19,7 +19,10 @@ class CheckCouponQuota
         $subscription = $tenant->activeSubscription;
 
         if (!$subscription) {
-            abort(403, 'Tidak ada subscription aktif.');
+            return response()->json([
+                'message' => 'Tidak ada subscription aktif.',
+                'code' => 'NO_SUBSCRIPTION',
+            ], 403);
         }
 
         $planSlug = $subscription->plan instanceof \BackedEnum
@@ -32,7 +35,10 @@ class CheckCouponQuota
         $quota = $plan?->coupon_quota ?? null;
 
         if ($quota !== null && $quota > 0 && $subscription->coupon_used >= $quota) {
-            abort(403, 'Kuota kupon habis. Silakan upgrade paket atau beli kuota tambahan.');
+            return response()->json([
+                'message' => 'Kuota kupon habis. Silakan upgrade paket atau beli kuota tambahan.',
+                'code' => 'QUOTA_EXCEEDED',
+            ], 403);
         }
 
         return $next($request);

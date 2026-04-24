@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Enums\SubscriptionStatus;
 use App\Models\Coupon;
 use App\Models\Event;
+use App\Models\Plan;
 use App\Models\Recipient;
 
 class QrCodeService
@@ -163,6 +165,30 @@ class QrCodeService
             ->where('event_id', $event->id)
             ->get();
 
+        // Enforce coupon quota before generating to prevent over-issuance
+        $subscription = $tenant->activeSubscription;
+        if ($subscription) {
+            $planSlug = $subscription->plan instanceof \BackedEnum
+                ? $subscription->plan->value
+                : $subscription->plan;
+            $plan = Plan::where('slug', $planSlug)->first();
+            $quota = $plan?->coupon_quota;
+
+            if ($quota !== null && $quota > 0) {
+                $remaining = max(0, $quota - $subscription->coupon_used);
+                if ($remaining < $recipients->count()) {
+                    throw new \Illuminate\Http\Exceptions\HttpResponseException(
+                        response()->json([
+                            'message' => 'Kuota kupon tidak mencukupi. Silakan upgrade paket atau beli kuota tambahan.',
+                            'code' => 'QUOTA_EXCEEDED',
+                            'remaining' => $remaining,
+                            'requested' => $recipients->count(),
+                        ], 403)
+                    );
+                }
+            }
+        }
+
         $coupons = [];
 
         foreach ($recipients as $recipient) {
@@ -187,6 +213,19 @@ class QrCodeService
 
         // Update event coupon count
         $event->increment('total_coupons', count($coupons));
+
+        // Track usage against subscription quota; auto-suspend when fully consumed
+        if ($subscription && count($coupons) > 0) {
+            $subscription->increment('coupon_used', count($coupons));
+
+            if (isset($quota) && $quota !== null && $quota > 0) {
+                $subscription->refresh();
+                if ($subscription->coupon_used >= $quota
+                    && $subscription->status !== SubscriptionStatus::Suspended) {
+                    $subscription->update(['status' => SubscriptionStatus::Suspended]);
+                }
+            }
+        }
 
         return $coupons;
     }
