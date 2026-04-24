@@ -16,9 +16,20 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
+          envs: RESEND_KEY
           script: |
             cd /var/www/qurbanlink-backend
             git pull origin backend
+
+            # Inject mail config ke .env jika belum ada
+            grep -q "^RESEND_KEY=" .env || echo "" >> .env
+            sed -i "s|^MAIL_MAILER=.*|MAIL_MAILER=resend|" .env
+            grep -q "^RESEND_KEY=" .env \
+              && sed -i "s|^RESEND_KEY=.*|RESEND_KEY=${RESEND_KEY}|" .env \
+              || echo "RESEND_KEY=${RESEND_KEY}" >> .env
+            sed -i "s|^MAIL_FROM_ADDRESS=.*|MAIL_FROM_ADDRESS=\"noreply@tawzii.id\"|" .env
+            sed -i "s|^MAIL_FROM_NAME=.*|MAIL_FROM_NAME=\"Tawzii Digital\"|" .env
+
             php8.4 /usr/local/bin/composer install --no-dev --optimize-autoloader --no-interaction
             php8.4 artisan migrate --force
             php8.4 artisan config:cache
