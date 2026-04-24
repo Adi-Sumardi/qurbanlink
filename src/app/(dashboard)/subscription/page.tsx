@@ -64,11 +64,10 @@ const FEATURE_LABELS: Record<string, string> = {
   live_dashboard: 'Live Dashboard',
   export_pdf: 'Export PDF',
   export_excel: 'Export Excel',
-  custom_branding: 'Custom Branding',
-  email_notifications: 'Notifikasi Email',
-  api_access: 'Akses API',
   priority_support: 'Priority Support',
 };
+
+const HIDDEN_FEATURES = new Set(['custom_branding', 'email_notifications', 'api_access']);
 
 const PAYMENT_STATUS_VARIANT: Record<
   string,
@@ -463,7 +462,7 @@ export default function SubscriptionPage() {
                   Fitur Paket
                 </p>
                 <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                  {Object.entries(features).map(([key, enabled]) => (
+                  {Object.entries(features).filter(([key]) => !HIDDEN_FEATURES.has(key)).map(([key, enabled]) => (
                     <div
                       key={key}
                       className={`flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm ${
@@ -733,7 +732,7 @@ export default function SubscriptionPage() {
 
                       {/* Features */}
                       <ul className="space-y-1 flex-1">
-                        {Object.entries(plan.features).map(([key, enabled]) => (
+                        {Object.entries(plan.features).filter(([key]) => !HIDDEN_FEATURES.has(key)).map(([key, enabled]) => (
                           <li
                             key={key}
                             className={`flex items-center gap-1.5 text-xs ${
