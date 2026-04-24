@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
@@ -93,7 +94,11 @@ const PLAN_GRADIENT: Record<string, string> = {
 
 /* ─── Component ───────────────────────────────────────────────── */
 
-export default function SubscriptionPage() {
+function SubscriptionPageInner() {
+  const searchParams = useSearchParams();
+  const autoPayPlan = searchParams.get('plan');
+  const autoOpenRef = useRef(false);
+
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const [showPlans, setShowPlans] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlanInfo | null>(null);
@@ -146,6 +151,16 @@ export default function SubscriptionPage() {
   });
 
 
+
+  /* — Auto-open plan dialog from URL param — */
+  useEffect(() => {
+    if (!autoPayPlan || autoOpenRef.current || loadingPlans || plans.length === 0) return;
+    const found = plans.find((p) => p.slug === autoPayPlan);
+    if (!found) return;
+    autoOpenRef.current = true;
+    setSelectedPlan(found);
+    setShowPlans(true);
+  }, [autoPayPlan, loadingPlans, plans]);
 
   /* — Derived — */
   const sub = subscriptionRes?.data;
@@ -896,5 +911,13 @@ export default function SubscriptionPage() {
         </DialogContent>
       </Dialog>
     </div>
+  );
+}
+
+export default function SubscriptionPage() {
+  return (
+    <Suspense>
+      <SubscriptionPageInner />
+    </Suspense>
   );
 }

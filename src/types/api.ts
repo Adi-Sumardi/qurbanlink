@@ -42,6 +42,7 @@ export interface RegisterRequest {
   event_name: string;
   event_date: string;
   event_description?: string;
+  plan?: string;
 }
 
 export interface ForgotPasswordRequest {

@@ -970,7 +970,7 @@ function PricingSection() {
                   </ul>
 
                   <Link
-                    href="/register"
+                    href={plan.price_monthly === 0 ? '/register' : `/register?plan=${plan.slug}`}
                     className={`w-full rounded-full py-4 text-center text-base font-bold font-headline transition-all hover:opacity-90 active:scale-95 ${
                       isPopular
                         ? 'bg-[#6ffbbe] text-[#002113] shadow-lg shadow-black/20'

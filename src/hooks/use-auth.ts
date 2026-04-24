@@ -30,10 +30,16 @@ export function useRegister() {
 
   return useMutation({
     mutationFn: (data: RegisterRequest) => authService.register(data),
-    onSuccess: (response) => {
+    onSuccess: (response, variables) => {
       setAuth(response.data.user, response.data.token);
-      const eventId = response.data.event_id;
-      router.replace(eventId ? `/events/${eventId}` : '/dashboard');
+      const plan = (variables as RegisterRequest & { plan?: string }).plan;
+      if (plan && plan !== 'free') {
+        // Redirect ke subscription page dengan plan yang dipilih supaya trigger payment
+        router.replace(`/subscription?plan=${plan}`);
+      } else {
+        const eventId = response.data.event_id;
+        router.replace(eventId ? `/events/${eventId}` : '/dashboard');
+      }
     },
   });
 }

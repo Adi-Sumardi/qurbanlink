@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -88,6 +89,8 @@ const STEP1_FIELDS = [
 export function RegisterForm() {
   const [step, setStep] = useState<1 | 2>(1);
   const register = useRegister();
+  const searchParams = useSearchParams();
+  const planFromUrl = searchParams.get('plan') ?? undefined;
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -110,7 +113,7 @@ export function RegisterForm() {
   }
 
   function onSubmit(data: RegisterFormValues) {
-    register.mutate(data, {
+    register.mutate({ ...data, plan: planFromUrl }, {
       onError: (error) => {
         if (error instanceof AxiosError) {
           const errors = error.response?.data?.errors;
