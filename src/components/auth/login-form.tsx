@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2, Mail, Lock, ArrowRight } from 'lucide-react';
+import { useState } from 'react';
+import { Loader2, Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react';
 import {
   Form,
   FormControl,
@@ -19,6 +20,7 @@ import { AxiosError } from 'axios';
 
 export function LoginForm() {
   const login = useLogin();
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -104,12 +106,20 @@ export function LoginForm() {
                   <div className="relative">
                     <Lock className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-[#3f4944]/40" />
                     <input
-                      type="password"
+                      type={showPassword ? 'text' : 'password'}
                       placeholder="••••••••••••"
                       autoComplete="current-password"
-                      className="w-full rounded-xl bg-[#f2f4f6] py-3.5 pl-11 pr-4 text-sm text-[#191c1e] placeholder-[#3f4944]/40 outline-none ring-0 transition-all focus:bg-white focus:ring-1 focus:ring-[#004532]"
+                      className="w-full rounded-xl bg-[#f2f4f6] py-3.5 pl-11 pr-11 text-sm text-[#191c1e] placeholder-[#3f4944]/40 outline-none ring-0 transition-all focus:bg-white focus:ring-1 focus:ring-[#004532]"
                       {...field}
                     />
+                    <button
+                      type="button"
+                      tabIndex={-1}
+                      onClick={() => setShowPassword((v) => !v)}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#3f4944]/40 transition-colors hover:text-[#3f4944]"
+                    >
+                      {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                    </button>
                   </div>
                 </FormControl>
                 <FormMessage />

@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Loader2, Building2, User, Mail, Phone, Lock,
   ArrowRight, ArrowLeft, Calendar, FileText, CheckCircle2,
+  Eye, EyeOff,
 } from 'lucide-react';
 import {
   Form,
@@ -44,6 +45,38 @@ function SacredInput({
         className="w-full rounded-xl bg-[#f2f4f6] py-3 pl-11 pr-4 text-sm text-[#191c1e] placeholder-[#3f4944]/40 outline-none transition-all focus:bg-white focus:ring-1 focus:ring-[#004532]"
         {...field}
       />
+    </div>
+  );
+}
+
+function PasswordInput({
+  placeholder,
+  autoComplete,
+  field,
+}: {
+  placeholder: string;
+  autoComplete?: string;
+  field: React.InputHTMLAttributes<HTMLInputElement>;
+}) {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="relative">
+      <Lock className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-[#3f4944]/40" />
+      <input
+        type={show ? 'text' : 'password'}
+        placeholder={placeholder}
+        autoComplete={autoComplete}
+        className="w-full rounded-xl bg-[#f2f4f6] py-3 pl-11 pr-11 text-sm text-[#191c1e] placeholder-[#3f4944]/40 outline-none transition-all focus:bg-white focus:ring-1 focus:ring-[#004532]"
+        {...field}
+      />
+      <button
+        type="button"
+        tabIndex={-1}
+        onClick={() => setShow((v) => !v)}
+        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#3f4944]/40 transition-colors hover:text-[#3f4944]"
+      >
+        {show ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+      </button>
     </div>
   );
 }
@@ -239,7 +272,7 @@ export function RegisterForm() {
                         Password
                       </FormLabel>
                       <FormControl>
-                        <SacredInput icon={Lock} type="password" placeholder="Min. 8 karakter" autoComplete="new-password" field={field} />
+                        <PasswordInput placeholder="Min. 8 karakter" autoComplete="new-password" field={field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -254,7 +287,7 @@ export function RegisterForm() {
                         Confirm
                       </FormLabel>
                       <FormControl>
-                        <SacredInput icon={Lock} type="password" placeholder="Ulangi kata sandi" autoComplete="new-password" field={field} />
+                        <PasswordInput placeholder="Ulangi kata sandi" autoComplete="new-password" field={field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

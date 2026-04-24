@@ -30,6 +30,14 @@ export function EventSwitcher() {
 
   const events = data?.data ?? [];
 
+  // Auto-select first event jika belum ada event aktif atau event yang tersimpan sudah tidak ada
+  useEffect(() => {
+    if (!mounted || events.length === 0) return;
+    const stillValid = activeEvent && events.some((e: Event) => e.id === activeEvent.id);
+    if (!stillValid) setActiveEvent(events[0]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mounted, events.length]);
+
   // Render a stable placeholder on SSR / before hydration
   if (!mounted) {
     return (

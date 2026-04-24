@@ -1088,11 +1088,110 @@ function Footer() {
   );
 }
 
+// --- JSON-LD Structured Data ---
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': 'https://tawzii.id/#website',
+      url: 'https://tawzii.id',
+      name: 'Tawzii Digital',
+      description: 'Platform distribusi kurban digital untuk masjid di seluruh Indonesia',
+      publisher: { '@id': 'https://tawzii.id/#organization' },
+      inLanguage: 'id-ID',
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: { '@type': 'EntryPoint', urlTemplate: 'https://tawzii.id/?q={search_term_string}' },
+        'query-input': 'required name=search_term_string',
+      },
+    },
+    {
+      '@type': 'Organization',
+      '@id': 'https://tawzii.id/#organization',
+      name: 'Tawzii Digital by adilabs.id',
+      url: 'https://tawzii.id',
+      logo: { '@type': 'ImageObject', url: 'https://tawzii.id/logo.png' },
+      sameAs: ['https://adilabs.id'],
+      contactPoint: {
+        '@type': 'ContactPoint',
+        contactType: 'customer support',
+        availableLanguage: 'Indonesian',
+      },
+    },
+    {
+      '@type': 'WebPage',
+      '@id': 'https://tawzii.id/#webpage',
+      url: 'https://tawzii.id',
+      name: 'Tawzii Digital — Platform Distribusi Kurban Digital untuk Masjid',
+      isPartOf: { '@id': 'https://tawzii.id/#website' },
+      about: { '@id': 'https://tawzii.id/#organization' },
+      description:
+        'Cegah kupon palsu, atur distribusi per zona RT/RW, dan pantau transparansi hewan kurban secara real-time.',
+      inLanguage: 'id-ID',
+    },
+    {
+      '@type': 'SoftwareApplication',
+      name: 'Tawzii Digital',
+      applicationCategory: 'BusinessApplication',
+      operatingSystem: 'Web, iOS, Android',
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'IDR',
+        description: 'Paket gratis tersedia untuk masjid kecil',
+      },
+      featureList: [
+        'Kupon QR terenkripsi anti-palsu',
+        'Manajemen penerima kurban per zona',
+        'Transparansi data hewan kurban real-time',
+        'Laporan distribusi otomatis',
+        'Dashboard live untuk panitia',
+      ],
+      url: 'https://tawzii.id',
+    },
+    {
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'Apa itu Tawzii Digital?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Tawzii Digital adalah platform SaaS distribusi kurban berbasis QR Code untuk masjid dan organisasi Islam di Indonesia. Platform ini membantu mencegah kupon palsu, mengatur distribusi per zona wilayah, dan memantau transparansi hewan kurban secara real-time.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Bagaimana cara mencegah kupon kurban dipalsukan?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Tawzii Digital menggunakan kupon QR terenkripsi yang unik untuk setiap penerima. Setelah di-scan sekali, kupon langsung hangus dan tidak bisa digunakan lagi — sehingga pemalsuan atau fotokopi kupon tidak bisa terjadi.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Apakah Tawzii Digital gratis?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Ya, Tawzii Digital menyediakan paket gratis untuk masjid dengan kebutuhan distribusi kecil. Tersedia juga paket berbayar dengan fitur lebih lengkap untuk distribusi skala besar.',
+          },
+        },
+      ],
+    },
+  ],
+};
+
 // --- Main Page ---
 
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[#f7f9fb]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Navbar />
       <main>
         <HeroSection />

@@ -8,6 +8,7 @@ import {
   Calendar,
   Eye,
   Pencil,
+  Plus,
 } from 'lucide-react';
 import { motion as m } from 'motion/react';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -66,6 +67,15 @@ export default function EventsPage() {
             Kelola event distribusi kurban dan pantau progresnya
           </p>
         </div>
+        {canEdit && (
+          <Link
+            href="/events/new"
+            className="inline-flex items-center gap-2 rounded-full bg-[#004532] px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-[#004532]/20 transition-all hover:bg-[#065f46] active:scale-95 whitespace-nowrap"
+          >
+            <Plus className="size-4" />
+            Buat Event
+          </Link>
+        )}
       </div>
 
       {/* Table Card */}
