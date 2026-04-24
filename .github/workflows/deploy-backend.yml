@@ -34,6 +34,7 @@ jobs:
               || echo "MAIL_PASSWORD=${RESEND_KEY}" >> .env
             sed -i "s|^MAIL_FROM_ADDRESS=.*|MAIL_FROM_ADDRESS=noreply@tawzii.id|" .env
             sed -i "s|^MAIL_FROM_NAME=.*|MAIL_FROM_NAME=\"Tawzii Digital\"|" .env
+            sed -i "s|^APP_NAME=.*|APP_NAME=\"Tawzii Digital\"|" .env
 
             php8.4 /usr/local/bin/composer install --no-dev --optimize-autoloader --no-interaction
             php8.4 artisan migrate --force
