@@ -147,6 +147,7 @@ Route::middleware(['auth:sanctum', 'role:super_admin'])->prefix('admin')->group(
     Route::patch('/tenants/{tenant}/unsuspend', [\App\Http\Controllers\Api\V1\Admin\AdminTenantController::class, 'unsuspend']);
     Route::get('/audit-logs', [\App\Http\Controllers\Api\V1\Admin\AdminAuditController::class, 'index']);
     Route::apiResource('plans', \App\Http\Controllers\Api\V1\Admin\AdminPlanController::class);
+    Route::get('/payments', [\App\Http\Controllers\Api\V1\Admin\AdminPaymentController::class, 'index']);
     Route::post('/payments/{payment}/activate', [\App\Http\Controllers\Api\V1\Admin\AdminPaymentController::class, 'manualActivation']);
     // Role & Permission management
     Route::get('/roles', [\App\Http\Controllers\Api\V1\Admin\AdminRoleController::class, 'roles']);
