@@ -5,6 +5,7 @@ const isDev = process.env.NODE_ENV === 'development';
 // Midtrans domains — wildcard covers all subdomains (snap, api, assets, app, etc.)
 const midtransWild    = '*.sandbox.midtrans.com *.midtrans.com';
 const midtransCdn     = '*.cdn.gtflabs.io *.gtflabs.io';
+const cloudflare      = 'static.cloudflareinsights.com cloudflareinsights.com';
 const midtransFonts   = 'https://fonts.gstatic.com';
 
 // Extract API origin from env so CSP always matches the configured backend URL
@@ -13,7 +14,7 @@ const apiOrigin = new URL(apiUrl).origin;
 
 const ContentSecurityPolicy = `
   default-src 'self';
-  script-src 'self' 'unsafe-inline' 'unsafe-eval' ${midtransWild} ${midtransCdn};
+  script-src 'self' 'unsafe-inline' 'unsafe-eval' ${midtransWild} ${midtransCdn} ${cloudflare};
   style-src 'self' 'unsafe-inline' ${midtransWild} ${midtransCdn} https://fonts.googleapis.com;
   font-src 'self' ${midtransFonts} ${midtransWild} ${midtransCdn};
   img-src 'self' data: blob:
@@ -23,7 +24,7 @@ const ContentSecurityPolicy = `
   frame-src 'self' ${midtransWild} ${midtransCdn};
   connect-src 'self' ${apiOrigin} ${midtransWild} ${midtransCdn}
     https://images.unsplash.com https://source.unsplash.com
-    https://api.tawzii.id
+    https://api.tawzii.id ${cloudflare}
     ${isDev ? 'ws://localhost:* http://localhost:* https://*.trycloudflare.com wss://*.trycloudflare.com https://*.ngrok-free.app ws://*.ngrok-free.app' : ''};
   worker-src 'self' blob:;
   object-src 'none';
