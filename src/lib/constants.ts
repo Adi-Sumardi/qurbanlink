@@ -46,9 +46,9 @@ export const PAYMENT_STATUS_LABELS: Record<string, string> = {
 };
 
 export const SUBSCRIPTION_PLAN_LABELS: Record<string, string> = {
-  free: 'Free',
-  starter: 'Starter',
-  professional: 'Professional',
+  free: 'Uji Coba',
+  starter: 'Mushola',
+  professional: 'Masjid',
   enterprise: 'Enterprise',
 };
 
