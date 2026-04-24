@@ -134,7 +134,12 @@ class AuthController extends Controller
             'email' => ['required', 'email'],
         ]);
 
-        $status = Password::sendResetLink($request->only('email'));
+        try {
+            $status = Password::sendResetLink($request->only('email'));
+        } catch (\Throwable $e) {
+            \Log::error('Forgot password error: ' . $e->getMessage());
+            return $this->error('Gagal mengirim email: ' . $e->getMessage(), 500);
+        }
 
         if ($status === Password::RESET_LINK_SENT) {
             return $this->success(null, 'Password reset link sent to your email.');
