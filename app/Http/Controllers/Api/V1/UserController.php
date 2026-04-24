@@ -19,7 +19,8 @@ class UserController extends Controller
     {
         $tenantId = app()->has('current_tenant') ? app('current_tenant')->id : $request->user()->tenant_id;
 
-        $users = User::where('tenant_id', $tenantId)
+        $users = User::with('roles')
+            ->where('tenant_id', $tenantId)
             ->paginate($request->input('per_page', 15));
 
         return $this->paginatedSuccess(UserResource::collection($users)->response()->getData(true), 'Users retrieved successfully.');
