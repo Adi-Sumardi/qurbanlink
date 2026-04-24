@@ -152,19 +152,8 @@ function SubscriptionPageInner() {
 
 
 
-  /* — Auto-open plan dialog from URL param — */
-  useEffect(() => {
-    if (!autoPayPlan || autoOpenRef.current || loadingPlans || plans.length === 0) return;
-    const found = plans.find((p) => p.slug === autoPayPlan);
-    if (!found) return;
-    autoOpenRef.current = true;
-    setSelectedPlan(found);
-    setShowPlans(true);
-  }, [autoPayPlan, loadingPlans, plans]);
-
   /* — Derived — */
   const sub = subscriptionRes?.data;
-
 
   // Handle semua kemungkinan format API response:
   // 1. plansRes langsung adalah array
@@ -181,6 +170,16 @@ function SubscriptionPageInner() {
 
   const payments: Payment[] = extractArray<Payment>(paymentsRes);
   const plans: SubscriptionPlanInfo[] = extractArray<SubscriptionPlanInfo>(plansRes);
+
+  /* — Auto-open plan dialog from URL param — */
+  useEffect(() => {
+    if (!autoPayPlan || autoOpenRef.current || loadingPlans || plans.length === 0) return;
+    const found = plans.find((p) => p.slug === autoPayPlan);
+    if (!found) return;
+    autoOpenRef.current = true;
+    setSelectedPlan(found);
+    setShowPlans(true);
+  }, [autoPayPlan, loadingPlans, plans]);
 
   // Paket yang aktif saat ini
   const currentPlanInfo = plans.find((p) => p.slug === sub?.plan);
