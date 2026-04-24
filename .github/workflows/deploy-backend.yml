@@ -25,7 +25,7 @@ jobs:
             sed -i "s|^MAIL_MAILER=.*|MAIL_MAILER=smtp|" .env
             sed -i "s|^MAIL_HOST=.*|MAIL_HOST=smtp.resend.com|" .env
             sed -i "s|^MAIL_PORT=.*|MAIL_PORT=465|" .env
-            sed -i "s|^MAIL_SCHEME=.*|MAIL_SCHEME=ssl|" .env
+            sed -i "s|^MAIL_SCHEME=.*|MAIL_SCHEME=smtps|" .env
             sed -i "s|^MAIL_USERNAME=.*|MAIL_USERNAME=resend|" .env
             grep -q "^MAIL_PASSWORD=" .env \
               && sed -i "s|^MAIL_PASSWORD=.*|MAIL_PASSWORD=${RESEND_KEY}|" .env \
