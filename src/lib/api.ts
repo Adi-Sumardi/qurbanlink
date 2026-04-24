@@ -55,7 +55,21 @@ api.interceptors.response.use(
       const waitMsg = retryAfter ? ` Coba lagi dalam ${retryAfter} detik.` : '';
       toast.error(message ?? `Terlalu banyak permintaan.${waitMsg}`, { id: 'rate-limited' });
     } else if (status === 403) {
-      toast.error(message ?? 'Anda tidak memiliki akses ke fitur ini.', { id: 'forbidden' });
+      const code = (error.response?.data as { code?: string } | undefined)?.code;
+      if (code === 'QUOTA_EXCEEDED' || code === 'NO_SUBSCRIPTION') {
+        const baseMsg = message ?? 'Kuota kupon habis. Silakan upgrade paket.';
+        const willRedirect =
+          typeof window !== 'undefined' && !window.location.pathname.startsWith('/subscription');
+        toast.error(willRedirect ? `${baseMsg} Mengarahkan ke halaman langganan...` : baseMsg, {
+          id: 'quota-exceeded',
+          duration: 5000,
+        });
+        if (willRedirect) {
+          setTimeout(() => window.location.assign('/subscription'), 1500);
+        }
+      } else {
+        toast.error(message ?? 'Anda tidak memiliki akses ke fitur ini.', { id: 'forbidden' });
+      }
     }
 
     return Promise.reject(error);

@@ -34,6 +34,7 @@ import { formatDateTime } from '@/lib/format';
 import { toast } from 'sonner';
 import { usePermissions } from '@/hooks/use-permissions';
 import type { Coupon, QueryParams } from '@/types';
+import { AxiosError } from 'axios';
 
 export default function CouponsPage() {
   const { eventId } = useParams<{ eventId: string }>();
@@ -80,7 +81,17 @@ export default function CouponsPage() {
       queryClient.invalidateQueries({ queryKey: ['coupons', eventId] });
       setGenerateOpen(false);
     },
-    onError: () => toast.error('Gagal generate kupon'),
+    onError: (error: AxiosError<{ message?: string; code?: string }>) => {
+      const code = error.response?.data?.code;
+      const message = error.response?.data?.message;
+      // Quota errors are handled by the global interceptor (toast + redirect ke /subscription).
+      // Close the dialog so user sees the redirect, and skip the generic toast.
+      if (code === 'QUOTA_EXCEEDED' || code === 'NO_SUBSCRIPTION') {
+        setGenerateOpen(false);
+        return;
+      }
+      toast.error(message ?? 'Gagal generate kupon');
+    },
   });
 
   const voidMutation = useMutation({
