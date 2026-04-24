@@ -21,13 +21,16 @@ jobs:
             cd /var/www/qurbanlink-backend
             git pull origin backend
 
-            # Inject mail config ke .env jika belum ada
-            grep -q "^RESEND_KEY=" .env || echo "" >> .env
-            sed -i "s|^MAIL_MAILER=.*|MAIL_MAILER=resend|" .env
-            grep -q "^RESEND_KEY=" .env \
-              && sed -i "s|^RESEND_KEY=.*|RESEND_KEY=${RESEND_KEY}|" .env \
-              || echo "RESEND_KEY=${RESEND_KEY}" >> .env
-            sed -i "s|^MAIL_FROM_ADDRESS=.*|MAIL_FROM_ADDRESS=\"noreply@tawzii.id\"|" .env
+            # Inject Resend SMTP config ke .env
+            sed -i "s|^MAIL_MAILER=.*|MAIL_MAILER=smtp|" .env
+            sed -i "s|^MAIL_HOST=.*|MAIL_HOST=smtp.resend.com|" .env
+            sed -i "s|^MAIL_PORT=.*|MAIL_PORT=465|" .env
+            sed -i "s|^MAIL_SCHEME=.*|MAIL_SCHEME=ssl|" .env
+            sed -i "s|^MAIL_USERNAME=.*|MAIL_USERNAME=resend|" .env
+            grep -q "^MAIL_PASSWORD=" .env \
+              && sed -i "s|^MAIL_PASSWORD=.*|MAIL_PASSWORD=${RESEND_KEY}|" .env \
+              || echo "MAIL_PASSWORD=${RESEND_KEY}" >> .env
+            sed -i "s|^MAIL_FROM_ADDRESS=.*|MAIL_FROM_ADDRESS=noreply@tawzii.id|" .env
             sed -i "s|^MAIL_FROM_NAME=.*|MAIL_FROM_NAME=\"Tawzii Digital\"|" .env
 
             php8.4 /usr/local/bin/composer install --no-dev --optimize-autoloader --no-interaction
