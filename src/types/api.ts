@@ -108,8 +108,6 @@ export interface RecipientFormData {
 export interface LocationFormData {
   name: string;
   address?: string;
-  latitude?: number;
-  longitude?: number;
   is_active?: boolean;
 }
 

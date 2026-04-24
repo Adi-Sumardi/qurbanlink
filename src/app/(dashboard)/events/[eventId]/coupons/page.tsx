@@ -28,6 +28,7 @@ import { DataTablePagination } from '@/components/common/data-table-pagination';
 import { EmptyState } from '@/components/common/empty-state';
 import { ConfirmDialog } from '@/components/common/confirm-dialog';
 import { couponService } from '@/services/coupon.service';
+import { locationService } from '@/services/location.service';
 import { COUPON_STATUS_LABELS } from '@/lib/constants';
 import { formatDateTime } from '@/lib/format';
 import { toast } from 'sonner';
@@ -49,6 +50,22 @@ export default function CouponsPage() {
   const canVoid = mounted && hasPermission('void-coupons');
   const canRegenerate = mounted && hasPermission('regenerate-coupons');
   const canPrint = mounted && hasPermission('print-coupons');
+
+  const { data: locationsData } = useQuery({
+    queryKey: ['locations', eventId],
+    queryFn: () => locationService.getAll(eventId),
+    enabled: !!eventId,
+  });
+
+  // Redirect to locations page if no locations have been set up yet
+  useEffect(() => {
+    if (!locationsData) return;
+    const locations = locationsData.data ?? [];
+    if (locations.length === 0) {
+      toast.info('Tambahkan lokasi distribusi terlebih dahulu');
+      router.replace(`/events/${eventId}/locations`);
+    }
+  }, [locationsData, eventId, router]);
 
   const { data, isLoading } = useQuery({
     queryKey: ['coupons', eventId, params, search],
