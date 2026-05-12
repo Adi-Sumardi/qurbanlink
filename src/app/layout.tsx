@@ -29,11 +29,15 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Tawzii Digital by adilabs.id",
+    default: "Tawzii Digital — Platform Distribusi Kurban Digital untuk Masjid",
     template: "%s | Tawzii Digital",
   },
   description:
-    "Tawzii Digital by adilabs.id — Platform distribusi kurban digital yang presisi, transparan, dan bermartabat untuk masjid di seluruh Indonesia.",
+    "Tawzii Digital — Platform distribusi kurban digital berbasis QR Code. Kelola pembagian daging kurban secara transparan, adil, dan real-time untuk masjid di seluruh Indonesia.",
+  keywords: [
+    'distribusi kurban', 'kurban digital', 'digital kurban', 'pembagian kurban',
+    'qrcode kurban', 'qr code kurban', 'aplikasi kurban masjid', 'tawzii digital',
+  ],
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
