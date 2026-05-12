@@ -171,14 +171,14 @@ function SubscriptionPageInner() {
   const payments: Payment[] = extractArray<Payment>(paymentsRes);
   const plans: SubscriptionPlanInfo[] = extractArray<SubscriptionPlanInfo>(plansRes);
 
-  /* — Auto-open plan dialog from URL param — */
+  /* — Auto-trigger payment dari URL param ?plan=xxx (setelah register dari landing page) — */
   useEffect(() => {
     if (!autoPayPlan || autoOpenRef.current || loadingPlans || plans.length === 0) return;
     const found = plans.find((p) => p.slug === autoPayPlan);
-    if (!found) return;
+    if (!found || found.price_monthly === 0) return;
     autoOpenRef.current = true;
-    setSelectedPlan(found);
-    setShowPlans(true);
+    // Langsung trigger payment tanpa perlu klik tombol "Bayar"
+    pay(found.slug, 'monthly');
   }, [autoPayPlan, loadingPlans, plans]);
 
   // Paket yang aktif saat ini

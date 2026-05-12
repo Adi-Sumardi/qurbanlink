@@ -11,14 +11,26 @@ jobs:
     steps:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          MIDTRANS_CLIENT_KEY: ${{ secrets.MIDTRANS_CLIENT_KEY }}
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
+          envs: MIDTRANS_CLIENT_KEY
           script: |
             cd /var/www/qurbanlink-frontend
             git pull origin main
+
+            # Inject Midtrans production key ke .env.local sebelum build
+            grep -q "^NEXT_PUBLIC_MIDTRANS_CLIENT_KEY=" .env.local \
+              && sed -i "s|^NEXT_PUBLIC_MIDTRANS_CLIENT_KEY=.*|NEXT_PUBLIC_MIDTRANS_CLIENT_KEY=${MIDTRANS_CLIENT_KEY}|" .env.local \
+              || echo "NEXT_PUBLIC_MIDTRANS_CLIENT_KEY=${MIDTRANS_CLIENT_KEY}" >> .env.local
+            grep -q "^NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION=" .env.local \
+              && sed -i "s|^NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION=.*|NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION=true|" .env.local \
+              || echo "NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION=true" >> .env.local
+
             pnpm install
             pnpm build
             pm2 reload frontend-tawzii --update-env || pm2 start pnpm --name frontend-tawzii -- start
