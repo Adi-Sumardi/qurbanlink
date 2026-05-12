@@ -3,12 +3,13 @@
 import { useEffect, useRef } from 'react';
 
 /**
- * Cloudflare Turnstile widget (auto-render, non-blocking mode).
+ * Cloudflare Turnstile — invisible / background-only mode.
  *
- * Best-effort: widget attempts to verify and provides a token.
- * If it fails (Cloudflare internal CSP/TrustedTypes bugs, error 600010),
- * a fallback token is issued after TIMEOUT_MS so the form is never blocked.
- * Backend accepts the fallback token and falls back to rate-limiting protection.
+ * The visible widget is hidden because Cloudflare's iframe has internal
+ * CSP/TrustedTypes bugs that prevent the checkbox from functioning.
+ * Instead, we attempt verification silently and fall back to a sentinel
+ * token after TIMEOUT_MS. Backend accepts the fallback and relies on
+ * rate-limiting for brute-force protection.
  *
  * Site key: NEXT_PUBLIC_TURNSTILE_SITE_KEY. No key → dev mode.
  */
@@ -20,9 +21,8 @@ declare global {
 }
 
 const SCRIPT_URL = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
-const TIMEOUT_MS = 3_000; // 3s — if widget hasn't verified, unblock immediately
+const TIMEOUT_MS = 3_000;
 
-/** Sentinel token — backend recognises and skips remote verify, logs warning */
 export const TURNSTILE_FALLBACK_TOKEN = 'TURNSTILE_WIDGET_ERROR';
 
 let counter = 0;
@@ -35,7 +35,7 @@ interface TurnstileProps {
   className?: string;
 }
 
-export function Turnstile({ onVerify, onExpire, onError, theme = 'light', className }: TurnstileProps) {
+export function Turnstile({ onVerify, onExpire, onError, theme = 'light' }: TurnstileProps) {
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
   const id       = useRef(`__ts_${++counter}`);
@@ -51,13 +51,13 @@ export function Turnstile({ onVerify, onExpire, onError, theme = 'light', classN
     }
   };
 
-  // Dev mode: no site key → verify immediately
+  // Dev mode
   useEffect(() => {
     if (!siteKey) onVerify('DEV_MODE_NO_TURNSTILE');
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Fast fail-open timeout — unblock form after 3s if widget never responded
+  // Fail-open timeout
   useEffect(() => {
     if (!siteKey) return;
     const timer = setTimeout(fallback, TIMEOUT_MS);
@@ -65,7 +65,7 @@ export function Turnstile({ onVerify, onExpire, onError, theme = 'light', classN
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [siteKey]);
 
-  // Register global callbacks that Cloudflare's auto-renderer calls
+  // Global callbacks
   useEffect(() => {
     if (!siteKey) return;
     window[cbVerify] = (token: string) => {
@@ -77,7 +77,6 @@ export function Turnstile({ onVerify, onExpire, onError, theme = 'light', classN
       onExpire?.();
     };
     window[cbError] = () => {
-      // Immediate fallback on error — don't wait for timeout
       fallback();
       onError?.();
     };
@@ -103,14 +102,17 @@ export function Turnstile({ onVerify, onExpire, onError, theme = 'light', classN
 
   if (!siteKey) return null;
 
+  // Widget hidden — runs silently in background
   return (
     <div
-      className={`cf-turnstile ${className ?? ''}`.trim()}
+      className="cf-turnstile"
       data-sitekey={siteKey}
       data-callback={cbVerify}
       data-expired-callback={cbExpire}
       data-error-callback={cbError}
       data-theme={theme}
+      data-size="invisible"
+      style={{ display: 'none' }}
     />
   );
 }
