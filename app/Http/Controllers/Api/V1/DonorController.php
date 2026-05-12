@@ -31,13 +31,20 @@ class DonorController extends Controller
     public function store(Request $request, Event $event): JsonResponse
     {
         $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:20'],
-            'email' => ['nullable', 'email', 'max:255'],
-            'address' => ['nullable', 'string', 'max:500'],
-            'nik' => ['nullable', 'string', 'max:20'],
-            'notes' => ['nullable', 'string'],
+            'name'         => ['required', 'string', 'max:255'],
+            'phone'        => ['nullable', 'string', 'max:20'],
+            'email'        => ['nullable', 'email', 'max:255'],
+            'address'      => ['nullable', 'string', 'max:500'],
+            'nik'          => ['nullable', 'string', 'max:20'],
+            'notes'        => ['nullable', 'string'],
+            'kurban_type'  => ['nullable', 'string', 'in:pribadi,patungan'],
+            'participants' => ['nullable', 'array'],
+            'participants.*.name' => ['required_with:participants', 'string', 'max:255'],
         ]);
+
+        if (empty($validated['kurban_type'])) {
+            $validated['kurban_type'] = 'pribadi';
+        }
 
         $validated['tenant_id'] = $event->tenant_id;
 
@@ -62,13 +69,21 @@ class DonorController extends Controller
     public function update(Request $request, Event $event, Donor $donor): JsonResponse
     {
         $validated = $request->validate([
-            'name' => ['sometimes', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:20'],
-            'email' => ['nullable', 'email', 'max:255'],
-            'address' => ['nullable', 'string', 'max:500'],
-            'nik' => ['nullable', 'string', 'max:20'],
-            'notes' => ['nullable', 'string'],
+            'name'         => ['sometimes', 'string', 'max:255'],
+            'phone'        => ['nullable', 'string', 'max:20'],
+            'email'        => ['nullable', 'email', 'max:255'],
+            'address'      => ['nullable', 'string', 'max:500'],
+            'nik'          => ['nullable', 'string', 'max:20'],
+            'notes'        => ['nullable', 'string'],
+            'kurban_type'  => ['nullable', 'string', 'in:pribadi,patungan'],
+            'participants' => ['nullable', 'array'],
+            'participants.*.name' => ['required_with:participants', 'string', 'max:255'],
         ]);
+
+        // Reset participants jika beralih ke pribadi
+        if (isset($validated['kurban_type']) && $validated['kurban_type'] === 'pribadi') {
+            $validated['participants'] = null;
+        }
 
         $donor->update($validated);
 
