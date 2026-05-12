@@ -213,11 +213,29 @@ function SubscriptionPageInner() {
 
   /* — Auto-trigger payment dari URL param ?plan=xxx (setelah register dari landing page) — */
   useEffect(() => {
-    if (!autoPayPlan || autoOpenRef.current || loadingPlans || plans.length === 0) return;
+    if (!autoPayPlan || autoOpenRef.current) return;
+    if (loadingPlans) return; // tunggu plans load
+    if (plans.length === 0) {
+      console.warn('[auto-pay] plans array kosong, tidak bisa auto-trigger');
+      return;
+    }
     const found = plans.find((p) => p.slug === autoPayPlan);
-    if (!found || found.price_monthly === 0) return;
+    if (!found) {
+      console.warn(`[auto-pay] plan "${autoPayPlan}" tidak ditemukan di daftar plans:`, plans.map(p => p.slug));
+      toast.error(`Paket "${autoPayPlan}" tidak ditemukan. Silakan pilih paket secara manual.`);
+      return;
+    }
+    if (found.price_monthly === 0) {
+      console.warn(`[auto-pay] plan "${autoPayPlan}" gratis, skip pembayaran`);
+      return;
+    }
     autoOpenRef.current = true;
-    pay(found.slug, 'monthly');
+    console.info(`[auto-pay] triggering payment untuk plan ${found.slug}`);
+    toast.info(`Membuka pembayaran untuk paket ${found.name}...`, { duration: 3000 });
+    // Delay 500ms biar Snap script sempat load + UI sempat render
+    setTimeout(() => {
+      pay(found.slug, 'monthly');
+    }, 500);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoPayPlan, loadingPlans, plans]);
 

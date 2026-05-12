@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect } from 'react';
 
 declare global {
   interface Window {
@@ -20,10 +20,8 @@ declare global {
 }
 
 export function useMidtransSnap() {
-  const scriptLoaded = useRef(false);
-
   useEffect(() => {
-    if (scriptLoaded.current) return;
+    if (typeof window === 'undefined' || window.snap) return;
 
     const clientKey = process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY;
     const isProduction = process.env.NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION === 'true';
@@ -32,24 +30,13 @@ export function useMidtransSnap() {
       ? 'https://app.midtrans.com/snap/snap.js'
       : 'https://app.sandbox.midtrans.com/snap/snap.js';
 
-    const existing = document.querySelector(`script[src="${scriptSrc}"]`);
-    if (existing) {
-      scriptLoaded.current = true;
-      return;
-    }
+    if (document.querySelector(`script[src="${scriptSrc}"]`)) return;
 
     const script = document.createElement('script');
     script.src = scriptSrc;
     script.setAttribute('data-client-key', clientKey ?? '');
     script.async = true;
-    script.onload = () => {
-      scriptLoaded.current = true;
-    };
     document.head.appendChild(script);
-
-    return () => {
-      // Do not remove — keep loaded for subsequent calls
-    };
   }, []);
 
   const openSnap = useCallback(
