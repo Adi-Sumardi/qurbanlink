@@ -437,7 +437,9 @@ class SubscriptionController extends Controller
     {
         // Handle coupon top-up — increment quota on active subscription
         if ($payment->payment_type === PaymentType::AddonCoupon) {
-            $quantity = $payment->coupon_quantity ?? ($payment->metadata['coupon_quantity'] ?? 0);
+            $rawMetaTopup = $payment->metadata;
+            $metaTopup = is_string($rawMetaTopup) ? (json_decode($rawMetaTopup, true) ?? []) : (is_array($rawMetaTopup) ? $rawMetaTopup : []);
+            $quantity = $payment->coupon_quantity ?? ($metaTopup['coupon_quantity'] ?? 0);
             if ($quantity > 0) {
                 $subscription = $payment->tenant->activeSubscription;
                 if ($subscription) {
@@ -448,8 +450,19 @@ class SubscriptionController extends Controller
             return;
         }
 
-        // metadata is cast to array by Eloquent — no json_decode needed
-        $meta         = $payment->metadata ?? [];
+        // Defensive: metadata seharusnya array (Eloquent cast), tapi data lama bisa
+        // tersimpan sebagai string JSON karena double-encoding bug. Handle keduanya.
+        $rawMeta = $payment->metadata;
+        if (is_string($rawMeta)) {
+            $meta = json_decode($rawMeta, true) ?? [];
+            // Bisa double-encoded → decode sekali lagi kalau hasilnya masih string
+            if (is_string($meta)) {
+                $meta = json_decode($meta, true) ?? [];
+            }
+        } else {
+            $meta = is_array($rawMeta) ? $rawMeta : [];
+        }
+
         $planSlug     = $meta['plan'] ?? null;
         $billingCycle = $meta['billing_cycle'] ?? 'monthly';
         $couponQuota  = $meta['coupon_quota'] ?? 100;
