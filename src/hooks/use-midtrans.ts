@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 declare global {
   interface Window {
@@ -52,21 +52,24 @@ export function useMidtransSnap() {
     };
   }, []);
 
-  function openSnap(
-    snapToken: string,
-    callbacks: {
-      onSuccess?: (result: Record<string, unknown>) => void;
-      onPending?: (result: Record<string, unknown>) => void;
-      onError?: (result: Record<string, unknown>) => void;
-      onClose?: () => void;
-    }
-  ) {
-    if (typeof window !== 'undefined' && window.snap) {
-      window.snap.pay(snapToken, callbacks);
-    } else {
-      console.error('Midtrans Snap not loaded yet');
-    }
-  }
+  const openSnap = useCallback(
+    (
+      snapToken: string,
+      callbacks: {
+        onSuccess?: (result: Record<string, unknown>) => void;
+        onPending?: (result: Record<string, unknown>) => void;
+        onError?: (result: Record<string, unknown>) => void;
+        onClose?: () => void;
+      }
+    ) => {
+      if (typeof window !== 'undefined' && window.snap) {
+        window.snap.pay(snapToken, callbacks);
+      } else {
+        console.error('Midtrans Snap not loaded yet');
+      }
+    },
+    []
+  );
 
   return { openSnap };
 }

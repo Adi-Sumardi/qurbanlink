@@ -26,6 +26,11 @@ export function usePayment(options: UsePaymentOptions = {}) {
   const queryClient = useQueryClient();
   const { openSnap } = useMidtransSnap();
 
+  // Stabilkan options di ref — caller bisa pass inline object {onClosed: () => {}}
+  // tiap render tanpa menyebabkan pay/resumePayment recreate
+  const optionsRef = useRef(options);
+  optionsRef.current = options;
+
   const invalidateSubscription = useCallback(() => {
     queryClient.invalidateQueries({ queryKey: ['subscription'] });
   }, [queryClient]);
@@ -44,7 +49,7 @@ export function usePayment(options: UsePaymentOptions = {}) {
           toast.success('Anda berhasil mengaktifkan paket gratis!');
           setStatus('success');
           invalidateSubscription();
-          options.onSuccess?.('FREE');
+          optionsRef.current.onSuccess?.('FREE');
           return;
         }
 
@@ -59,7 +64,7 @@ export function usePayment(options: UsePaymentOptions = {}) {
               setStatus('success');
               toast.success('🎉 Pembayaran berhasil! Langganan Anda telah diperbarui.');
               invalidateSubscription();
-              options.onSuccess?.(invoiceNumber ?? '');
+              optionsRef.current.onSuccess?.(invoiceNumber ?? '');
             },
 
             onPending: () => {
@@ -69,7 +74,7 @@ export function usePayment(options: UsePaymentOptions = {}) {
                 { duration: 6000 }
               );
               invalidateSubscription();
-              options.onPending?.(invoiceNumber ?? '');
+              optionsRef.current.onPending?.(invoiceNumber ?? '');
             },
 
             onError: (result: unknown) => {
@@ -80,13 +85,13 @@ export function usePayment(options: UsePaymentOptions = {}) {
                   : 'Pembayaran gagal.';
               setErrorMessage(msg);
               toast.error(`❌ ${msg}`);
-              options.onFailed?.(invoiceNumber ?? '');
+              optionsRef.current.onFailed?.(invoiceNumber ?? '');
             },
 
             onClose: () => {
               setStatus('closed');
               toast.info('Jendela pembayaran ditutup. Lanjutkan kapan saja.');
-              options.onClosed?.();
+              optionsRef.current.onClosed?.();
             },
           });
         } else if (result?.payment_url) {
@@ -107,7 +112,7 @@ export function usePayment(options: UsePaymentOptions = {}) {
         toast.error(msg);
       }
     },
-    [openSnap, invalidateSubscription, options]
+    [openSnap, invalidateSubscription]
   );
 
   /** Poll payment status from server (useful after redirect back) */
@@ -119,17 +124,17 @@ export function usePayment(options: UsePaymentOptions = {}) {
       if (data?.status === 'paid') {
         setStatus('success');
         invalidateSubscription();
-        options.onSuccess?.(invoiceNumber);
+        optionsRef.current.onSuccess?.(invoiceNumber);
       } else if (data?.status === 'failed') {
         setStatus('failed');
-        options.onFailed?.(invoiceNumber);
+        optionsRef.current.onFailed?.(invoiceNumber);
       }
 
       return data?.status ?? null;
     } catch {
       return null;
     }
-  }, [invalidateSubscription, options]);
+  }, [invalidateSubscription]);
 
   /** Re-open Snap for an existing pending payment using its stored snap_token */
   const resumePayment = useCallback(
@@ -143,13 +148,13 @@ export function usePayment(options: UsePaymentOptions = {}) {
             setStatus('success');
             toast.success('🎉 Pembayaran berhasil! Langganan Anda telah diperbarui.');
             invalidateSubscription();
-            options.onSuccess?.(invoiceNumber);
+            optionsRef.current.onSuccess?.(invoiceNumber);
           },
           onPending: () => {
             setStatus('pending');
             toast.info('⏳ Pembayaran sedang diproses.', { duration: 6000 });
             invalidateSubscription();
-            options.onPending?.(invoiceNumber);
+            optionsRef.current.onPending?.(invoiceNumber);
           },
           onError: (result: unknown) => {
             setStatus('failed');
@@ -159,12 +164,12 @@ export function usePayment(options: UsePaymentOptions = {}) {
                 : 'Pembayaran gagal.';
             setErrorMessage(msg);
             toast.error(`❌ ${msg}`);
-            options.onFailed?.(invoiceNumber);
+            optionsRef.current.onFailed?.(invoiceNumber);
           },
           onClose: () => {
             setStatus('closed');
             toast.info('Jendela pembayaran ditutup. Lanjutkan kapan saja.');
-            options.onClosed?.();
+            optionsRef.current.onClosed?.();
           },
         });
       } else if (redirectUrl) {
@@ -174,7 +179,7 @@ export function usePayment(options: UsePaymentOptions = {}) {
         toast.error('Sesi pembayaran telah kadaluarsa. Silakan buat pembayaran baru.');
       }
     },
-    [openSnap, invalidateSubscription, options]
+    [openSnap, invalidateSubscription]
   );
 
   const reset = useCallback(() => {

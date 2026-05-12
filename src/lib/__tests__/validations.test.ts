@@ -29,6 +29,8 @@ describe('registerSchema', () => {
     email: 'ahmad@example.com',
     password: 'password123',
     password_confirmation: 'password123',
+    event_name: 'Qurban 1446 H',
+    event_date: '2026-06-17',
   };
 
   it('accepts valid data', () => {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect, useRef, Suspense } from 'react';
+import { useState, useCallback, useEffect, useMemo, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -93,6 +93,19 @@ const PLAN_GRADIENT: Record<string, string> = {
   enterprise: 'from-purple-600 to-purple-700',
 };
 
+// Handle semua kemungkinan format API response:
+// 1. plansRes langsung adalah array
+// 2. plansRes.data adalah array (format ApiResponse standar)
+// 3. plansRes.data.data adalah array (paginated / doubly-nested)
+function extractArray<T>(raw: unknown): T[] {
+  if (Array.isArray(raw)) return raw as T[];
+  const r = raw as Record<string, unknown>;
+  if (Array.isArray(r?.data)) return r.data as T[];
+  const nested = r?.data as Record<string, unknown> | undefined;
+  if (Array.isArray(nested?.data)) return nested!.data as T[];
+  return [];
+}
+
 /* ─── Component ───────────────────────────────────────────────── */
 
 function SubscriptionPageInner() {
@@ -161,21 +174,10 @@ function SubscriptionPageInner() {
   /* — Derived — */
   const sub = subscriptionRes?.data;
 
-  // Handle semua kemungkinan format API response:
-  // 1. plansRes langsung adalah array
-  // 2. plansRes.data adalah array (format ApiResponse standar)
-  // 3. plansRes.data.data adalah array (paginated / doubly-nested)
-  function extractArray<T>(raw: unknown): T[] {
-    if (Array.isArray(raw)) return raw as T[];
-    const r = raw as Record<string, unknown>;
-    if (Array.isArray(r?.data)) return r.data as T[];
-    const nested = r?.data as Record<string, unknown> | undefined;
-    if (Array.isArray(nested?.data)) return nested!.data as T[];
-    return [];
-  }
-
-  const payments: Payment[] = extractArray<Payment>(paymentsRes);
-  const plans: SubscriptionPlanInfo[] = extractArray<SubscriptionPlanInfo>(plansRes);
+  // Memoize agar reference stable — extractArray return new array setiap render
+  // → kalau tidak di-memo, semua useEffect deps jadi unstable → re-run terus
+  const payments: Payment[] = useMemo(() => extractArray<Payment>(paymentsRes), [paymentsRes]);
+  const plans: SubscriptionPlanInfo[] = useMemo(() => extractArray<SubscriptionPlanInfo>(plansRes), [plansRes]);
 
   /* — Auto-trigger payment dari URL param ?plan=xxx (setelah register dari landing page) — */
   useEffect(() => {
@@ -616,7 +618,7 @@ function SubscriptionPageInner() {
                             Lanjutkan
                           </Button>
                         )}
-                        {payment.status === 'paid' || payment.status === PaymentStatus.Paid ? (
+                        {(payment.status as string) === 'paid' ? (
                           <Button
                             variant="ghost"
                             size="sm"

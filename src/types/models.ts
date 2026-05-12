@@ -73,6 +73,7 @@ export interface Payment {
   paid_at: string | null;
   expired_at: string | null;
   created_at: string;
+  metadata?: Record<string, unknown> | null;
 }
 
 export interface DistributionLocation {

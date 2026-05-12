@@ -21,6 +21,8 @@ export function EventSwitcher() {
     queryKey: ['events', 'list'],
     queryFn: () => eventService.getAll({ per_page: 50 }),
     enabled: mounted, // Only fetch after hydration
+    retry: false,
+    throwOnError: false,
   });
 
   // Prevent SSR / client hydration mismatch from Zustand persisted state

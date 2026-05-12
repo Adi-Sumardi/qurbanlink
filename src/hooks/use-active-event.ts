@@ -14,6 +14,8 @@ export function useActiveEvent() {
     queryKey: ['events', 'list'],
     queryFn: () => eventService.getAll({ per_page: 50 }),
     enabled: isAuthenticated,
+    retry: false,
+    throwOnError: false,
   });
 
   useEffect(() => {
