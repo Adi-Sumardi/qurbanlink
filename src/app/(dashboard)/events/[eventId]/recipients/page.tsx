@@ -106,19 +106,11 @@ export default function RecipientsPage() {
   });
 
   const DEFAULT_CATEGORIES = [
-    { key: 'fakir', label: 'Fakir' },
+    { key: 'fakir',  label: 'Fakir' },
     { key: 'miskin', label: 'Miskin' },
-    { key: 'amil', label: 'Amil' },
-    { key: 'muallaf', label: 'Muallaf' },
-    { key: 'riqab', label: 'Riqab (Hamba Sahaya)' },
-    { key: 'gharim', label: 'Gharim (Berhutang)' },
-    { key: 'fisabilillah', label: 'Fisabilillah' },
-    { key: 'ibnu_sabil', label: 'Ibnu Sabil (Musafir)' },
-    { key: 'dhuafa', label: 'Dhu\'afa' },
-    { key: 'yatim', label: 'Yatim / Piatu' },
-    { key: 'janda', label: 'Janda' },
-    { key: 'lansia', label: 'Lansia' },
-    { key: 'umum', label: 'Umum' },
+    { key: 'umum',   label: 'Umum' },
+    { key: 'dhuafa', label: 'Dhuafa' },
+    { key: 'yatim',  label: 'Yatim / Piatu' },
   ];
 
   const categories = useMemo(() => {
