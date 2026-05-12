@@ -1,6 +1,7 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import {
@@ -26,6 +27,7 @@ import { publicService } from '@/services/public.service';
 import { formatCurrency, formatNumber } from '@/lib/format';
 import { SUBSCRIPTION_PLAN_LABELS } from '@/lib/constants';
 import type { SubscriptionPlanInfo } from '@/services/subscription.service';
+import { toast } from 'sonner';
 
 // --- Animation Variants ---
 
@@ -1186,6 +1188,23 @@ const jsonLd = {
 // --- Main Page ---
 
 export default function LandingPage() {
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const payment = searchParams.get('payment');
+    if (payment === 'failed') {
+      toast.error('Pembayaran gagal atau dibatalkan.', {
+        description: 'Anda dapat mencoba mendaftar kembali atau memilih paket lain.',
+        duration: 8000,
+      });
+      // Bersihkan query param dari URL tanpa reload
+      const url = new URL(window.location.href);
+      url.searchParams.delete('payment');
+      window.history.replaceState({}, '', url.toString());
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#f7f9fb]">
       <script

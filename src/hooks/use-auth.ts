@@ -33,11 +33,12 @@ export function useRegister() {
     onSuccess: (response, variables) => {
       setAuth(response.data.user, response.data.token);
       const plan = (variables as RegisterRequest & { plan?: string }).plan;
+      const eventId = response.data.event_id;
       if (plan && plan !== 'free') {
-        // Redirect ke subscription page dengan plan yang dipilih supaya trigger payment
-        router.replace(`/subscription?plan=${plan}`);
+        // Pass event_id agar subscription page tahu ke mana redirect setelah bayar
+        const dest = `/subscription?plan=${plan}${eventId ? `&event_id=${eventId}` : ''}&from=register`;
+        router.replace(dest);
       } else {
-        const eventId = response.data.event_id;
         router.replace(eventId ? `/events/${eventId}` : '/dashboard');
       }
     },

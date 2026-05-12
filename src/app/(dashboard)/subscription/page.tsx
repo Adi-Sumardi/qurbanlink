@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect, useMemo, useRef, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
@@ -111,7 +111,10 @@ function extractArray<T>(raw: unknown): T[] {
 
 function SubscriptionPageInner() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const autoPayPlan = searchParams.get('plan');
+  const fromRegister = searchParams.get('from') === 'register';
+  const registeredEventId = searchParams.get('event_id');
   const autoOpenRef = useRef(false);
 
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
@@ -129,8 +132,34 @@ function SubscriptionPageInner() {
   const { openSnap } = useMidtransSnap();
 
   const { pay, resumePayment, isBusy, isCreating } = usePayment({
+    onSuccess: () => {
+      // Setelah bayar sukses → redirect ke event atau dashboard
+      const dest = registeredEventId ? `/events/${registeredEventId}` : '/dashboard';
+      setTimeout(() => router.replace(dest), 1500);
+    },
+    onFailed: () => {
+      // Jika dari alur register dan gagal bayar → beri opsi kembali ke beranda
+      if (fromRegister) {
+        toast.error('Pembayaran gagal. Anda bisa mencoba lagi atau kembali ke beranda.', {
+          action: {
+            label: 'Ke Beranda',
+            onClick: () => router.replace('/?payment=failed'),
+          },
+          duration: 8000,
+        });
+      }
+    },
     onClosed: () => {
-      // Jika user tutup Snap tanpa bayar, biarkan mereka buka dialog lagi manual
+      // Jika dari alur register dan tutup Snap → tawarkan kembali ke beranda
+      if (fromRegister) {
+        toast.info('Pembayaran belum selesai. Anda dapat melanjutkan kapan saja atau kembali ke beranda.', {
+          action: {
+            label: 'Ke Beranda',
+            onClick: () => router.replace('/'),
+          },
+          duration: 8000,
+        });
+      }
     },
   });
 
