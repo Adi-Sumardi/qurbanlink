@@ -55,6 +55,7 @@ export default function DonorsPage() {
   const [newDonorId, setNewDonorId] = useState<string | null>(null);
   const [deleteDonorId, setDeleteDonorId] = useState<string | null>(null);
   const [kurbanType, setKurbanType] = useState<'pribadi' | 'patungan'>('pribadi');
+  const [participantsModal, setParticipantsModal] = useState<Donor | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ['donors', eventId, params],
@@ -262,9 +263,23 @@ export default function DonorsPage() {
                         </TableCell>
                         <TableCell>{donor.phone || '-'}</TableCell>
                         <TableCell>
-                          {donor.kurban_type === 'patungan'
-                            ? <Badge variant="secondary" className="gap-1 text-xs"><Users className="size-3" />Patungan</Badge>
-                            : <Badge variant="outline" className="gap-1 text-xs"><User className="size-3" />Pribadi</Badge>}
+                          {donor.kurban_type === 'patungan' ? (
+                            <button
+                              type="button"
+                              onClick={() => setParticipantsModal(donor)}
+                              className="inline-flex items-center gap-1 rounded-full border border-[#004532]/20 bg-[#f0fbf4] px-2.5 py-1 text-xs font-semibold text-[#004532] transition-colors hover:bg-[#004532]/10 cursor-pointer"
+                            >
+                              <Users className="size-3" />
+                              Patungan
+                              {(donor.participants?.length ?? 0) > 0 && (
+                                <span className="ml-0.5 rounded-full bg-[#004532] px-1.5 py-0.5 text-[10px] font-bold text-white">
+                                  {donor.participants!.length}
+                                </span>
+                              )}
+                            </button>
+                          ) : (
+                            <Badge variant="outline" className="gap-1 text-xs"><User className="size-3" />Pribadi</Badge>
+                          )}
                         </TableCell>
                         <TableCell className="text-center">{donor.animals_count ?? 0}</TableCell>
                         <TableCell><StatusBadge status={donor.submission_status} label={DONOR_STATUS_LABELS[donor.submission_status]} /></TableCell>
@@ -482,6 +497,69 @@ export default function DonorsPage() {
         loading={deleteDonor.isPending}
         onConfirm={() => { if (deleteDonorId) deleteDonor.mutate(deleteDonorId); }}
       />
+
+      {/* Participants Modal */}
+      <Dialog open={!!participantsModal} onOpenChange={(open) => !open && setParticipantsModal(null)}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Users className="size-4 text-[#004532]" />
+              Peserta Patungan
+            </DialogTitle>
+          </DialogHeader>
+          {participantsModal && (
+            <div className="space-y-3">
+              <div className="rounded-xl bg-[#f0fbf4] px-4 py-3">
+                <p className="text-xs text-muted-foreground">Penanggung Jawab</p>
+                <p className="font-semibold text-[#191c1e]">{participantsModal.name}</p>
+                {participantsModal.phone && (
+                  <p className="text-xs text-muted-foreground">{participantsModal.phone}</p>
+                )}
+              </div>
+
+              <div>
+                <p className="mb-2 text-sm font-semibold text-[#191c1e]">
+                  Daftar Peserta ({participantsModal.participants?.length ?? 0} orang)
+                </p>
+                {(participantsModal.participants?.length ?? 0) === 0 ? (
+                  <p className="py-4 text-center text-sm text-muted-foreground italic">
+                    Belum ada peserta tercatat
+                  </p>
+                ) : (
+                  <div className="space-y-2">
+                    {participantsModal.participants!.map((p, i) => (
+                      <div key={i} className="flex items-center gap-3 rounded-lg border border-[#004532]/10 bg-white px-3 py-2.5">
+                        <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-[#004532] text-[11px] font-bold text-white">
+                          {i + 1}
+                        </span>
+                        <span className="text-sm font-medium text-[#191c1e]">{p.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {canEdit && (
+                <div className="pt-1">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full gap-1.5 border-[#004532]/20 text-[#004532] hover:bg-[#004532]/5"
+                    onClick={() => {
+                      setParticipantsModal(null);
+                      openEditDialog(participantsModal);
+                    }}
+                  >
+                    <Pencil className="size-3.5" />
+                    Edit Peserta
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
+
