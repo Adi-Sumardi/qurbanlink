@@ -68,9 +68,19 @@ class AdminTenantController extends Controller
     {
         $tenant->update([
             'suspended_at' => null,
-            'is_active' => true,
+            'is_active'    => true,
         ]);
 
         return $this->success(new TenantResource($tenant->fresh()), 'Tenant unsuspended successfully.');
+    }
+
+    /**
+     * Permanently delete a tenant and all its data.
+     */
+    public function destroy(Tenant $tenant): JsonResponse
+    {
+        $tenant->delete();
+
+        return $this->noContent();
     }
 }

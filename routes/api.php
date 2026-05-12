@@ -145,7 +145,7 @@ Route::middleware('public-tenant')->group(function () {
 // Super admin routes
 Route::middleware(['auth:sanctum', 'role:super_admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Api\V1\Admin\AdminDashboardController::class, 'index']);
-    Route::apiResource('tenants', \App\Http\Controllers\Api\V1\Admin\AdminTenantController::class)->only(['index', 'show', 'update']);
+    Route::apiResource('tenants', \App\Http\Controllers\Api\V1\Admin\AdminTenantController::class)->only(['index', 'show', 'update', 'destroy']);
     Route::patch('/tenants/{tenant}/suspend', [\App\Http\Controllers\Api\V1\Admin\AdminTenantController::class, 'suspend']);
     Route::patch('/tenants/{tenant}/unsuspend', [\App\Http\Controllers\Api\V1\Admin\AdminTenantController::class, 'unsuspend']);
     Route::get('/audit-logs', [\App\Http\Controllers\Api\V1\Admin\AdminAuditController::class, 'index']);
