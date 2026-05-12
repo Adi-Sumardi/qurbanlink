@@ -20,6 +20,13 @@ class TenantResource extends JsonResource
             'logo_path' => $this->logo_path,
             'settings' => $this->settings,
             'is_active' => $this->is_active,
+            'active_subscription' => $this->whenLoaded('activeSubscription', function () {
+                $sub = $this->activeSubscription;
+                return $sub ? [
+                    'plan'   => $sub->plan,
+                    'status' => $sub->status,
+                ] : null;
+            }),
             'created_at' => $this->created_at,
         ];
     }

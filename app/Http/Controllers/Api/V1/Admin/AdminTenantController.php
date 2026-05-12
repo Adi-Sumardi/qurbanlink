@@ -15,7 +15,7 @@ class AdminTenantController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $tenants = Tenant::latest()->paginate($request->input('per_page', 15));
+        $tenants = Tenant::with('activeSubscription')->latest()->paginate($request->input('per_page', 15));
 
         return $this->paginatedSuccess(TenantResource::collection($tenants)->response()->getData(true), 'Tenants retrieved successfully.');
     }
