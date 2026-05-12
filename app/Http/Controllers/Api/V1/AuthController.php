@@ -20,17 +20,50 @@ class AuthController extends Controller
 {
     public function register(Request $request, RegisterAction $action): JsonResponse
     {
-        // Rate limit: 3 registrations per minute per IP
-        $key = 'register:' . $request->ip();
-        if (RateLimiter::tooManyAttempts($key, 3)) {
-            $seconds = RateLimiter::availableIn($key);
+        // ── Layer 4: Rate limiting per IP (3/menit) + per email (1/jam) ──
+        $ipKey    = 'register-ip:' . $request->ip();
+        $emailKey = 'register-email:' . strtolower((string) $request->input('email'));
+
+        if (RateLimiter::tooManyAttempts($ipKey, 3)) {
+            $seconds = RateLimiter::availableIn($ipKey);
             return $this->error("Terlalu banyak percobaan registrasi. Coba lagi dalam {$seconds} detik.", 429);
         }
-        RateLimiter::hit($key, 60);
+        if (RateLimiter::tooManyAttempts($emailKey, 1)) {
+            return $this->error('Email ini sudah pernah didaftarkan baru-baru ini. Tunggu 1 jam atau gunakan email lain.', 429);
+        }
+        RateLimiter::hit($ipKey, 60);          // 60 detik = 1 menit
+        RateLimiter::hit($emailKey, 3600);     // 3600 detik = 1 jam
+
+        // ── Layer 1: Honeypot — bot akan isi field tersembunyi ini ──
+        if (!empty($request->input('website'))) {
+            Log::info('Register honeypot triggered', [
+                'ip'    => $request->ip(),
+                'email' => $request->input('email'),
+            ]);
+            return $this->error('Pendaftaran gagal.', 400);
+        }
+
+        // ── Layer 2: Minimum-time — bot biasanya submit < 2s setelah form load ──
+        $formStartedAt = (int) $request->input('form_started_at', 0);
+        if ($formStartedAt > 0) {
+            $elapsedMs = (now()->valueOf() - $formStartedAt);
+            if ($elapsedMs < 2_000) {
+                Log::info('Register submitted too fast (likely bot)', [
+                    'ip'         => $request->ip(),
+                    'email'      => $request->input('email'),
+                    'elapsed_ms' => $elapsedMs,
+                ]);
+                return $this->error('Pendaftaran gagal. Mohon ulangi.', 400);
+            }
+        }
 
         $data = $request->validate([
             'name'              => ['required', 'string', 'max:255'],
-            'email'             => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'email'             => [
+                'required', 'string', 'email:rfc', 'max:255',
+                'unique:users,email',
+                new \App\Rules\NotDisposableEmail(),
+            ],
             'password'          => ['required', 'confirmed', Rules\Password::defaults()],
             'organization_name' => ['required', 'string', 'max:255'],
             'phone'             => ['nullable', 'string', 'max:20'],
@@ -39,11 +72,7 @@ class AuthController extends Controller
             'event_name'        => ['required', 'string', 'max:255'],
             'event_date'        => ['required', 'date', 'after_or_equal:today'],
             'event_description' => ['nullable', 'string', 'max:1000'],
-            'turnstile_token'   => ['required', 'string', new \App\Rules\TurnstileValid($request)],
         ]);
-
-        // turnstile_token cuma untuk validasi, jangan masuk ke RegisterAction
-        unset($data['turnstile_token']);
 
         $result = $action->execute($data);
         $result['user']->sendEmailVerificationNotification();
@@ -61,9 +90,8 @@ class AuthController extends Controller
     public function login(Request $request, LoginAction $action): JsonResponse
     {
         $request->validate([
-            'email'           => ['required', 'string', 'email'],
-            'password'        => ['required', 'string'],
-            'turnstile_token' => ['required', 'string', new \App\Rules\TurnstileValid($request)],
+            'email'    => ['required', 'string', 'email'],
+            'password' => ['required', 'string'],
         ]);
 
         // Brute-force protection: 5 attempts per minute per IP+email combo

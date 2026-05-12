@@ -35,10 +35,4 @@ return [
         ],
     ],
 
-    'turnstile' => [
-        'secret_key' => env('TURNSTILE_SECRET_KEY'),
-        // Set TURNSTILE_REQUIRED=false di env untuk skip verifikasi (mis. local dev)
-        'required'   => env('TURNSTILE_REQUIRED', true),
-    ],
-
 ];
