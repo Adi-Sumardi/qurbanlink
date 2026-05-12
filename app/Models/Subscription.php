@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enums\SubscriptionPlan;
 use App\Enums\SubscriptionStatus;
 use App\Traits\BelongsToTenant;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -42,7 +41,9 @@ class Subscription extends Model
     protected function casts(): array
     {
         return [
-            'plan' => SubscriptionPlan::class,
+            // 'plan' is dynamic — sourced from `plans` DB table (slug column),
+            // not an enum, so cast to string to support custom plans like 'uji-coba'
+            'plan' => 'string',
             'status' => SubscriptionStatus::class,
             'price' => 'decimal:2',
             'coupon_quota' => 'integer',

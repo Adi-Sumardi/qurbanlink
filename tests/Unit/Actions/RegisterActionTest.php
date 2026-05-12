@@ -66,7 +66,7 @@ class RegisterActionTest extends TestCase
         $subscription = Subscription::where('tenant_id', $result['tenant']->id)->first();
 
         $this->assertNotNull($subscription);
-        $this->assertEquals(SubscriptionPlan::Free, $subscription->plan);
+        $this->assertEquals('free', $subscription->plan);
         $this->assertEquals(SubscriptionStatus::Active, $subscription->status);
         $this->assertEquals(100, $subscription->coupon_quota);
         $this->assertEquals(0, $subscription->coupon_used);

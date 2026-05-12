@@ -39,17 +39,19 @@ class SubscriptionTest extends TestCase
         $this->assertCount(1, $payments);
     }
 
-    public function test_plan_cast_to_subscription_plan_enum(): void
+    public function test_plan_stored_as_string_to_support_dynamic_plans(): void
     {
         $this->setupTenant();
 
+        // Plan is sourced from `plans` DB table (slug column),
+        // not enum, so any custom plan slug should work.
         $subscription = Subscription::factory()->create([
             'tenant_id' => $this->tenant->id,
-            'plan' => 'free',
+            'plan' => 'uji-coba',
         ]);
 
-        $this->assertInstanceOf(SubscriptionPlan::class, $subscription->plan);
-        $this->assertEquals(SubscriptionPlan::Free, $subscription->plan);
+        $this->assertIsString($subscription->plan);
+        $this->assertEquals('uji-coba', $subscription->plan);
     }
 
     public function test_status_cast_to_subscription_status_enum(): void
