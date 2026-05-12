@@ -59,7 +59,6 @@ const userSchema = z.object({
 type UserFormValues = z.infer<typeof userSchema>;
 
 const ROLE_OPTIONS = [
-  { value: 'tenant_admin', label: 'Admin' },
   { value: 'operator', label: 'Operator' },
   { value: 'viewer', label: 'Viewer' },
 ];
