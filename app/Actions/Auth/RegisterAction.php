@@ -44,7 +44,7 @@ class RegisterAction
             // Assign tenant_admin role
             $user->assignRole('tenant_admin');
 
-            // Create free trial subscription — kadaluarsa 7 hari
+            // Create free trial subscription — aktif 3 hari saja
             Subscription::create([
                 'tenant_id' => $tenant->id,
                 'plan' => SubscriptionPlan::Free->value,
@@ -54,7 +54,7 @@ class RegisterAction
                 'price' => 0,
                 'billing_cycle' => 'monthly',
                 'starts_at' => now(),
-                'expires_at' => now()->addWeek(),
+                'expires_at' => now()->addDays(3),
             ]);
 
             // Create the initial event chosen during registration
