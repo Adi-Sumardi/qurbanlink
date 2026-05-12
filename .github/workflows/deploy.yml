@@ -15,11 +15,18 @@ jobs:
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
+        env:
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+          NEXT_PUBLIC_MIDTRANS_CLIENT_KEY: ${{ secrets.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY }}
+          NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION: ${{ secrets.NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION }}
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
+          # Forward env vars from GitHub Actions secrets into the SSH session
+          # so `npm run build` bakes them into the Next.js bundle (NEXT_PUBLIC_* are build-time)
+          envs: NEXT_PUBLIC_API_URL,NEXT_PUBLIC_MIDTRANS_CLIENT_KEY,NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION
           script: |
             cd /var/www/distribusi-kurban
             git pull origin main
@@ -37,6 +44,14 @@ jobs:
             # ── Frontend ─────────────────────────────────────────
             cd ../frontend
             npm ci
+
+            # Write NEXT_PUBLIC_* env to .env.production.local so Next.js picks them up at build
+            cat > .env.production.local <<EOF
+            NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+            NEXT_PUBLIC_MIDTRANS_CLIENT_KEY=${NEXT_PUBLIC_MIDTRANS_CLIENT_KEY}
+            NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION=${NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION}
+            EOF
+
             npm run build
             pm2 reload frontend-kurban --update-env || pm2 start npm --name frontend-kurban -- start
 
