@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
@@ -1185,9 +1185,9 @@ const jsonLd = {
   ],
 };
 
-// --- Main Page ---
+// --- Payment Notification (needs Suspense wrapper because of useSearchParams) ---
 
-export default function LandingPage() {
+function PaymentNotificationHandler() {
   const searchParams = useSearchParams();
 
   useEffect(() => {
@@ -1197,7 +1197,6 @@ export default function LandingPage() {
         description: 'Anda dapat mencoba mendaftar kembali atau memilih paket lain.',
         duration: 8000,
       });
-      // Bersihkan query param dari URL tanpa reload
       const url = new URL(window.location.href);
       url.searchParams.delete('payment');
       window.history.replaceState({}, '', url.toString());
@@ -1205,12 +1204,22 @@ export default function LandingPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  return null;
+}
+
+// --- Main Page ---
+
+export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[#f7f9fb]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
+      {/* Payment notification handler — must be in Suspense because of useSearchParams */}
+      <Suspense fallback={null}>
+        <PaymentNotificationHandler />
+      </Suspense>
       <Navbar />
       <main>
         <HeroSection />
