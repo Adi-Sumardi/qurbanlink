@@ -24,6 +24,10 @@ export interface Tenant {
   logo_path: string | null;
   settings: Record<string, unknown>;
   is_active: boolean;
+  active_subscription?: {
+    plan: string;
+    status: string;
+  } | null;
   created_at: string;
 }
 

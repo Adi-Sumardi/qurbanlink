@@ -15,6 +15,7 @@ import {
   Mail,
   Phone,
   Trash2,
+  Crown,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -209,6 +210,7 @@ export default function TenantAdminsPage() {
                     <TableRow>
                       <TableHead>Nama Tenant</TableHead>
                       <TableHead>Kontak</TableHead>
+                      <TableHead>Paket</TableHead>
                       <TableHead>Kota</TableHead>
                       <TableHead>Status Akses</TableHead>
                       <TableHead>Terdaftar</TableHead>
@@ -239,6 +241,26 @@ export default function TenantAdminsPage() {
                               </div>
                             )}
                           </div>
+                        </TableCell>
+                        <TableCell>
+                          {(() => {
+                            const plan = tenant.active_subscription?.plan ?? 'free';
+                            const label = plan.charAt(0).toUpperCase() + plan.slice(1);
+                            const colors: Record<string, string> = {
+                              free: 'bg-gray-100 text-gray-700',
+                              starter: 'bg-blue-50 text-blue-700',
+                              mushola: 'bg-blue-50 text-blue-700',
+                              professional: 'bg-purple-50 text-purple-700',
+                              enterprise: 'bg-amber-50 text-amber-700',
+                            };
+                            const color = colors[plan] ?? 'bg-gray-100 text-gray-700';
+                            return (
+                              <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold ${color}`}>
+                                {plan !== 'free' && <Crown className="size-3" />}
+                                {label}
+                              </span>
+                            );
+                          })()}
                         </TableCell>
                         <TableCell className="text-sm text-muted-foreground">
                           {tenant.city || '-'}
