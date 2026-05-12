@@ -24,9 +24,10 @@ interface AdminDashboard {
   total_events: number;
   total_users: number;
   total_revenue: number;
-  active_subscriptions?: number;
-  active_events?: number;
+  active_subscriptions: number;
+  active_events: number;
   recent_registrations: Tenant[];
+  recent_payments: Payment[];
   subscription_breakdown: Record<string, number>;
 }
 
@@ -94,20 +95,9 @@ export default function AdminDashboardPage() {
     refetchInterval: 60_000,
   });
 
-  const { data: tenantsData } = useQuery({
-    queryKey: ['admin', 'tenants', { per_page: 5 }],
-    queryFn: () => adminService.getTenants({ per_page: 5, page: 1 }),
-  });
-
-  const { data: paymentsData } = useQuery({
-    queryKey: ['admin', 'payments', { per_page: 6 }],
-    queryFn: () => adminService.getPayments({ per_page: 6, page: 1 }),
-  });
-
   const stats = data?.data as AdminDashboard | undefined;
-  const recentTenants = (tenantsData?.data ?? []) as Tenant[];
-  const recentPayments = (paymentsData?.data ?? []) as Payment[];
-
+  const recentTenants = stats?.recent_registrations ?? [];
+  const recentPayments = stats?.recent_payments ?? [];
   const breakdown = stats?.subscription_breakdown ?? {};
   const breakdownTotal = Object.values(breakdown).reduce((s, v) => s + v, 0) || 1;
 
