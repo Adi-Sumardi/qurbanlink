@@ -65,7 +65,7 @@ class RegisterAction
                 'description' => $data['event_description'] ?? null,
                 'event_date'  => $data['event_date'],
                 'year'        => date('Y', strtotime($data['event_date'])),
-                'status'      => EventStatus::Draft,
+                'status'      => EventStatus::Active,
                 'total_coupons' => 0,
                 'distributed'   => 0,
             ]);
