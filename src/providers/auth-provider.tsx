@@ -38,7 +38,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
-    if (isAuthenticated && isPublicPath) {
+    // Auto-redirect ke dashboard kalau sudah login & buka public path,
+    // KECUALI /register atau /login — form-nya sudah handle redirect sendiri
+    // (mis. paid plan harus ke /subscription, bukan ke /dashboard).
+    // Tanpa exception ini, race condition bikin auth-provider override redirect form.
+    const isAuthFormPath = pathname.startsWith('/register') || pathname.startsWith('/login');
+    if (isAuthenticated && isPublicPath && !isAuthFormPath) {
       router.replace(isSuperAdmin ? '/admin' : '/dashboard');
       return;
     }
