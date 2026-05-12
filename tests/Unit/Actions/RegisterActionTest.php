@@ -32,6 +32,9 @@ class RegisterActionTest extends TestCase
             'phone' => '081234567890',
             'city' => 'Jakarta',
             'province' => 'DKI Jakarta',
+            'event_name' => 'Qurban 1446 H',
+            'event_date' => '2026-06-17',
+            'event_description' => 'Distribusi qurban tahunan',
         ], $overrides);
     }
 
