@@ -963,6 +963,10 @@ function SubscriptionPageInner() {
       {/* ─── Cancel Payment Confirmation Dialog ────────────────── */}
       <Dialog open={!!cancelConfirmPayment} onOpenChange={(open) => { if (!open) setCancelConfirmPayment(null); }}>
         <DialogContent className="sm:max-w-md p-0 overflow-hidden">
+          <DialogTitle className="sr-only">Batalkan Pembayaran</DialogTitle>
+          <DialogDescription className="sr-only">
+            Konfirmasi pembatalan pembayaran. Tindakan ini tidak dapat dibatalkan setelah dikonfirmasi.
+          </DialogDescription>
           {/* Red gradient header */}
           <div className="relative bg-gradient-to-br from-red-500 to-rose-600 px-6 pt-8 pb-10">
             <div className="flex flex-col items-center text-center">
