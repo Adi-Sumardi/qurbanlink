@@ -68,9 +68,9 @@ export function LoginForm() {
                 <FormLabel className="text-xs font-bold uppercase tracking-widest text-[#3f4944]">
                   Email
                 </FormLabel>
-                <FormControl>
-                  <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-[#3f4944]/40" />
+                <div className="relative">
+                  <Mail className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-[#3f4944]/40 pointer-events-none" />
+                  <FormControl>
                     <input
                       type="email"
                       placeholder="name@mosque.org"
@@ -78,8 +78,8 @@ export function LoginForm() {
                       className="w-full rounded-xl bg-[#f2f4f6] py-3.5 pl-11 pr-4 text-sm text-[#191c1e] placeholder-[#3f4944]/40 outline-none ring-0 transition-all focus:bg-white focus:ring-1 focus:ring-[#004532]"
                       {...field}
                     />
-                  </div>
-                </FormControl>
+                  </FormControl>
+                </div>
                 <FormMessage />
               </FormItem>
             )}
@@ -102,9 +102,9 @@ export function LoginForm() {
                     Lupa Kata Sandi?
                   </Link>
                 </div>
-                <FormControl>
-                  <div className="relative">
-                    <Lock className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-[#3f4944]/40" />
+                <div className="relative">
+                  <Lock className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-[#3f4944]/40 pointer-events-none" />
+                  <FormControl>
                     <input
                       type={showPassword ? 'text' : 'password'}
                       placeholder="••••••••••••"
@@ -112,16 +112,16 @@ export function LoginForm() {
                       className="w-full rounded-xl bg-[#f2f4f6] py-3.5 pl-11 pr-11 text-sm text-[#191c1e] placeholder-[#3f4944]/40 outline-none ring-0 transition-all focus:bg-white focus:ring-1 focus:ring-[#004532]"
                       {...field}
                     />
-                    <button
-                      type="button"
-                      tabIndex={-1}
-                      onClick={() => setShowPassword((v) => !v)}
-                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#3f4944]/40 transition-colors hover:text-[#3f4944]"
-                    >
-                      {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                    </button>
-                  </div>
-                </FormControl>
+                  </FormControl>
+                  <button
+                    type="button"
+                    tabIndex={-1}
+                    onClick={() => setShowPassword((v) => !v)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#3f4944]/40 transition-colors hover:text-[#3f4944]"
+                  >
+                    {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                  </button>
+                </div>
                 <FormMessage />
               </FormItem>
             )}
