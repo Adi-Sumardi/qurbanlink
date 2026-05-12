@@ -2,16 +2,14 @@
 
 import { useEffect, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { usePayment } from '@/hooks/use-payment';
-import { subscriptionService } from '@/services/subscription.service';
 
 /**
- * Reads ?welcome_plan=xxx from URL (injected by useRegister after registration).
- * If the plan is paid, auto-opens Midtrans Snap.
- * - Success  → toast + clear param → user stays in dashboard with paid plan
- * - Fail/Cancel → toast "paket gratis" + clear param → free trial continues
+ * Reads ?welcome_plan=xxx injected by useRegister after paid-plan registration.
+ * Auto-opens Midtrans Snap popup 1.5s after landing on the dashboard.
+ * - Payment success  → toast + clear URL param
+ * - Cancel / fail    → toast "paket gratis" + clear URL param
  */
 function PostRegisterPaymentInner() {
   const searchParams = useSearchParams();
@@ -19,34 +17,27 @@ function PostRegisterPaymentInner() {
   const triggered = useRef(false);
   const planSlug = searchParams.get('welcome_plan');
 
-  const { data: plansRes, isLoading } = useQuery({
-    queryKey: ['subscription', 'plans'],
-    queryFn: () => subscriptionService.getPlans(),
-    enabled: !!planSlug,
-    staleTime: 5 * 60 * 1000,
-  });
-
-  /** Remove ?welcome_plan from the URL cleanly without a navigation */
   function clearParam() {
+    if (typeof window === 'undefined') return;
     const url = new URL(window.location.href);
     url.searchParams.delete('welcome_plan');
-    router.replace(url.pathname + (url.search || ''), { scroll: false });
+    // Replace URL without re-render / scroll jump
+    window.history.replaceState({}, '', url.pathname + url.search);
   }
 
   const { pay } = usePayment({
-    suppressDefaultToasts: true,
     onSuccess: () => {
-      toast.success('🎉 Pembayaran berhasil! Paket Anda telah diaktifkan.');
+      toast.success('🎉 Pembayaran berhasil! Paket Anda telah diaktifkan.', { duration: 6000 });
       clearParam();
     },
     onFailed: () => {
-      toast.info('Pembayaran tidak berhasil. Silakan coba lagi dari menu Langganan.', {
+      toast.info('Pembayaran tidak berhasil. Anda menggunakan paket gratis sementara.', {
         duration: 6000,
       });
       clearParam();
     },
     onClosed: () => {
-      toast.info('Anda menggunakan paket gratis sementara. Berlangganan kapan saja di menu Langganan.', {
+      toast.info('Pembayaran ditutup. Anda dapat berlangganan kapan saja di menu Langganan.', {
         duration: 6000,
       });
       clearParam();
@@ -54,49 +45,19 @@ function PostRegisterPaymentInner() {
   });
 
   useEffect(() => {
-    if (!planSlug || triggered.current || isLoading) return;
-    if (!plansRes) return;
-
-    // Extract plans array from various response shapes
-    const raw = plansRes as unknown;
-    let plans: Array<{ slug: string; price_monthly: number }> = [];
-    if (Array.isArray(raw)) plans = raw;
-    else {
-      const r = raw as Record<string, unknown>;
-      if (Array.isArray(r?.data)) plans = r.data as typeof plans;
-      else {
-        const nested = r?.data as Record<string, unknown> | undefined;
-        if (Array.isArray(nested?.data)) plans = nested!.data as typeof plans;
-      }
-    }
-
-    const found = plans.find((p) => p.slug === planSlug);
-    if (!found) {
-      if (process.env.NODE_ENV !== 'production') {
-        console.warn(
-          `[PostRegisterPayment] Plan slug "${planSlug}" not found. Available:`,
-          plans.map((p) => p.slug),
-        );
-      }
-      clearParam();
-      return;
-    }
-    if (found.price_monthly === 0) {
-      // Free plan — nothing to pay
-      clearParam();
-      return;
-    }
-
+    // Only run once, only when there is a plan param
+    if (!planSlug || triggered.current) return;
     triggered.current = true;
 
-    // Small delay so dashboard renders fully before Snap pops up
+    // Give dashboard 1.5s to render before popping Snap
     const timer = setTimeout(() => {
-      pay(found.slug, 'monthly');
-    }, 1200);
+      pay(planSlug, 'monthly');
+    }, 1500);
 
     return () => clearTimeout(timer);
+  // pay is stable (useCallback), planSlug is a string
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [planSlug, isLoading, plansRes]);
+  }, [planSlug]);
 
   return null;
 }
