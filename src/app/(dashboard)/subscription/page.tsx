@@ -139,11 +139,15 @@ function SubscriptionPageInner() {
   const { data: subscriptionRes, isLoading: loadingSub } = useQuery({
     queryKey: ['subscription', 'current'],
     queryFn: () => subscriptionService.getCurrent(),
+    retry: false,      // 404 = no subscription, jangan retry
+    throwOnError: false,
   });
 
   const { data: paymentsRes, isLoading: loadingPayments } = useQuery({
     queryKey: ['subscription', 'payments'],
     queryFn: () => subscriptionService.getPayments(),
+    retry: false,
+    throwOnError: false,
   });
 
   const { data: plansRes, isLoading: loadingPlans, isError: plansError } = useQuery({
@@ -179,8 +183,8 @@ function SubscriptionPageInner() {
     const found = plans.find((p) => p.slug === autoPayPlan);
     if (!found || found.price_monthly === 0) return;
     autoOpenRef.current = true;
-    // Langsung trigger payment tanpa perlu klik tombol "Bayar"
     pay(found.slug, 'monthly');
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoPayPlan, loadingPlans, plans]);
 
   // Paket yang aktif saat ini
