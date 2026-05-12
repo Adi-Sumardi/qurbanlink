@@ -39,6 +39,18 @@ class TurnstileValid implements ValidationRule
             return;
         }
 
+        // Fallback token sent by frontend when the Turnstile widget fails to
+        // render due to browser/CSP constraints (Cloudflare internal bug).
+        // Fail-open: log the event and skip remote verification.
+        // Rate limiting on login/register still protects against brute force.
+        if ($value === 'TURNSTILE_WIDGET_ERROR') {
+            Log::info('Turnstile fallback token used — widget render failed on client', [
+                'ip' => $this->request?->ip() ?? request()->ip(),
+            ]);
+            return;
+        }
+
+
         try {
             $response = Http::asForm()->timeout(5)->post(
                 'https://challenges.cloudflare.com/turnstile/v0/siteverify',
