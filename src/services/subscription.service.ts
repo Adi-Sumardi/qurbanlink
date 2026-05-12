@@ -73,4 +73,10 @@ export const subscriptionService = {
     );
     return res.data;
   },
+
+  /** Re-activate subscription for paid payment that was not activated (webhook failure recovery). */
+  async syncSubscription() {
+    const res = await api.post<ApiResponse<Subscription>>('/subscriptions/sync');
+    return res.data;
+  },
 };

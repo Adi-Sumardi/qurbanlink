@@ -24,6 +24,7 @@ import {
   Plus,
   Minus,
   Ticket,
+  Printer,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -103,6 +104,7 @@ function SubscriptionPageInner() {
   const [showPlans, setShowPlans] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlanInfo | null>(null);
   const [resumingId, setResumingId] = useState<string | null>(null);
+  const [syncing, setSyncing] = useState(false);
   const [topupOpen, setTopupOpen] = useState(false);
   const [topupQty, setTopupQty] = useState(10);
   const [topupLoading, setTopupLoading] = useState(false);
@@ -227,6 +229,19 @@ function SubscriptionPageInner() {
     setSelectedPlan(null);
 
     await pay(plan.slug, billingCycle);
+  }
+
+  async function handleSync() {
+    setSyncing(true);
+    try {
+      await subscriptionService.syncSubscription();
+      toast.success('Langganan berhasil disinkronkan!');
+      qc.invalidateQueries({ queryKey: ['subscription'] });
+    } catch {
+      toast.error('Gagal sinkronisasi. Hubungi support.');
+    } finally {
+      setSyncing(false);
+    }
   }
 
   async function handleTopup() {
@@ -372,13 +387,24 @@ function SubscriptionPageInner() {
                 Pilih paket untuk mulai menggunakan semua fitur platform
               </p>
             </div>
-            <Button
-              onClick={() => setShowPlans(true)}
-              className="btn-gradient gap-2 rounded-full px-6 font-bold shadow-lg shadow-[#004532]/20"
-            >
-              <Sparkles className="size-4" />
-              Lihat Paket Tersedia
-            </Button>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              <Button
+                onClick={() => setShowPlans(true)}
+                className="btn-gradient gap-2 rounded-full px-6 font-bold shadow-lg shadow-[#004532]/20"
+              >
+                <Sparkles className="size-4" />
+                Lihat Paket Tersedia
+              </Button>
+              <Button
+                variant="outline"
+                className="gap-2 rounded-full px-6"
+                disabled={syncing}
+                onClick={handleSync}
+              >
+                {syncing ? <Loader2 className="size-4 animate-spin" /> : <RefreshCw className="size-4" />}
+                Sinkronkan Langganan
+              </Button>
+            </div>
           </div>
         ) : (
           <div className="space-y-6">
@@ -586,21 +612,20 @@ function SubscriptionPageInner() {
                             Lanjutkan
                           </Button>
                         )}
-                        {payment.invoice_url ? (
+                        {payment.status === 'paid' || payment.status === PaymentStatus.Paid ? (
                           <Button
                             variant="ghost"
                             size="sm"
                             className="gap-1.5 text-[#004532] hover:text-[#004532]"
-                            onClick={() => handleDownloadInvoice(payment)}
+                            onClick={() => window.open(`/print/invoice/${payment.id}`, '_blank')}
                           >
-                            <Download className="size-3.5" />
-                            Unduh
-                            <ExternalLink className="size-3" />
+                            <Printer className="size-3.5" />
+                            Cetak
                           </Button>
                         ) : (
                           payment.status !== PaymentStatus.Pending &&
                           (payment.status as string) !== 'pending' && (
-                            <span className="text-xs text-muted-foreground">Tidak tersedia</span>
+                            <span className="text-xs text-muted-foreground">-</span>
                           )
                         )}
                       </div>
