@@ -465,6 +465,37 @@ function SubscriptionPageInner() {
               )}
             </div>
 
+            {/* Info Langganan Berikutnya */}
+            {sub.expires_at && Number(sub.price) > 0 && (
+              <div className="flex items-start gap-3 rounded-xl border border-[#004532]/15 bg-[#f0fbf4] px-4 py-3">
+                <RefreshCw className="mt-0.5 size-4 shrink-0 text-[#004532]" />
+                <div className="text-sm">
+                  <p className="font-semibold text-[#004532]">
+                    Tagihan berikutnya: {formatDate(sub.expires_at)}
+                  </p>
+                  <p className="mt-0.5 text-xs text-[#3f4944]/70">
+                    Lakukan perpanjangan sebelum tanggal tersebut agar layanan tidak terputus.
+                    Estimasi biaya: <span className="font-semibold">{formatCurrency(Number(sub.price))}</span> /
+                    {sub.billing_cycle === 'yearly' ? ' tahun' : ' bulan'}.
+                  </p>
+                </div>
+              </div>
+            )}
+            {sub.expires_at && Number(sub.price) === 0 && (
+              <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+                <AlertCircle className="mt-0.5 size-4 shrink-0 text-amber-600" />
+                <div className="text-sm">
+                  <p className="font-semibold text-amber-800">
+                    Masa uji coba berakhir: {formatDate(sub.expires_at)}
+                  </p>
+                  <p className="mt-0.5 text-xs text-amber-700/80">
+                    Pilih paket berbayar sebelum tanggal tersebut untuk melanjutkan menggunakan
+                    semua fitur platform.
+                  </p>
+                </div>
+              </div>
+            )}
+
             {/* Coupon Quota */}
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
