@@ -8,6 +8,34 @@ import type {
   Payment,
 } from '@/types';
 
+export interface ErrorLogEntry {
+  id: string;
+  method: string | null;
+  url: string | null;
+  route: string | null;
+  status_code: number | null;
+  exception_class: string | null;
+  message: string;
+  stack_trace: string | null;
+  request_data: Record<string, unknown> | null;
+  ip_address: string | null;
+  user_agent: string | null;
+  user_id: string | null;
+  user: { id: string; name: string; email: string } | null;
+  environment: string;
+  occurred_at: string;
+}
+
+export interface ErrorStats {
+  total: number;
+  today: number;
+  errors_500: number;
+  errors_404: number;
+  top_routes: { route: string; total: number }[];
+  recent_trend: { date: string; total: number }[];
+  by_status: { status_code: number; total: number }[];
+}
+
 export interface RoleWithPermissions {
   id: number;
   name: string;
@@ -146,6 +174,27 @@ export const adminService = {
 
   async deleteRole(roleId: number) {
     const res = await api.delete<ApiResponse<null>>(`/admin/roles/${roleId}`);
+    return res.data;
+  },
+
+  // Error monitoring
+  async getErrorLogs(params?: QueryParams) {
+    const res = await api.get<PaginatedResponse<ErrorLogEntry>>('/admin/error-logs', { params });
+    return res.data;
+  },
+
+  async getErrorStats() {
+    const res = await api.get<ApiResponse<ErrorStats>>('/admin/error-logs/stats');
+    return res.data;
+  },
+
+  async deleteErrorLog(id: string) {
+    const res = await api.delete<ApiResponse<null>>(`/admin/error-logs/${id}`);
+    return res.data;
+  },
+
+  async clearErrorLogs() {
+    const res = await api.delete<ApiResponse<null>>('/admin/error-logs/clear');
     return res.data;
   },
 };
