@@ -30,6 +30,7 @@ export interface PaginationLink {
 export interface LoginRequest {
   email: string;
   password: string;
+  turnstile_token: string;
 }
 
 export interface RegisterRequest {
@@ -43,6 +44,7 @@ export interface RegisterRequest {
   event_date: string;
   event_description?: string;
   plan?: string;
+  turnstile_token: string;
 }
 
 export interface ForgotPasswordRequest {

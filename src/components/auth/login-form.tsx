@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { Loader2, Mail, Lock, ArrowRight, Eye, EyeOff, AlertCircle, X } from 'lucide-react';
+import { Turnstile } from '@/components/auth/turnstile';
 import {
   Form,
   FormControl,
@@ -22,6 +23,7 @@ export function LoginForm() {
   const login = useLogin();
   const [showPassword, setShowPassword] = useState(false);
   const [errorBanner, setErrorBanner] = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -32,8 +34,9 @@ export function LoginForm() {
   });
 
   function onSubmit(data: LoginFormValues) {
+    if (!turnstileToken) return;
     setErrorBanner(null);
-    login.mutate(data, {
+    login.mutate({ ...data, turnstile_token: turnstileToken }, {
       onError: (error) => {
         if (error instanceof AxiosError) {
           const status = error.response?.status;
@@ -177,14 +180,24 @@ export function LoginForm() {
             </label>
           </div>
 
+          {/* Turnstile — anti-bot protection */}
+          <Turnstile
+            onVerify={(token) => setTurnstileToken(token)}
+            onExpire={() => setTurnstileToken(null)}
+            onError={() => setTurnstileToken(null)}
+            className="mt-1"
+          />
+
           {/* Submit */}
           <button
             type="submit"
-            disabled={login.isPending}
+            disabled={login.isPending || !turnstileToken}
             className="btn-gradient mt-2 flex w-full items-center justify-center gap-3 rounded-full py-4 text-base font-bold font-headline shadow-xl shadow-[#004532]/20 transition-all hover:opacity-90 active:scale-95 disabled:opacity-70"
           >
             {login.isPending ? (
               <Loader2 className="size-5 animate-spin" />
+            ) : !turnstileToken ? (
+              <span className="text-sm">Menunggu verifikasi...</span>
             ) : (
               <>
                 Masuk ke Dashboard

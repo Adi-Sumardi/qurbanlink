@@ -22,6 +22,7 @@ import { useRegister } from '@/hooks/use-auth';
 import { registerSchema, type RegisterFormValues } from '@/lib/validations/auth';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
+import { Turnstile } from '@/components/auth/turnstile';
 
 function SacredInput({
   icon: Icon,
@@ -88,6 +89,7 @@ const STEP1_FIELDS = [
 
 export function RegisterForm() {
   const [step, setStep] = useState<1 | 2>(1);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const register = useRegister();
   const searchParams = useSearchParams();
   const planFromUrl = searchParams.get('plan') ?? undefined;
@@ -113,7 +115,11 @@ export function RegisterForm() {
   }
 
   function onSubmit(data: RegisterFormValues) {
-    register.mutate({ ...data, plan: planFromUrl }, {
+    if (!turnstileToken) {
+      toast.error('Mohon tunggu verifikasi keamanan selesai…');
+      return;
+    }
+    register.mutate({ ...data, plan: planFromUrl, turnstile_token: turnstileToken }, {
       onError: (error) => {
         if (error instanceof AxiosError) {
           const errors = error.response?.data?.errors;
@@ -381,6 +387,15 @@ export function RegisterForm() {
                 )}
               />
 
+              {/* Cloudflare Turnstile — proteksi anti-bot */}
+              <div className="flex justify-center pt-2">
+                <Turnstile
+                  onVerify={(token) => setTurnstileToken(token)}
+                  onExpire={() => setTurnstileToken(null)}
+                  onError={() => setTurnstileToken(null)}
+                />
+              </div>
+
               <div className="flex gap-3 pt-1">
                 <button
                   type="button"
@@ -393,11 +408,13 @@ export function RegisterForm() {
 
                 <button
                   type="submit"
-                  disabled={register.isPending}
+                  disabled={register.isPending || !turnstileToken}
                   className="btn-gradient flex flex-1 items-center justify-center gap-3 rounded-full py-4 text-base font-bold font-headline shadow-xl shadow-[#004532]/20 transition-all hover:opacity-90 active:scale-95 disabled:opacity-70"
                 >
                   {register.isPending ? (
                     <Loader2 className="size-5 animate-spin" />
+                  ) : !turnstileToken ? (
+                    <>Memverifikasi…</>
                   ) : (
                     <>
                       Daftar & Mulai
