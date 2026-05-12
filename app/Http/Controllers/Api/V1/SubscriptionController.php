@@ -236,6 +236,35 @@ class SubscriptionController extends Controller
     }
 
     /**
+     * Cancel a pending payment (user-initiated cancellation).
+     */
+    public function cancelPayment(Request $request, Payment $payment): JsonResponse
+    {
+        $tenant = app()->has('current_tenant') ? app('current_tenant') : $request->user()->tenant;
+
+        if ($payment->tenant_id !== $tenant->id) {
+            return $this->error('Payment tidak ditemukan.', 404);
+        }
+
+        if ($payment->status !== PaymentStatus::Pending) {
+            return $this->error('Hanya pembayaran pending yang bisa dibatalkan.', 422);
+        }
+
+        $payment->update([
+            'status'      => PaymentStatus::Failed,
+            'expired_at'  => now(),
+        ]);
+
+        Log::info('cancelPayment: payment cancelled by user', [
+            'payment_id' => $payment->id,
+            'invoice'    => $payment->invoice_number,
+            'tenant_id'  => $tenant->id,
+        ]);
+
+        return $this->success(null, 'Pembayaran berhasil dibatalkan.');
+    }
+
+    /**
      * Re-activate subscription for a paid payment that was not activated (e.g. webhook failure).
      */
     public function syncSubscription(Request $request): JsonResponse

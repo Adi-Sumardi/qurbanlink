@@ -131,6 +131,7 @@ Route::middleware(['auth:sanctum', 'tenant', 'check-subscription'])->group(funct
     Route::get('/subscriptions/payments', [\App\Http\Controllers\Api\V1\SubscriptionController::class, 'payments']);
     Route::get('/subscriptions/payment-status', [\App\Http\Controllers\Api\V1\SubscriptionController::class, 'paymentStatus']);
     Route::post('/subscriptions/payments/{payment}/resume', [\App\Http\Controllers\Api\V1\SubscriptionController::class, 'resumePayment']);
+    Route::post('/subscriptions/payments/{payment}/cancel', [\App\Http\Controllers\Api\V1\SubscriptionController::class, 'cancelPayment']);
     Route::post('/subscriptions/sync', [\App\Http\Controllers\Api\V1\SubscriptionController::class, 'syncSubscription']);
     Route::get('/subscriptions/payments/{payment}', [\App\Http\Controllers\Api\V1\SubscriptionController::class, 'paymentDetail']);
 });
