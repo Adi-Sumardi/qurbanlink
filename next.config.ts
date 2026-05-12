@@ -41,7 +41,8 @@ const securityHeaders = [
   { key: 'X-Frame-Options',                value: 'SAMEORIGIN' },
   { key: 'X-XSS-Protection',              value: '1; mode=block' },
   { key: 'Referrer-Policy',               value: 'strict-origin-when-cross-origin' },
-  { key: 'Permissions-Policy',            value: 'camera=(), microphone=(), geolocation=(), payment=()' },
+  // camera=(self) → izinkan kamera untuk QR scanner di /scan (halaman own origin)
+  { key: 'Permissions-Policy',            value: 'camera=(self), microphone=(), geolocation=(), payment=(self)' },
   // HSTS — only for production (browsers ignore it on HTTP/localhost)
   ...(!isDev ? [
     { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
