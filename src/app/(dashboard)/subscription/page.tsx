@@ -117,6 +117,7 @@ function SubscriptionPageInner() {
   const [showPlans, setShowPlans] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlanInfo | null>(null);
   const [resumingId, setResumingId] = useState<string | null>(null);
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
   const [topupOpen, setTopupOpen] = useState(false);
   const [topupQty, setTopupQty] = useState(10);
@@ -235,6 +236,22 @@ function SubscriptionPageInner() {
     setSelectedPlan(null);
 
     await pay(plan.slug, billingCycle);
+  }
+
+  async function handleCancelPayment(payment: Payment) {
+    if (!confirm(`Batalkan pembayaran ${payment.invoice_number}? Tindakan ini tidak bisa dibatalkan.`)) {
+      return;
+    }
+    setCancellingId(payment.id);
+    try {
+      await subscriptionService.cancelPayment(payment.id);
+      toast.success('Pembayaran berhasil dibatalkan');
+      qc.invalidateQueries({ queryKey: ['subscription'] });
+    } catch {
+      // toast handled by interceptor
+    } finally {
+      setCancellingId(null);
+    }
   }
 
   async function handleSync() {
@@ -634,23 +651,39 @@ function SubscriptionPageInner() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-1.5">
-                        {/* Tombol lanjut bayar: tampil jika status pending (string maupun enum value) */}
+                        {/* Tombol untuk pending payment: Lanjutkan + Batalkan */}
                         {(payment.status === PaymentStatus.Pending ||
                           (payment.status as string) === 'pending') && (
-                          <Button
-                            variant="default"
-                            size="sm"
-                            className="gap-1.5 bg-[#004532] text-white hover:bg-[#003526]"
-                            disabled={resumingId === payment.id || isBusy}
-                            onClick={() => handleResume(payment)}
-                          >
-                            {resumingId === payment.id ? (
-                              <Loader2 className="size-3.5 animate-spin" />
-                            ) : (
-                              <PlayCircle className="size-3.5" />
-                            )}
-                            Lanjutkan
-                          </Button>
+                          <>
+                            <Button
+                              variant="default"
+                              size="sm"
+                              className="gap-1.5 bg-[#004532] text-white hover:bg-[#003526]"
+                              disabled={resumingId === payment.id || cancellingId === payment.id || isBusy}
+                              onClick={() => handleResume(payment)}
+                            >
+                              {resumingId === payment.id ? (
+                                <Loader2 className="size-3.5 animate-spin" />
+                              ) : (
+                                <PlayCircle className="size-3.5" />
+                              )}
+                              Lanjutkan
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="gap-1.5 text-red-600 hover:bg-red-50 hover:text-red-700"
+                              disabled={cancellingId === payment.id || resumingId === payment.id}
+                              onClick={() => handleCancelPayment(payment)}
+                            >
+                              {cancellingId === payment.id ? (
+                                <Loader2 className="size-3.5 animate-spin" />
+                              ) : (
+                                <X className="size-3.5" />
+                              )}
+                              Batalkan
+                            </Button>
+                          </>
                         )}
                         {(payment.status as string) === 'paid' ? (
                           <Button

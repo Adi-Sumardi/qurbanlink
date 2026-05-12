@@ -65,6 +65,14 @@ export const subscriptionService = {
     return res.data;
   },
 
+  /** Cancel a pending payment (user-initiated) */
+  async cancelPayment(paymentId: string) {
+    const res = await api.post<ApiResponse<null>>(
+      `/subscriptions/payments/${paymentId}/cancel`
+    );
+    return res.data;
+  },
+
   /** Create Midtrans Snap payment for coupon top-up. quantity must be multiple of 10. */
   async couponTopup(quantity: number) {
     const res = await api.post<ApiResponse<MidtransPaymentResult & { quantity: number }>>(
