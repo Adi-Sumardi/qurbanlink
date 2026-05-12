@@ -7,8 +7,10 @@ export function formatCurrency(amount: number): string {
   }).format(amount);
 }
 
-export function formatNumber(value: number): string {
-  return new Intl.NumberFormat('id-ID').format(value);
+export function formatNumber(value: number | string | null | undefined): string {
+  const num = Number(value);
+  if (value === null || value === undefined || value === '' || isNaN(num)) return '0';
+  return new Intl.NumberFormat('id-ID').format(num);
 }
 
 export function formatDate(date: string | null): string {
@@ -60,6 +62,8 @@ export function formatPercentage(value: number, total: number): string {
   return `${Math.round((value / total) * 100)}%`;
 }
 
-export function formatWeight(kg: number): string {
-  return `${formatNumber(kg)} kg`;
+export function formatWeight(kg: number | string | null | undefined): string {
+  const num = Number(kg);
+  if (kg === null || kg === undefined || kg === '' || isNaN(num)) return '0 kg';
+  return `${formatNumber(num)} kg`;
 }

@@ -321,8 +321,8 @@ function PerAnimalTab({ data }: { data: AnimalReport[] }) {
     );
   }
 
-  const totalWeight = data.reduce((sum, a) => sum + (a.weight || 0), 0);
-  const totalPortions = data.reduce((sum, a) => sum + (a.estimated_portions || 0), 0);
+  const totalWeight = data.reduce((sum, a) => sum + (Number(a.weight) || 0), 0);
+  const totalPortions = data.reduce((sum, a) => sum + (Number(a.estimated_portions) || 0), 0);
 
   return (
     <div className="space-y-4">
