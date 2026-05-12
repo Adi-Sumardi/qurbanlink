@@ -34,16 +34,20 @@ export function useRegister() {
       setAuth(response.data.user, response.data.token);
       const plan = (variables as RegisterRequest & { plan?: string }).plan;
       const eventId = response.data.event_id;
+
+      // Always go to the event/dashboard first
+      const base = eventId ? `/events/${eventId}` : '/dashboard';
+
       if (plan && plan !== 'free') {
-        // Pass event_id agar subscription page tahu ke mana redirect setelah bayar
-        const dest = `/subscription?plan=${plan}${eventId ? `&event_id=${eventId}` : ''}&from=register`;
-        router.replace(dest);
+        // Attach welcome_plan so PostRegisterPayment auto-opens Snap on dashboard
+        router.replace(`${base}?welcome_plan=${plan}`);
       } else {
-        router.replace(eventId ? `/events/${eventId}` : '/dashboard');
+        router.replace(base);
       }
     },
   });
 }
+
 
 export function useLogout() {
   const { logout } = useAuthStore();

@@ -5,6 +5,7 @@ import { AppHeader } from '@/components/layout/app-header';
 import { AppSidebar } from '@/components/layout/app-sidebar';
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import { BottomNav } from '@/components/pwa/bottom-nav';
+import { PostRegisterPayment } from '@/components/layout/post-register-payment';
 
 export default function DashboardLayout({
   children,
@@ -32,6 +33,8 @@ export default function DashboardLayout({
         <AppHeader onMenuToggle={() => setSidebarOpen(true)} />
         {/* pb-20 on mobile to clear the bottom nav bar */}
         <main className="flex-1 overflow-y-auto p-4 pb-20 md:p-6 md:pb-6">
+          {/* Auto-trigger payment if user just registered with a paid plan */}
+          <PostRegisterPayment />
           {children}
         </main>
       </div>
