@@ -13,15 +13,28 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         env:
           RESEND_KEY: ${{ secrets.RESEND_KEY }}
+          MIDTRANS_SERVER_KEY: ${{ secrets.MIDTRANS_SERVER_KEY }}
+          MIDTRANS_CLIENT_KEY: ${{ secrets.MIDTRANS_CLIENT_KEY }}
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
-          envs: RESEND_KEY
+          envs: RESEND_KEY,MIDTRANS_SERVER_KEY,MIDTRANS_CLIENT_KEY
           script: |
             cd /var/www/qurbanlink-backend
             git pull origin backend
+
+            # Inject Midtrans config ke .env
+            grep -q "^MIDTRANS_SERVER_KEY=" .env \
+              && sed -i "s|^MIDTRANS_SERVER_KEY=.*|MIDTRANS_SERVER_KEY=${MIDTRANS_SERVER_KEY}|" .env \
+              || echo "MIDTRANS_SERVER_KEY=${MIDTRANS_SERVER_KEY}" >> .env
+            grep -q "^MIDTRANS_CLIENT_KEY=" .env \
+              && sed -i "s|^MIDTRANS_CLIENT_KEY=.*|MIDTRANS_CLIENT_KEY=${MIDTRANS_CLIENT_KEY}|" .env \
+              || echo "MIDTRANS_CLIENT_KEY=${MIDTRANS_CLIENT_KEY}" >> .env
+            grep -q "^MIDTRANS_IS_PRODUCTION=" .env \
+              && sed -i "s|^MIDTRANS_IS_PRODUCTION=.*|MIDTRANS_IS_PRODUCTION=true|" .env \
+              || echo "MIDTRANS_IS_PRODUCTION=true" >> .env
 
             # Inject Resend SMTP config ke .env
             sed -i "s|^MAIL_MAILER=.*|MAIL_MAILER=smtp|" .env
