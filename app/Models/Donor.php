@@ -29,6 +29,8 @@ class Donor extends Model
         'address',
         'nik',
         'submission_status',
+        'kurban_type',
+        'participants',
         'notes',
     ];
 
@@ -41,6 +43,7 @@ class Donor extends Model
     {
         return [
             'submission_status' => DonorSubmissionStatus::class,
+            'participants'      => 'array',
         ];
     }
 
