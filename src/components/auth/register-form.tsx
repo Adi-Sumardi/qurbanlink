@@ -392,7 +392,7 @@ export function RegisterForm() {
                 <Turnstile
                   onVerify={(token) => setTurnstileToken(token)}
                   onExpire={() => setTurnstileToken(null)}
-                  onError={() => setTurnstileToken(null)}
+                  onError={() => {}} // fallback handled inside Turnstile component
                 />
               </div>
 
@@ -408,13 +408,11 @@ export function RegisterForm() {
 
                 <button
                   type="submit"
-                  disabled={register.isPending || !turnstileToken}
+                  disabled={register.isPending}
                   className="btn-gradient flex flex-1 items-center justify-center gap-3 rounded-full py-4 text-base font-bold font-headline shadow-xl shadow-[#004532]/20 transition-all hover:opacity-90 active:scale-95 disabled:opacity-70"
                 >
                   {register.isPending ? (
                     <Loader2 className="size-5 animate-spin" />
-                  ) : !turnstileToken ? (
-                    <>Memverifikasi…</>
                   ) : (
                     <>
                       Daftar & Mulai

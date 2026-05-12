@@ -184,20 +184,18 @@ export function LoginForm() {
           <Turnstile
             onVerify={(token) => setTurnstileToken(token)}
             onExpire={() => setTurnstileToken(null)}
-            onError={() => setTurnstileToken(null)}
+            onError={() => {}} // fallback handled inside Turnstile component
             className="mt-1"
           />
 
           {/* Submit */}
           <button
             type="submit"
-            disabled={login.isPending || !turnstileToken}
+            disabled={login.isPending}
             className="btn-gradient mt-2 flex w-full items-center justify-center gap-3 rounded-full py-4 text-base font-bold font-headline shadow-xl shadow-[#004532]/20 transition-all hover:opacity-90 active:scale-95 disabled:opacity-70"
           >
             {login.isPending ? (
               <Loader2 className="size-5 animate-spin" />
-            ) : !turnstileToken ? (
-              <span className="text-sm">Menunggu verifikasi...</span>
             ) : (
               <>
                 Masuk ke Dashboard
