@@ -85,6 +85,7 @@ function Navbar() {
             { label: 'Fitur', href: '#fitur' },
             { label: 'Harga', href: '#harga' },
             { label: 'FAQ', href: '#faq' },
+            { label: 'Panduan', href: '/panduan' },
             { label: 'Blog', href: '/blog' },
           ].map((item, i) => (
             <a
@@ -183,12 +184,12 @@ function HeroSection() {
                 Daftarkan Masjid Anda
                 <ArrowRight className="size-5" />
               </Link>
-              <a
-                href="#cara-kerja"
+              <Link
+                href="/panduan"
                 className="inline-flex items-center gap-2 rounded-full bg-[#e6e8ea] px-8 py-4 text-base font-bold font-headline text-[#191c1e] transition-colors hover:bg-[#e0e3e5]"
               >
-                Lihat Demo
-              </a>
+                Lihat Panduan
+              </Link>
             </m.div>
           </m.div>
 
@@ -1077,6 +1078,7 @@ function Footer() {
           </div>
           <div className="flex flex-wrap justify-center gap-8">
             {[
+              { label: 'Panduan', href: '/panduan' },
               { label: 'Blog', href: '/blog' },
               { label: 'FAQ', href: '/#faq' },
               { label: 'Kebijakan Privasi', href: '/kebijakan-privasi' },

@@ -13,6 +13,8 @@ const PUBLIC_PATHS = [
   '/kebijakan-privasi',
   '/syarat-ketentuan',
   '/laporan-keberlanjutan',
+  '/blog',
+  '/panduan',
 ];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
