@@ -567,7 +567,7 @@ function SubscriptionPageInner() {
                   <TableHead>Jumlah</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Tanggal Bayar</TableHead>
-                  <TableHead>Kadaluarsa</TableHead>
+                  <TableHead>Batas Bayar</TableHead>
                   <TableHead className="text-right">Invoice</TableHead>
                 </TableRow>
               </TableHeader>
@@ -596,7 +596,10 @@ function SubscriptionPageInner() {
                       {payment.paid_at ? formatDate(payment.paid_at) : '-'}
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
-                      {payment.expired_at ? formatDate(payment.expired_at) : '-'}
+                      {/* "Batas Bayar" hanya relevan untuk pending — kalau sudah paid, batas bayar sudah tidak penting */}
+                      {(payment.status as string) === 'pending' && payment.expired_at
+                        ? formatDate(payment.expired_at)
+                        : '-'}
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-1.5">
