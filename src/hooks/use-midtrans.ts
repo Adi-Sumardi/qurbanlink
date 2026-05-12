@@ -53,7 +53,7 @@ export function useMidtransSnap() {
   }, []);
 
   const openSnap = useCallback(
-    (
+    async (
       snapToken: string,
       callbacks: {
         onSuccess?: (result: Record<string, unknown>) => void;
@@ -62,10 +62,19 @@ export function useMidtransSnap() {
         onClose?: () => void;
       }
     ) => {
-      if (typeof window !== 'undefined' && window.snap) {
+      if (typeof window === 'undefined') return;
+
+      // Poll up to ~5s for the Snap script to finish loading
+      const deadline = Date.now() + 5000;
+      while (!window.snap && Date.now() < deadline) {
+        await new Promise((r) => setTimeout(r, 100));
+      }
+
+      if (window.snap) {
         window.snap.pay(snapToken, callbacks);
       } else {
-        console.error('Midtrans Snap not loaded yet');
+        console.error('Midtrans Snap script failed to load');
+        callbacks.onError?.({ status_message: 'Gagal memuat halaman pembayaran.' });
       }
     },
     []

@@ -17,6 +17,8 @@ export interface UsePaymentOptions {
   onFailed?: (invoiceNumber: string) => void;
   /** Called when user closes Snap popup without completing payment */
   onClosed?: () => void;
+  /** Suppress built-in toasts so caller can show its own (used by post-register flow) */
+  suppressDefaultToasts?: boolean;
 }
 
 export function usePayment(options: UsePaymentOptions = {}) {
@@ -62,17 +64,21 @@ export function usePayment(options: UsePaymentOptions = {}) {
           openSnap(result.snap_token, {
             onSuccess: () => {
               setStatus('success');
-              toast.success('🎉 Pembayaran berhasil! Langganan Anda telah diperbarui.');
+              if (!optionsRef.current.suppressDefaultToasts) {
+                toast.success('🎉 Pembayaran berhasil! Langganan Anda telah diperbarui.');
+              }
               invalidateSubscription();
               optionsRef.current.onSuccess?.(invoiceNumber ?? '');
             },
 
             onPending: () => {
               setStatus('pending');
-              toast.info(
-                '⏳ Pembayaran sedang diproses. Kami akan notifikasikan saat dikonfirmasi.',
-                { duration: 6000 }
-              );
+              if (!optionsRef.current.suppressDefaultToasts) {
+                toast.info(
+                  '⏳ Pembayaran sedang diproses. Kami akan notifikasikan saat dikonfirmasi.',
+                  { duration: 6000 }
+                );
+              }
               invalidateSubscription();
               optionsRef.current.onPending?.(invoiceNumber ?? '');
             },
@@ -84,13 +90,17 @@ export function usePayment(options: UsePaymentOptions = {}) {
                   ? (result as Record<string, string>)?.status_message ?? 'Pembayaran gagal.'
                   : 'Pembayaran gagal.';
               setErrorMessage(msg);
-              toast.error(`❌ ${msg}`);
+              if (!optionsRef.current.suppressDefaultToasts) {
+                toast.error(`❌ ${msg}`);
+              }
               optionsRef.current.onFailed?.(invoiceNumber ?? '');
             },
 
             onClose: () => {
               setStatus('closed');
-              toast.info('Jendela pembayaran ditutup. Lanjutkan kapan saja.');
+              if (!optionsRef.current.suppressDefaultToasts) {
+                toast.info('Jendela pembayaran ditutup. Lanjutkan kapan saja.');
+              }
               optionsRef.current.onClosed?.();
             },
           });

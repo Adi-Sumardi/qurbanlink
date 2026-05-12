@@ -34,18 +34,19 @@ function PostRegisterPaymentInner() {
   }
 
   const { pay } = usePayment({
+    suppressDefaultToasts: true,
     onSuccess: () => {
       toast.success('🎉 Pembayaran berhasil! Paket Anda telah diaktifkan.');
       clearParam();
     },
     onFailed: () => {
-      toast.info('Pembayaran tidak berhasil. Anda menggunakan paket gratis sementara.', {
+      toast.info('Pembayaran tidak berhasil. Silakan coba lagi dari menu Langganan.', {
         duration: 6000,
       });
       clearParam();
     },
     onClosed: () => {
-      toast.info('Pembayaran ditutup. Anda dapat berlangganan kapan saja di menu Langganan.', {
+      toast.info('Anda menggunakan paket gratis sementara. Berlangganan kapan saja di menu Langganan.', {
         duration: 6000,
       });
       clearParam();
@@ -70,8 +71,18 @@ function PostRegisterPaymentInner() {
     }
 
     const found = plans.find((p) => p.slug === planSlug);
-    if (!found || found.price_monthly === 0) {
-      // Free plan or not found — nothing to do, just clear the param
+    if (!found) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn(
+          `[PostRegisterPayment] Plan slug "${planSlug}" not found. Available:`,
+          plans.map((p) => p.slug),
+        );
+      }
+      clearParam();
+      return;
+    }
+    if (found.price_monthly === 0) {
+      // Free plan — nothing to pay
       clearParam();
       return;
     }
