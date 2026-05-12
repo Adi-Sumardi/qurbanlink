@@ -1,8 +1,16 @@
 import type { MetadataRoute } from 'next';
+import { ARTICLES } from '@/content/articles';
 
 const BASE_URL = 'https://tawzii.id';
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const blogPosts: MetadataRoute.Sitemap = ARTICLES.map((article) => ({
+    url: `${BASE_URL}/blog/${article.slug}`,
+    lastModified: new Date(article.publishedAt),
+    changeFrequency: 'monthly' as const,
+    priority: 0.7,
+  }));
+
   return [
     {
       url: BASE_URL,
@@ -22,6 +30,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.8,
     },
+    {
+      url: `${BASE_URL}/blog`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    ...blogPosts,
     {
       url: `${BASE_URL}/kebijakan-privasi`,
       lastModified: new Date(),

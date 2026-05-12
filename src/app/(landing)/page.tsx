@@ -28,6 +28,7 @@ import { formatCurrency, formatNumber } from '@/lib/format';
 import { SUBSCRIPTION_PLAN_LABELS } from '@/lib/constants';
 import type { SubscriptionPlanInfo } from '@/services/subscription.service';
 import { toast } from 'sonner';
+import { FaqSection } from '@/components/landing/faq-section';
 
 // --- Animation Variants ---
 
@@ -83,7 +84,8 @@ function Navbar() {
             { label: 'Beranda', href: '#' },
             { label: 'Fitur', href: '#fitur' },
             { label: 'Harga', href: '#harga' },
-            { label: 'Amanah', href: '#amanah' },
+            { label: 'FAQ', href: '#faq' },
+            { label: 'Blog', href: '/blog' },
           ].map((item, i) => (
             <a
               key={item.label}
@@ -1075,6 +1077,8 @@ function Footer() {
           </div>
           <div className="flex flex-wrap justify-center gap-8">
             {[
+              { label: 'Blog', href: '/blog' },
+              { label: 'FAQ', href: '/#faq' },
               { label: 'Kebijakan Privasi', href: '/kebijakan-privasi' },
               { label: 'Syarat & Ketentuan', href: '/syarat-ketentuan' },
               { label: 'Laporan Keberlanjutan', href: '/laporan-keberlanjutan' },
@@ -1226,6 +1230,7 @@ export default function LandingPage() {
         <FeaturesSection />
         <TransparencySection />
         <PricingSection />
+        <FaqSection />
         <CtaSection />
       </main>
       <Footer />
