@@ -111,8 +111,8 @@ export function Turnstile({ onVerify, onExpire, onError, theme = 'light' }: Turn
       data-expired-callback={cbExpire}
       data-error-callback={cbError}
       data-theme={theme}
-      data-size="invisible"
-      style={{ display: 'none' }}
+      data-size="compact"
+      style={{ position: 'absolute', left: '-9999px', visibility: 'hidden' }}
     />
   );
 }
