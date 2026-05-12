@@ -12,6 +12,7 @@ use App\Models\Plan;
 use App\Services\MidtransService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class SubscriptionController extends Controller
@@ -221,6 +222,49 @@ class SubscriptionController extends Controller
     }
 
     /**
+     * Get single payment detail for invoice print.
+     */
+    public function paymentDetail(Request $request, Payment $payment): JsonResponse
+    {
+        $tenant = app()->has('current_tenant') ? app('current_tenant') : $request->user()->tenant;
+
+        if ($payment->tenant_id !== $tenant->id) {
+            return $this->error('Payment not found.', 404);
+        }
+
+        return $this->success($payment, 'Payment detail retrieved.');
+    }
+
+    /**
+     * Re-activate subscription for a paid payment that was not activated (e.g. webhook failure).
+     */
+    public function syncSubscription(Request $request): JsonResponse
+    {
+        $tenant = app()->has('current_tenant') ? app('current_tenant') : $request->user()->tenant;
+
+        $payment = Payment::where('tenant_id', $tenant->id)
+            ->where('status', PaymentStatus::Paid)
+            ->whereNull('subscription_id')
+            ->where('payment_type', PaymentType::Subscription)
+            ->latest('paid_at')
+            ->first();
+
+        if (!$payment) {
+            return $this->error('Tidak ada pembayaran yang perlu disinkronkan.', 404);
+        }
+
+        $this->activateSubscription($payment);
+
+        $subscription = $tenant->fresh()->activeSubscription;
+
+        if (!$subscription) {
+            return $this->error('Gagal mengaktifkan langganan. Cek log untuk detail.', 500);
+        }
+
+        return $this->success(new SubscriptionResource($subscription), 'Langganan berhasil diaktifkan.');
+    }
+
+    /**
      * Resume a pending payment — generate a new Snap token using the same invoice number.
      */
     public function resumePayment(Request $request, Payment $payment, MidtransService $midtrans): JsonResponse
@@ -380,12 +424,27 @@ class SubscriptionController extends Controller
             return;
         }
 
+        // metadata is cast to array by Eloquent — no json_decode needed
         $meta         = $payment->metadata ?? [];
         $planSlug     = $meta['plan'] ?? null;
         $billingCycle = $meta['billing_cycle'] ?? 'monthly';
         $couponQuota  = $meta['coupon_quota'] ?? 100;
 
-        if (!$planSlug) return;
+        if (!$planSlug) {
+            \Log::error('activateSubscription: plan slug missing from metadata', [
+                'payment_id'  => $payment->id,
+                'invoice'     => $payment->invoice_number,
+                'metadata_raw'=> $payment->getRawOriginal('metadata'),
+            ]);
+            return;
+        }
+
+        \Log::info('activateSubscription: activating', [
+            'payment_id'   => $payment->id,
+            'invoice'      => $payment->invoice_number,
+            'plan'         => $planSlug,
+            'billing_cycle'=> $billingCycle,
+        ]);
 
         $tenant = $payment->tenant;
 
