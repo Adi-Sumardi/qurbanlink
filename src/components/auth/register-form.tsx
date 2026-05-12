@@ -209,7 +209,7 @@ export function RegisterForm() {
                       Nama Masjid / Organisasi
                     </FormLabel>
                     <FormControl>
-                      <SacredInput icon={Building2} placeholder="Masjid Al-Ikhlas" field={field} />
+                      <SacredInput icon={Building2} placeholder="Masjid Al-Ikhlas" autoComplete="organization" field={field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -225,7 +225,7 @@ export function RegisterForm() {
                       Nama Admin
                     </FormLabel>
                     <FormControl>
-                      <SacredInput icon={User} placeholder="Ahmad Fauzi" field={field} />
+                      <SacredInput icon={User} placeholder="Ahmad Fauzi" autoComplete="name" field={field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -257,7 +257,7 @@ export function RegisterForm() {
                         Phone <span className="normal-case font-normal text-[#3f4944]/50">(opsional)</span>
                       </FormLabel>
                       <FormControl>
-                        <SacredInput icon={Phone} type="tel" placeholder="08123456789" field={field} />
+                        <SacredInput icon={Phone} type="tel" placeholder="08123456789" autoComplete="tel" field={field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
