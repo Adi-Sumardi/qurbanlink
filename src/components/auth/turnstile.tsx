@@ -1,28 +1,26 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
+
+/**
+ * Cloudflare Turnstile widget (auto-render mode).
+ *
+ * Menggunakan cf-turnstile div + data attributes — lebih kompatibel dengan
+ * strict CSP dan Trusted Types dibanding explicit render API.
+ *
+ * Callbacks di-expose ke window dengan nama unik per-instance.
+ * Site key via NEXT_PUBLIC_TURNSTILE_SITE_KEY. Jika kosong → dev mode.
+ */
 
 declare global {
   interface Window {
-    turnstile?: {
-      render: (
-        container: string | HTMLElement,
-        options: {
-          sitekey: string;
-          callback: (token: string) => void;
-          'expired-callback'?: () => void;
-          'error-callback'?: () => void;
-          theme?: 'light' | 'dark' | 'auto';
-          size?: 'normal' | 'compact';
-        }
-      ) => string;
-      reset: (widgetId?: string) => void;
-      remove: (widgetId: string) => void;
-    };
+    [key: string]: unknown;
   }
 }
 
-const SCRIPT_URL = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+const SCRIPT_URL = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+
+let counter = 0;
 
 interface TurnstileProps {
   onVerify: (token: string) => void;
@@ -32,74 +30,58 @@ interface TurnstileProps {
   className?: string;
 }
 
-/**
- * Cloudflare Turnstile widget — modern alternatif untuk reCAPTCHA.
- * Gratis, privacy-friendly, dan punya mode "managed" yang biasanya invisible.
- *
- * Site key di-set via env NEXT_PUBLIC_TURNSTILE_SITE_KEY.
- * Kalau key kosong, widget di-skip dan token dummy dikirim (development mode).
- */
 export function Turnstile({ onVerify, onExpire, onError, theme = 'light', className }: TurnstileProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const widgetIdRef = useRef<string | null>(null);
-  const [scriptReady, setScriptReady] = useState(false);
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
-  // Dev mode: no site key — auto-verify with dummy token so forms still work
+  // Unique names per widget instance so multiple widgets don't clash
+  const id = useRef(`__ts_${++counter}`);
+  const cbVerify  = `${id.current}_verify`;
+  const cbExpire  = `${id.current}_expire`;
+  const cbError   = `${id.current}_error`;
+
+  // Dev mode: no site key → auto-verify with dummy token
   useEffect(() => {
-    if (!siteKey) {
-      onVerify('DEV_MODE_NO_TURNSTILE');
-    }
+    if (!siteKey) onVerify('DEV_MODE_NO_TURNSTILE');
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Load Turnstile script once (only when siteKey exists)
+  // Register/update global callbacks (auto-rendering reads them by name)
+  useEffect(() => {
+    if (!siteKey) return;
+    window[cbVerify] = onVerify;
+    window[cbExpire] = onExpire ?? (() => {});
+    window[cbError]  = onError  ?? (() => {});
+    return () => {
+      delete window[cbVerify];
+      delete window[cbExpire];
+      delete window[cbError];
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onVerify, onExpire, onError]);
+
+  // Load Turnstile script once (without ?render=explicit → auto-render mode)
   useEffect(() => {
     if (!siteKey || typeof window === 'undefined') return;
-    if (window.turnstile) {
-      setScriptReady(true);
-      return;
-    }
-
-    const existing = document.querySelector(`script[src^="${SCRIPT_URL}"]`) as HTMLScriptElement | null;
-    if (existing) {
-      existing.addEventListener('load', () => setScriptReady(true), { once: true });
-      return;
-    }
+    if (document.querySelector(`script[src^="${SCRIPT_URL}"]`)) return;
 
     const script = document.createElement('script');
     script.src = SCRIPT_URL;
     script.async = true;
     script.defer = true;
-    script.onload = () => setScriptReady(true);
     document.head.appendChild(script);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [siteKey]);
 
-  // Render widget once script + container ready
-  useEffect(() => {
-    if (!siteKey || !scriptReady || !window.turnstile || !containerRef.current) return;
-    if (widgetIdRef.current) return; // already rendered
-
-    widgetIdRef.current = window.turnstile.render(containerRef.current, {
-      sitekey: siteKey,
-      callback: onVerify,
-      'expired-callback': onExpire,
-      'error-callback': onError,
-      theme,
-    });
-
-    return () => {
-      if (widgetIdRef.current && window.turnstile) {
-        window.turnstile.remove(widgetIdRef.current);
-        widgetIdRef.current = null;
-      }
-    };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scriptReady, siteKey]);
-
-  // No site key = dev mode, render nothing (token already sent via useEffect above)
   if (!siteKey) return null;
 
-  return <div ref={containerRef} className={className} />;
+  return (
+    <div
+      className={`cf-turnstile ${className ?? ''}`.trim()}
+      data-sitekey={siteKey}
+      data-callback={cbVerify}
+      data-expired-callback={cbExpire}
+      data-error-callback={cbError}
+      data-theme={theme}
+    />
+  );
 }
