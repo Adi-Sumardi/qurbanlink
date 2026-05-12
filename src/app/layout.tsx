@@ -8,6 +8,7 @@ import { ErrorBoundary } from "@/components/common/error-boundary";
 import { InstallPrompt } from "@/components/pwa/install-prompt";
 import { OfflineIndicator } from "@/components/pwa/offline-indicator";
 import { ServiceWorkerRegistrar } from "@/components/pwa/sw-registrar";
+import { GoogleAnalytics } from "@/components/analytics/google-analytics";
 import "./globals.css";
 
 const inter = Inter({
@@ -38,6 +39,9 @@ export const metadata: Metadata = {
     'distribusi kurban', 'kurban digital', 'digital kurban', 'pembagian kurban',
     'qrcode kurban', 'qr code kurban', 'aplikasi kurban masjid', 'tawzii digital',
   ],
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || '',
+  },
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -68,6 +72,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${manrope.variable} ${geistMono.variable} antialiased`}
       >
+        <GoogleAnalytics />
         <QueryProvider>
           <AuthProvider>
             <TooltipProvider>

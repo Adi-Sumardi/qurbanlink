@@ -35,6 +35,11 @@ export function useRegister() {
       const plan = (variables as RegisterRequest & { plan?: string }).plan;
       const eventId = response.data.event_id;
 
+      // Track registration for Google Analytics / Ads conversion
+      if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+        window.gtag('event', 'sign_up', { method: 'email', plan: plan ?? 'free' });
+      }
+
       if (plan && plan !== 'free') {
         // Paid plan → subscription page yang auto-trigger Midtrans Snap.
         // event_id & from=register dipakai subscription page untuk redirect setelah bayar.

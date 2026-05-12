@@ -14,12 +14,15 @@ jobs:
         env:
           MIDTRANS_CLIENT_KEY: ${{ secrets.MIDTRANS_CLIENT_KEY }}
           TURNSTILE_SITE_KEY: ${{ secrets.TURNSTILE_SITE_KEY }}
+          GA_ID: ${{ secrets.GA_ID }}
+          GADS_ID: ${{ secrets.GADS_ID }}
+          GOOGLE_SITE_VERIFICATION: ${{ secrets.GOOGLE_SITE_VERIFICATION }}
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
-          envs: MIDTRANS_CLIENT_KEY,TURNSTILE_SITE_KEY
+          envs: MIDTRANS_CLIENT_KEY,TURNSTILE_SITE_KEY,GA_ID,GADS_ID,GOOGLE_SITE_VERIFICATION
           script: |
             cd /var/www/qurbanlink-frontend
             git pull origin main
@@ -36,6 +39,21 @@ jobs:
             grep -q "^NEXT_PUBLIC_TURNSTILE_SITE_KEY=" .env.local \
               && sed -i "s|^NEXT_PUBLIC_TURNSTILE_SITE_KEY=.*|NEXT_PUBLIC_TURNSTILE_SITE_KEY=${TURNSTILE_SITE_KEY}|" .env.local \
               || echo "NEXT_PUBLIC_TURNSTILE_SITE_KEY=${TURNSTILE_SITE_KEY}" >> .env.local
+
+            # Google Analytics 4 (GA4)
+            grep -q "^NEXT_PUBLIC_GA_ID=" .env.local \
+              && sed -i "s|^NEXT_PUBLIC_GA_ID=.*|NEXT_PUBLIC_GA_ID=${GA_ID}|" .env.local \
+              || echo "NEXT_PUBLIC_GA_ID=${GA_ID}" >> .env.local
+
+            # Google Ads
+            grep -q "^NEXT_PUBLIC_GADS_ID=" .env.local \
+              && sed -i "s|^NEXT_PUBLIC_GADS_ID=.*|NEXT_PUBLIC_GADS_ID=${GADS_ID}|" .env.local \
+              || echo "NEXT_PUBLIC_GADS_ID=${GADS_ID}" >> .env.local
+
+            # Google Site Verification
+            grep -q "^NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION=" .env.local \
+              && sed -i "s|^NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION=.*|NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION=${GOOGLE_SITE_VERIFICATION}|" .env.local \
+              || echo "NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION=${GOOGLE_SITE_VERIFICATION}" >> .env.local
 
             pnpm install
             pnpm build

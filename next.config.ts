@@ -7,6 +7,7 @@ const midtransWild    = '*.sandbox.midtrans.com *.midtrans.com';
 const midtransCdn     = '*.cdn.gtflabs.io *.gtflabs.io';
 const cloudflare      = 'static.cloudflareinsights.com cloudflareinsights.com';
 const turnstile       = 'challenges.cloudflare.com';
+const google          = 'www.googletagmanager.com www.google-analytics.com *.google-analytics.com *.googleadservices.com googleads.g.doubleclick.net *.googlesyndication.com';
 const midtransFonts   = 'https://fonts.gstatic.com';
 
 // Extract API origin from env so CSP always matches the configured backend URL
@@ -15,17 +16,17 @@ const apiOrigin = new URL(apiUrl).origin;
 
 const ContentSecurityPolicy = `
   default-src 'self';
-  script-src 'self' 'unsafe-inline' 'unsafe-eval' ${midtransWild} ${midtransCdn} ${cloudflare} ${turnstile};
+  script-src 'self' 'unsafe-inline' 'unsafe-eval' ${midtransWild} ${midtransCdn} ${cloudflare} ${turnstile} ${google};
   style-src 'self' 'unsafe-inline' ${midtransWild} ${midtransCdn} https://fonts.googleapis.com;
   font-src 'self' ${midtransFonts} ${midtransWild} ${midtransCdn};
   img-src 'self' data: blob:
     https://images.unsplash.com
     https://source.unsplash.com
-    ${midtransWild} ${midtransCdn};
-  frame-src 'self' ${midtransWild} ${midtransCdn} ${turnstile};
+    ${midtransWild} ${midtransCdn} ${google} www.google.com www.google.co.id;
+  frame-src 'self' ${midtransWild} ${midtransCdn} ${turnstile} ${google};
   connect-src 'self' ${apiOrigin} ${midtransWild} ${midtransCdn}
     https://images.unsplash.com https://source.unsplash.com
-    https://api.tawzii.id ${cloudflare} ${turnstile}
+    https://api.tawzii.id ${cloudflare} ${turnstile} ${google}
     ${isDev ? 'ws://localhost:* http://localhost:* https://*.trycloudflare.com wss://*.trycloudflare.com https://*.ngrok-free.app ws://*.ngrok-free.app' : ''};
   worker-src 'self' blob:;
   object-src 'none';
