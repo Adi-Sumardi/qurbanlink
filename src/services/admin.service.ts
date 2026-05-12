@@ -103,6 +103,11 @@ export const adminService = {
     return res.data;
   },
 
+  async deleteTenant(tenantId: string) {
+    const res = await api.delete<ApiResponse<null>>(`/admin/tenants/${tenantId}`);
+    return res.data;
+  },
+
   async getAuditLogs(params?: QueryParams) {
     const res = await api.get<PaginatedResponse<AuditLog>>(
       '/admin/audit-logs',

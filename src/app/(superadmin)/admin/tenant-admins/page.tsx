@@ -14,6 +14,7 @@ import {
   ShieldOff,
   Mail,
   Phone,
+  Trash2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -55,6 +56,7 @@ export default function TenantAdminsPage() {
   const [search, setSearch] = useState('');
   const [selectedTenant, setSelectedTenant] = useState<Tenant | null>(null);
   const [dialogAction, setDialogAction] = useState<'suspend' | 'unsuspend' | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Tenant | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ['admin', 'tenants', params],
@@ -79,6 +81,16 @@ export default function TenantAdminsPage() {
       closeDialog();
     },
     onError: () => toast.error('Gagal mengaktifkan kembali akses tenant'),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => adminService.deleteTenant(id),
+    onSuccess: () => {
+      toast.success('Tenant berhasil dihapus');
+      queryClient.invalidateQueries({ queryKey: ['admin', 'tenants'] });
+      setDeleteTarget(null);
+    },
+    onError: () => toast.error('Gagal menghapus tenant'),
   });
 
   const tenants: Tenant[] = data?.data ?? [];
@@ -248,25 +260,33 @@ export default function TenantAdminsPage() {
                                 <ChevronDown className="size-3" />
                               </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-48">
+                              <DropdownMenuContent align="end" className="w-48">
                               <DropdownMenuSeparator />
-                              {tenant.is_active ? (
+                                {tenant.is_active ? (
+                                  <DropdownMenuItem
+                                    className="text-destructive focus:text-destructive"
+                                    onClick={() => openDialog(tenant, 'suspend')}
+                                  >
+                                    <Ban className="size-4" />
+                                    Suspend Akses
+                                  </DropdownMenuItem>
+                                ) : (
+                                  <DropdownMenuItem
+                                    onClick={() => openDialog(tenant, 'unsuspend')}
+                                  >
+                                    <CheckCircle className="size-4" />
+                                    Aktifkan Kembali
+                                  </DropdownMenuItem>
+                                )}
+                                <DropdownMenuSeparator />
                                 <DropdownMenuItem
                                   className="text-destructive focus:text-destructive"
-                                  onClick={() => openDialog(tenant, 'suspend')}
+                                  onClick={() => setDeleteTarget(tenant)}
                                 >
-                                  <Ban className="size-4" />
-                                  Suspend Akses
+                                  <Trash2 className="size-4" />
+                                  Hapus Akses
                                 </DropdownMenuItem>
-                              ) : (
-                                <DropdownMenuItem
-                                  onClick={() => openDialog(tenant, 'unsuspend')}
-                                >
-                                  <CheckCircle className="size-4" />
-                                  Aktifkan Kembali
-                                </DropdownMenuItem>
-                              )}
-                            </DropdownMenuContent>
+                              </DropdownMenuContent>
                           </DropdownMenu>
                         </TableCell>
                       </TableRow>
@@ -291,7 +311,7 @@ export default function TenantAdminsPage() {
         </CardContent>
       </Card>
 
-      {/* Confirm Dialog */}
+      {/* Confirm Dialog — Suspend/Unsuspend */}
       <Dialog open={!!selectedTenant && !!dialogAction} onOpenChange={closeDialog}>
         <DialogContent>
           <DialogHeader>
@@ -317,6 +337,31 @@ export default function TenantAdminsPage() {
             >
               {isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
               {dialogAction === 'suspend' ? 'Ya, Suspend' : 'Ya, Aktifkan'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Confirm Dialog — Hapus Permanen */}
+      <Dialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="text-destructive">Hapus Tenant Permanen</DialogTitle>
+            <DialogDescription>
+              Anda akan <strong>menghapus permanen</strong> tenant &ldquo;{deleteTarget?.name}&rdquo; beserta seluruh data event, donatur, dan penerima terkait. Tindakan ini <strong>tidak dapat dibatalkan</strong>.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2">
+            <Button variant="ghost" onClick={() => setDeleteTarget(null)} disabled={deleteMutation.isPending}>
+              Batal
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => deleteTarget && deleteMutation.mutate(deleteTarget.id)}
+              disabled={deleteMutation.isPending}
+            >
+              {deleteMutation.isPending && <Loader2 className="mr-2 size-4 animate-spin" />}
+              Ya, Hapus Permanen
             </Button>
           </DialogFooter>
         </DialogContent>

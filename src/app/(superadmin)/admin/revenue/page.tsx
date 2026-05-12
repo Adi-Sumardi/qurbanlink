@@ -167,7 +167,7 @@ export default function AdminRevenuePage() {
         ))}
       </div>
 
-      {/* Revenue Chart Placeholder */}
+      {/* Revenue Chart — built from payment data */}
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-base">
@@ -176,17 +176,56 @@ export default function AdminRevenuePage() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex h-48 items-center justify-center rounded-xl border-2 border-dashed border-muted-foreground/20 bg-muted/10">
-            <div className="text-center">
-              <TrendingUp className="mx-auto size-8 text-muted-foreground/30" />
-              <p className="mt-2 text-sm text-muted-foreground">
-                Grafik pendapatan akan ditampilkan di sini
-              </p>
-              <p className="text-xs text-muted-foreground/60">
-                Hubungkan API analytics untuk data real-time
-              </p>
-            </div>
-          </div>
+          {(() => {
+            // Group paid payments by month (last 12 months)
+            const months: Record<string, number> = {};
+            const now = new Date();
+            for (let i = 11; i >= 0; i--) {
+              const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+              const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+              months[key] = 0;
+            }
+            paidPayments.forEach((p) => {
+              const d = new Date(p.paid_at ?? p.created_at ?? '');
+              if (isNaN(d.getTime())) return;
+              const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+              if (key in months) months[key] += Number(p.amount) || 0;
+            });
+
+            const entries = Object.entries(months);
+            const maxVal = Math.max(...entries.map(([, v]) => v), 1);
+            const MONTH_SHORT = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+
+            return (
+              <div className="space-y-2">
+                <div className="flex items-end gap-1 overflow-x-auto pb-1" style={{ height: 160 }}>
+                  {entries.map(([key, val]) => {
+                    const [, m] = key.split('-');
+                    const pct = (val / maxVal) * 100;
+                    return (
+                      <div key={key} className="group flex flex-1 min-w-[28px] flex-col items-center gap-1 relative">
+                        {/* Tooltip */}
+                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 hidden group-hover:flex whitespace-nowrap rounded bg-[#191c1e] px-2 py-1 text-[10px] text-white shadow z-10">
+                          {formatCurrency(val)}
+                        </div>
+                        <div
+                          className={`w-full rounded-t transition-all duration-500 ${val > 0 ? 'bg-emerald-500 hover:bg-emerald-400' : 'bg-muted'}`}
+                          style={{ height: `${Math.max(pct, val > 0 ? 4 : 0)}%`, minHeight: val > 0 ? 4 : 0 }}
+                        />
+                        <span className="text-[9px] text-muted-foreground">{MONTH_SHORT[parseInt(m) - 1]}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="flex items-center justify-between text-xs text-muted-foreground">
+                  <span>12 bulan terakhir</span>
+                  <span className="font-semibold text-emerald-600">
+                    Total: {formatCurrency(paidPayments.reduce((s, p) => s + (Number(p.amount) || 0), 0))}
+                  </span>
+                </div>
+              </div>
+            );
+          })()}
         </CardContent>
       </Card>
 
