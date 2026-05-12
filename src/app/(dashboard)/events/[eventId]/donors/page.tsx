@@ -297,6 +297,7 @@ export default function DonorsPage() {
                           </TableCell>
                         )}
                       </TableRow>
+                    ))}
                   </TableBody>
                 </Table>
               </div>
