@@ -8,9 +8,6 @@ import {
   Building2,
   User,
   Lock,
-  CreditCard,
-  Check,
-  X,
   Eye,
   EyeOff,
 } from 'lucide-react';
@@ -36,10 +33,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { tenantService } from '@/services/tenant.service';
-import { subscriptionService } from '@/services/subscription.service';
 import { useAuthStore } from '@/stores/auth.store';
-import { formatCurrency, formatDate } from '@/lib/format';
-import { SUBSCRIPTION_PLAN_LABELS } from '@/lib/constants';
+import { formatDate } from '@/lib/format';
 import { StatusBadge } from '@/components/common/status-badge';
 import { toast } from 'sonner';
 import api from '@/lib/api';
@@ -53,10 +48,6 @@ export default function SettingsPage() {
     queryFn: () => tenantService.getProfile(),
   });
 
-  const { data: subscription, isLoading: loadingSub } = useQuery({
-    queryKey: ['subscription', 'current'],
-    queryFn: () => subscriptionService.getCurrent(),
-  });
 
   // --- Tenant profile form ---
   const tenantForm = useForm({
@@ -151,27 +142,6 @@ export default function SettingsPage() {
       toast.error('Gagal mengubah password. Pastikan password lama benar.'),
   });
 
-  const sub = subscription?.data;
-  const quotaUsed = sub ? sub.coupon_used : 0;
-  const quotaTotal = sub ? sub.coupon_quota : 1;
-  const quotaPct =
-    quotaTotal > 0 ? Math.round((quotaUsed / quotaTotal) * 100) : 0;
-
-  const features = (sub?.plan_details as Record<string, unknown>)?.features as
-    | Record<string, boolean>
-    | undefined;
-
-  const FEATURE_LABELS: Record<string, string> = {
-    qr_code: 'QR Code Scan',
-    manual_scan: 'Manual Scan',
-    live_dashboard: 'Live Dashboard',
-    export_pdf: 'Export PDF',
-    export_excel: 'Export Excel',
-    custom_branding: 'Custom Branding',
-    email_notifications: 'Notifikasi Email',
-    api_access: 'API Access',
-    priority_support: 'Priority Support',
-  };
 
   return (
     <div className="space-y-6">
@@ -181,7 +151,7 @@ export default function SettingsPage() {
         </p>
         <h1 className="font-headline text-3xl font-extrabold text-[#191c1e]">Settings</h1>
         <p className="mt-1 text-sm text-[#3f4944]">
-          Manage your profile, account security, and subscription
+          Manage your profile and account security
         </p>
       </div>
 
@@ -482,110 +452,6 @@ export default function SettingsPage() {
                 </button>
               </form>
             </Form>
-          )}
-      </div>
-
-      {/* Subscription */}
-      <div className="rounded-2xl bg-white p-6 editorial-shadow">
-        <div className="mb-5 flex items-center gap-3">
-          <div className="flex size-10 items-center justify-center rounded-xl bg-[#a6f2d1]">
-            <CreditCard className="size-5 text-[#004532]" />
-          </div>
-          <div>
-            <h2 className="font-headline font-bold text-[#191c1e]">Subscription Plan</h2>
-            <p className="text-xs text-[#3f4944]/60">Your current plan and usage quota</p>
-          </div>
-        </div>
-          {loadingSub ? (
-            <div className="space-y-3">
-              <Skeleton className="h-8 w-40" />
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-20 w-full" />
-            </div>
-          ) : sub ? (
-            <div className="space-y-5">
-              {/* Plan & Status */}
-              <div className="flex items-center gap-3">
-                <span className="text-xl font-bold">
-                  {SUBSCRIPTION_PLAN_LABELS[sub.plan] || sub.plan}
-                </span>
-                <StatusBadge status={sub.status} />
-              </div>
-
-              {/* Quota Usage */}
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-[#3f4944]">Coupon Quota</span>
-                  <span className="font-semibold text-[#191c1e]">
-                    {quotaUsed} / {quotaTotal} ({quotaPct}%)
-                  </span>
-                </div>
-                <div className="progress-sacred">
-                  <div style={{ width: `${quotaPct}%` }} />
-                </div>
-              </div>
-
-              {/* Plan Details Grid */}
-              <div className="grid gap-3 text-sm sm:grid-cols-2">
-                <div className="flex justify-between rounded-xl bg-[#f2f4f6] px-4 py-3">
-                  <span className="text-[#3f4944]">Price</span>
-                  <span className="font-semibold text-[#191c1e]">
-                    {formatCurrency(Number(sub.price))}
-                    <span className="text-xs text-[#3f4944]/60">
-                      /{sub.billing_cycle === 'yearly' ? 'yr' : 'mo'}
-                    </span>
-                  </span>
-                </div>
-                {sub.starts_at && (
-                  <div className="flex justify-between rounded-xl bg-[#f2f4f6] px-4 py-3">
-                    <span className="text-[#3f4944]">Start Date</span>
-                    <span className="font-semibold text-[#191c1e]">
-                      {formatDate(sub.starts_at)}
-                    </span>
-                  </div>
-                )}
-                {sub.expires_at && (
-                  <div className="flex justify-between rounded-xl bg-[#f2f4f6] px-4 py-3">
-                    <span className="text-[#3f4944]">Expires</span>
-                    <span className="font-semibold text-[#191c1e]">
-                      {formatDate(sub.expires_at)}
-                    </span>
-                  </div>
-                )}
-              </div>
-
-              {/* Features */}
-              {features && Object.keys(features).length > 0 && (
-                <div>
-                  <p className="mb-3 text-xs font-black uppercase tracking-widest text-[#3f4944]/50">
-                    Plan Features
-                  </p>
-                  <div className="grid gap-2 sm:grid-cols-2">
-                    {Object.entries(features).map(([key, enabled]) => (
-                      <div
-                        key={key}
-                        className={`flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm ${
-                          enabled ? 'bg-[#f2f4f6]' : 'opacity-40'
-                        }`}
-                      >
-                        {enabled ? (
-                          <Check className="size-4 text-[#004532]" />
-                        ) : (
-                          <X className="size-4 text-[#3f4944]/40" />
-                        )}
-                        <span className={enabled ? 'text-[#191c1e] font-medium' : 'text-[#3f4944]/60'}>
-                          {FEATURE_LABELS[key] || key}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          ) : (
-            <p className="text-sm text-[#3f4944]/60">
-              No subscription data available.
-            </p>
           )}
       </div>
     </div>
