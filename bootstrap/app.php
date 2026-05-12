@@ -73,8 +73,38 @@ return Application::configure(basePath: dirname(__DIR__))
                 return response()->json([
                     'success' => false,
                     'message' => 'Validation failed.',
-                    'errors' => $e->errors(),
+                    'errors'  => $e->errors(),
                 ], 422);
+            }
+        });
+
+        // Log all API errors to error_logs table for monitoring
+        $exceptions->report(function (\Throwable $e) {
+            try {
+                $request    = request();
+                $statusCode = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500;
+
+                // Skip validation errors and auth errors from being stored
+                if ($e instanceof \Illuminate\Validation\ValidationException) return false;
+                if ($statusCode === 401 || $statusCode === 403) return false;
+
+                \App\Models\ErrorLog::create([
+                    'method'          => $request->method(),
+                    'url'             => $request->fullUrl(),
+                    'route'           => optional($request->route())->getName() ?? $request->path(),
+                    'status_code'     => $statusCode,
+                    'exception_class' => get_class($e),
+                    'message'         => $e->getMessage(),
+                    'stack_trace'     => $e->getTraceAsString(),
+                    'request_data'    => $request->except(['password', 'password_confirmation', 'current_password']),
+                    'ip_address'      => $request->ip(),
+                    'user_agent'      => $request->userAgent(),
+                    'user_id'         => auth()->id(),
+                    'environment'     => app()->environment(),
+                    'occurred_at'     => now(),
+                ]);
+            } catch (\Throwable) {
+                // Silently fail — never let logging break the app
             }
         });
     })->create();

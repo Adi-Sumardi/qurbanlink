@@ -149,6 +149,11 @@ Route::middleware(['auth:sanctum', 'role:super_admin'])->prefix('admin')->group(
     Route::patch('/tenants/{tenant}/suspend', [\App\Http\Controllers\Api\V1\Admin\AdminTenantController::class, 'suspend']);
     Route::patch('/tenants/{tenant}/unsuspend', [\App\Http\Controllers\Api\V1\Admin\AdminTenantController::class, 'unsuspend']);
     Route::get('/audit-logs', [\App\Http\Controllers\Api\V1\Admin\AdminAuditController::class, 'index']);
+    // Error monitoring
+    Route::get('/error-logs',                   [\App\Http\Controllers\Api\V1\Admin\AdminErrorLogController::class, 'index']);
+    Route::get('/error-logs/stats',             [\App\Http\Controllers\Api\V1\Admin\AdminErrorLogController::class, 'stats']);
+    Route::delete('/error-logs/clear',          [\App\Http\Controllers\Api\V1\Admin\AdminErrorLogController::class, 'clear']);
+    Route::delete('/error-logs/{errorLog}',     [\App\Http\Controllers\Api\V1\Admin\AdminErrorLogController::class, 'destroy']);
     Route::apiResource('plans', \App\Http\Controllers\Api\V1\Admin\AdminPlanController::class);
     Route::get('/payments', [\App\Http\Controllers\Api\V1\Admin\AdminPaymentController::class, 'index']);
     Route::post('/payments/{payment}/activate', [\App\Http\Controllers\Api\V1\Admin\AdminPaymentController::class, 'manualActivation']);
