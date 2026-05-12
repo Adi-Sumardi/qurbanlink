@@ -240,28 +240,52 @@ class SubscriptionController extends Controller
      */
     public function syncSubscription(Request $request): JsonResponse
     {
-        $tenant = app()->has('current_tenant') ? app('current_tenant') : $request->user()->tenant;
+        try {
+            $tenant = app()->has('current_tenant') ? app('current_tenant') : $request->user()?->tenant;
 
-        $payment = Payment::where('tenant_id', $tenant->id)
-            ->where('status', PaymentStatus::Paid)
-            ->whereNull('subscription_id')
-            ->where('payment_type', PaymentType::Subscription)
-            ->latest('paid_at')
-            ->first();
+            if (!$tenant) {
+                return $this->error('Tenant tidak ditemukan.', 404);
+            }
 
-        if (!$payment) {
-            return $this->error('Tidak ada pembayaran yang perlu disinkronkan.', 404);
+            $payment = Payment::where('tenant_id', $tenant->id)
+                ->where('status', PaymentStatus::Paid)
+                ->whereNull('subscription_id')
+                ->where('payment_type', PaymentType::Subscription)
+                ->latest('paid_at')
+                ->first();
+
+            if (!$payment) {
+                return $this->error('Tidak ada pembayaran yang perlu disinkronkan.', 404);
+            }
+
+            Log::info('syncSubscription: starting activation', [
+                'tenant_id'  => $tenant->id,
+                'payment_id' => $payment->id,
+                'invoice'    => $payment->invoice_number,
+                'metadata'   => $payment->metadata,
+            ]);
+
+            $this->activateSubscription($payment);
+
+            $subscription = $tenant->fresh()?->activeSubscription;
+
+            if (!$subscription) {
+                Log::warning('syncSubscription: activation returned no active subscription', [
+                    'tenant_id'  => $tenant->id,
+                    'payment_id' => $payment->id,
+                ]);
+                return $this->error('Gagal mengaktifkan langganan. Cek metadata payment atau hubungi support.', 422);
+            }
+
+            return $this->success(new SubscriptionResource($subscription), 'Langganan berhasil diaktifkan.');
+        } catch (\Throwable $e) {
+            Log::error('syncSubscription: exception', [
+                'message' => $e->getMessage(),
+                'file'    => $e->getFile() . ':' . $e->getLine(),
+                'trace'   => $e->getTraceAsString(),
+            ]);
+            return $this->error('Terjadi kesalahan saat sinkronisasi: ' . $e->getMessage(), 500);
         }
-
-        $this->activateSubscription($payment);
-
-        $subscription = $tenant->fresh()->activeSubscription;
-
-        if (!$subscription) {
-            return $this->error('Gagal mengaktifkan langganan. Cek log untuk detail.', 500);
-        }
-
-        return $this->success(new SubscriptionResource($subscription), 'Langganan berhasil diaktifkan.');
     }
 
     /**
