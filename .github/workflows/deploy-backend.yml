@@ -15,12 +15,13 @@ jobs:
           RESEND_KEY: ${{ secrets.RESEND_KEY }}
           MIDTRANS_SERVER_KEY: ${{ secrets.MIDTRANS_SERVER_KEY }}
           MIDTRANS_CLIENT_KEY: ${{ secrets.MIDTRANS_CLIENT_KEY }}
+          TURNSTILE_SECRET_KEY: ${{ secrets.TURNSTILE_SECRET_KEY }}
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
-          envs: RESEND_KEY,MIDTRANS_SERVER_KEY,MIDTRANS_CLIENT_KEY
+          envs: RESEND_KEY,MIDTRANS_SERVER_KEY,MIDTRANS_CLIENT_KEY,TURNSTILE_SECRET_KEY
           script: |
             cd /var/www/qurbanlink-backend
             git pull origin backend
@@ -35,6 +36,14 @@ jobs:
             grep -q "^MIDTRANS_IS_PRODUCTION=" .env \
               && sed -i "s|^MIDTRANS_IS_PRODUCTION=.*|MIDTRANS_IS_PRODUCTION=true|" .env \
               || echo "MIDTRANS_IS_PRODUCTION=true" >> .env
+
+            # Inject Cloudflare Turnstile secret
+            grep -q "^TURNSTILE_SECRET_KEY=" .env \
+              && sed -i "s|^TURNSTILE_SECRET_KEY=.*|TURNSTILE_SECRET_KEY=${TURNSTILE_SECRET_KEY}|" .env \
+              || echo "TURNSTILE_SECRET_KEY=${TURNSTILE_SECRET_KEY}" >> .env
+            grep -q "^TURNSTILE_REQUIRED=" .env \
+              && sed -i "s|^TURNSTILE_REQUIRED=.*|TURNSTILE_REQUIRED=true|" .env \
+              || echo "TURNSTILE_REQUIRED=true" >> .env
 
             # Inject Resend SMTP config ke .env
             sed -i "s|^MAIL_MAILER=.*|MAIL_MAILER=smtp|" .env

@@ -9,6 +9,7 @@ use App\Http\Resources\UserResource;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
@@ -38,7 +39,11 @@ class AuthController extends Controller
             'event_name'        => ['required', 'string', 'max:255'],
             'event_date'        => ['required', 'date', 'after_or_equal:today'],
             'event_description' => ['nullable', 'string', 'max:1000'],
+            'turnstile_token'   => ['required', 'string', new \App\Rules\TurnstileValid($request)],
         ]);
+
+        // turnstile_token cuma untuk validasi, jangan masuk ke RegisterAction
+        unset($data['turnstile_token']);
 
         $result = $action->execute($data);
         $result['user']->sendEmailVerificationNotification();
@@ -56,8 +61,9 @@ class AuthController extends Controller
     public function login(Request $request, LoginAction $action): JsonResponse
     {
         $request->validate([
-            'email'    => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
+            'email'           => ['required', 'string', 'email'],
+            'password'        => ['required', 'string'],
+            'turnstile_token' => ['required', 'string', new \App\Rules\TurnstileValid($request)],
         ]);
 
         // Brute-force protection: 5 attempts per minute per IP+email combo
