@@ -78,24 +78,21 @@ class AdminPlanController extends Controller
     }
 
     /**
-     * Delete a plan.
+     * Delete a plan (force). Active subscriptions are migrated to the free plan.
      */
     public function destroy(Plan $plan): JsonResponse
     {
-        // Prevent deleting plans that are still in use
-        $activeSubscriptions = \App\Models\Subscription::where('plan', $plan->slug)
+        // Migrate any subscriptions still using this plan to "free"
+        $migrated = \App\Models\Subscription::where('plan', $plan->slug)
             ->whereIn('status', ['active', 'grace'])
-            ->count();
+            ->update(['plan' => 'free', 'status' => 'active']);
 
-        if ($activeSubscriptions > 0) {
-            return $this->error(
-                "Tidak dapat menghapus paket '{$plan->name}' karena masih digunakan oleh {$activeSubscriptions} tenant aktif.",
-                422
-            );
+        if ($migrated > 0) {
+            \Illuminate\Support\Facades\Log::info("Force-deleted plan '{$plan->slug}': migrated {$migrated} subscription(s) to free.");
         }
 
         $plan->delete();
 
-        return $this->success(null, 'Plan deleted successfully.');
+        return $this->success(null, "Paket '{$plan->name}' berhasil dihapus" . ($migrated > 0 ? " ({$migrated} tenant dipindahkan ke paket Free)." : '.'));
     }
 }
