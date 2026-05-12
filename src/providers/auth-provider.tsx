@@ -18,9 +18,13 @@ const PUBLIC_PATHS = [
 export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, user, _hasHydrated } = useAuthStore();
 
   useEffect(() => {
+    // Tunggu sampai Zustand selesai baca dari localStorage.
+    // Tanpa ini, pada refresh isAuthenticated sempat false → redirect ke /login → bounce.
+    if (!_hasHydrated) return;
+
     const isPublicPath = pathname === '/' || PUBLIC_PATHS.some((p) => pathname.startsWith(p));
     const isLivePath = pathname.startsWith('/live/');
     const isPrintPath = pathname.startsWith('/print/');
@@ -55,7 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (isAuthenticated && isSuperAdmin && !user?.tenant && isDashboardPath) {
       router.replace('/admin');
     }
-  }, [pathname, isAuthenticated, user, router]);
+  }, [pathname, isAuthenticated, user, router, _hasHydrated]);
 
   // Selalu render children — tidak ada conditional render = tidak ada hydration mismatch
   return <>{children}</>;

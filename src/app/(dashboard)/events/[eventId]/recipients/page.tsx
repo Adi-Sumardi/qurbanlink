@@ -105,12 +105,29 @@ export default function RecipientsPage() {
     enabled: !!eventId,
   });
 
+  const DEFAULT_CATEGORIES = [
+    { key: 'fakir', label: 'Fakir' },
+    { key: 'miskin', label: 'Miskin' },
+    { key: 'amil', label: 'Amil' },
+    { key: 'muallaf', label: 'Muallaf' },
+    { key: 'riqab', label: 'Riqab (Hamba Sahaya)' },
+    { key: 'gharim', label: 'Gharim (Berhutang)' },
+    { key: 'fisabilillah', label: 'Fisabilillah' },
+    { key: 'ibnu_sabil', label: 'Ibnu Sabil (Musafir)' },
+    { key: 'dhuafa', label: 'Dhu\'afa' },
+    { key: 'yatim', label: 'Yatim / Piatu' },
+    { key: 'janda', label: 'Janda' },
+    { key: 'lansia', label: 'Lansia' },
+    { key: 'umum', label: 'Umum' },
+  ];
+
   const categories = useMemo(() => {
     const cats = eventData?.data?.settings?.categories;
-    if (Array.isArray(cats)) {
-      return cats as { key: string; label: string; quota?: number }[];
+    if (Array.isArray(cats) && cats.length > 0) {
+      return { list: cats as { key: string; label: string; quota?: number }[], isCustom: true };
     }
-    return [];
+    return { list: DEFAULT_CATEGORIES, isCustom: false };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventData]);
 
   // Fetch recipients
@@ -432,7 +449,7 @@ export default function RecipientsPage() {
                         <TableCell>{recipient.nik || '-'}</TableCell>
                         <TableCell>{recipient.phone || '-'}</TableCell>
                         <TableCell className="capitalize">
-                          {categories.find((c) => c.key === recipient.category)?.label || recipient.category || '-'}
+                          {categories.list.find((c) => c.key === recipient.category)?.label || recipient.category || '-'}
                         </TableCell>
                         <TableCell className="text-right">
                           {formatNumber(recipient.portions)}
@@ -608,13 +625,18 @@ export default function RecipientsPage() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          {categories.map((cat) => (
+                          {categories.list.map((cat) => (
                             <SelectItem key={cat.key} value={cat.key}>
                               {cat.label}
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
+                      {!categories.isCustom && (
+                        <p className="text-[11px] text-muted-foreground">
+                          Kategori default. Anda bisa kustomisasi di Pengaturan Event.
+                        </p>
+                      )}
                       <FormMessage />
                     </FormItem>
                   )}

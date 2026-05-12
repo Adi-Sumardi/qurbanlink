@@ -25,6 +25,7 @@ import {
   Minus,
   Ticket,
   Printer,
+  TriangleAlert,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -118,6 +119,7 @@ function SubscriptionPageInner() {
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlanInfo | null>(null);
   const [resumingId, setResumingId] = useState<string | null>(null);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [cancelConfirmPayment, setCancelConfirmPayment] = useState<Payment | null>(null);
   const [syncing, setSyncing] = useState(false);
   const [topupOpen, setTopupOpen] = useState(false);
   const [topupQty, setTopupQty] = useState(10);
@@ -239,9 +241,13 @@ function SubscriptionPageInner() {
   }
 
   async function handleCancelPayment(payment: Payment) {
-    if (!confirm(`Batalkan pembayaran ${payment.invoice_number}? Tindakan ini tidak bisa dibatalkan.`)) {
-      return;
-    }
+    setCancelConfirmPayment(payment);
+  }
+
+  async function confirmCancelPayment() {
+    if (!cancelConfirmPayment) return;
+    const payment = cancelConfirmPayment;
+    setCancelConfirmPayment(null);
     setCancellingId(payment.id);
     try {
       await subscriptionService.cancelPayment(payment.id);
@@ -921,6 +927,90 @@ function SubscriptionPageInner() {
                 Pilih paket di atas untuk melanjutkan pembayaran
               </p>
             )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* ─── Cancel Payment Confirmation Dialog ────────────────── */}
+      <Dialog open={!!cancelConfirmPayment} onOpenChange={(open) => { if (!open) setCancelConfirmPayment(null); }}>
+        <DialogContent className="sm:max-w-md p-0 overflow-hidden">
+          {/* Red gradient header */}
+          <div className="relative bg-gradient-to-br from-red-500 to-rose-600 px-6 pt-8 pb-10">
+            <div className="flex flex-col items-center text-center">
+              <div className="relative mb-4">
+                <div className="flex size-16 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
+                  <TriangleAlert className="size-8 text-white" />
+                </div>
+                <span className="absolute -top-1 -right-1 flex size-5 items-center justify-center rounded-full bg-white">
+                  <X className="size-3 text-red-500" />
+                </span>
+              </div>
+              <h2 className="text-xl font-bold text-white">Batalkan Pembayaran?</h2>
+              <p className="mt-1.5 text-sm text-red-100">
+                Tindakan ini <strong className="text-white">tidak dapat dibatalkan</strong> setelah dikonfirmasi
+              </p>
+            </div>
+          </div>
+
+          {/* Content card */}
+          <div className="-mt-5 rounded-t-3xl bg-white px-6 pb-6 pt-5">
+            {cancelConfirmPayment && (
+              <div className="mb-5 space-y-3">
+                {/* Invoice detail box */}
+                <div className="rounded-xl border border-red-100 bg-red-50 p-4 space-y-2.5">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">No. Invoice</span>
+                    <span className="font-mono font-semibold text-[#191c1e]">{cancelConfirmPayment.invoice_number}</span>
+                  </div>
+                  <div className="h-px bg-red-100" />
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Jumlah</span>
+                    <span className="font-bold text-[#191c1e]">{formatCurrency(cancelConfirmPayment.amount)}</span>
+                  </div>
+                  <div className="h-px bg-red-100" />
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">Tipe</span>
+                    <span className="text-[#191c1e]">
+                      {cancelConfirmPayment.payment_type === 'subscription'
+                        ? 'Langganan'
+                        : cancelConfirmPayment.payment_type === 'addon_coupon'
+                        ? 'Top-up Kupon'
+                        : cancelConfirmPayment.payment_type}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Warning note */}
+                <div className="flex items-start gap-2.5 rounded-xl bg-amber-50 border border-amber-200 px-3.5 py-3">
+                  <AlertCircle className="mt-0.5 size-4 shrink-0 text-amber-500" />
+                  <p className="text-xs text-amber-800">
+                    Setelah dibatalkan, invoice ini tidak bisa dilanjutkan. Jika ingin berlangganan, Anda perlu membuat sesi pembayaran baru.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Action buttons */}
+            <div className="flex gap-3">
+              <button
+                onClick={() => setCancelConfirmPayment(null)}
+                className="flex-1 rounded-xl border border-[#e2e8f0] bg-white px-4 py-2.5 text-sm font-semibold text-[#3f4944] transition-colors hover:bg-[#f2f4f6] active:bg-[#eceef0]"
+              >
+                Kembali
+              </button>
+              <button
+                onClick={confirmCancelPayment}
+                disabled={!!cancellingId}
+                className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-red-500 to-rose-600 px-4 py-2.5 text-sm font-bold text-white shadow-md shadow-red-500/25 transition-all hover:from-red-600 hover:to-rose-700 active:scale-[0.98] disabled:opacity-60"
+              >
+                {cancellingId ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <X className="size-4" />
+                )}
+                Ya, Batalkan
+              </button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>

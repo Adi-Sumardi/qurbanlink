@@ -81,6 +81,8 @@ export interface DonorFormData {
   nik?: string;
   submission_status?: string;
   notes?: string;
+  kurban_type?: 'pribadi' | 'patungan';
+  participants?: { name: string }[];
 }
 
 export interface AnimalFormData {

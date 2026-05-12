@@ -53,8 +53,8 @@ export const SUBSCRIPTION_PLAN_LABELS: Record<string, string> = {
 };
 
 export const DONOR_STATUS_LABELS: Record<string, string> = {
-  pending: 'Menunggu',
-  submitted: 'Terkirim',
+  pending: 'Terdaftar',
+  submitted: 'Dikonfirmasi',
 };
 
 export const ROLES = {

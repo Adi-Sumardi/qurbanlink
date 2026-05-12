@@ -114,6 +114,8 @@ export interface Donor {
   nik: string | null;
   submission_status: DonorSubmissionStatus;
   notes: string | null;
+  kurban_type: 'pribadi' | 'patungan' | null;
+  participants: { id: string; name: string }[] | null;
   animals: Animal[] | null;
   animals_count: number | null;
   created_at: string;

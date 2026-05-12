@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
-import { Loader2, Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react';
+import { Loader2, Mail, Lock, ArrowRight, Eye, EyeOff, AlertCircle, X } from 'lucide-react';
 import {
   Form,
   FormControl,
@@ -21,6 +21,7 @@ import { AxiosError } from 'axios';
 export function LoginForm() {
   const login = useLogin();
   const [showPassword, setShowPassword] = useState(false);
+  const [errorBanner, setErrorBanner] = useState<string | null>(null);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -31,10 +32,32 @@ export function LoginForm() {
   });
 
   function onSubmit(data: LoginFormValues) {
+    setErrorBanner(null);
     login.mutate(data, {
       onError: (error) => {
         if (error instanceof AxiosError) {
-          toast.error(error.response?.data?.message || 'Login gagal');
+          const status = error.response?.status;
+          const data = error.response?.data;
+
+          // 422 — ValidationException with field errors
+          if (status === 422 && data?.errors) {
+            const errors = data.errors as Record<string, string[]>;
+            if (errors.email?.[0]) {
+              form.setError('email', { message: errors.email[0] });
+            }
+            if (errors.password?.[0]) {
+              form.setError('password', { message: errors.password[0] });
+            }
+            // Rate limit message on email field
+            const firstMsg = errors.email?.[0] ?? errors.password?.[0];
+            if (firstMsg) setErrorBanner(firstMsg);
+            return;
+          }
+
+          // 401 or generic
+          const msg = data?.message || 'Login gagal. Periksa email dan kata sandi Anda.';
+          setErrorBanner(msg);
+          toast.error(msg);
         }
       },
     });
@@ -52,10 +75,25 @@ export function LoginForm() {
       </div>
 
       {/* Title */}
-      <div className="mb-8">
+      <div className="mb-6">
         <h1 className="font-headline text-3xl font-extrabold text-[#191c1e]">Masuk ke Akun</h1>
         <p className="mt-2 text-[#3f4944]">Masukkan email dan kata sandi Anda</p>
       </div>
+
+      {/* Error Banner */}
+      {errorBanner && (
+        <div className="mb-4 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3">
+          <AlertCircle className="mt-0.5 size-4 shrink-0 text-red-500" />
+          <p className="flex-1 text-sm text-red-700">{errorBanner}</p>
+          <button
+            type="button"
+            onClick={() => setErrorBanner(null)}
+            className="shrink-0 text-red-400 hover:text-red-600 transition-colors"
+          >
+            <X className="size-4" />
+          </button>
+        </div>
+      )}
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
