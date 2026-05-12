@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { Loader2, Mail, Lock, ArrowRight, Eye, EyeOff, AlertCircle, X } from 'lucide-react';
-import { Turnstile } from '@/components/auth/turnstile';
 import {
   Form,
   FormControl,
@@ -23,7 +22,6 @@ export function LoginForm() {
   const login = useLogin();
   const [showPassword, setShowPassword] = useState(false);
   const [errorBanner, setErrorBanner] = useState<string | null>(null);
-  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -34,9 +32,8 @@ export function LoginForm() {
   });
 
   function onSubmit(data: LoginFormValues) {
-    if (!turnstileToken) return;
     setErrorBanner(null);
-    login.mutate({ ...data, turnstile_token: turnstileToken }, {
+    login.mutate(data, {
       onError: (error) => {
         if (error instanceof AxiosError) {
           const status = error.response?.status;
@@ -179,14 +176,6 @@ export function LoginForm() {
               Ingat saya
             </label>
           </div>
-
-          {/* Turnstile — anti-bot protection */}
-          <Turnstile
-            onVerify={(token) => setTurnstileToken(token)}
-            onExpire={() => setTurnstileToken(null)}
-            onError={() => {}} // fallback handled inside Turnstile component
-            className="mt-1"
-          />
 
           {/* Submit */}
           <button

@@ -30,7 +30,6 @@ export interface PaginationLink {
 export interface LoginRequest {
   email: string;
   password: string;
-  turnstile_token: string;
 }
 
 export interface RegisterRequest {
@@ -44,7 +43,10 @@ export interface RegisterRequest {
   event_date: string;
   event_description?: string;
   plan?: string;
-  turnstile_token: string;
+  /** Honeypot — bot fills this; human leaves empty */
+  website?: string;
+  /** Timestamp (ms) when form was first rendered — anti-fast-submit */
+  form_started_at?: number;
 }
 
 export interface ForgotPasswordRequest {

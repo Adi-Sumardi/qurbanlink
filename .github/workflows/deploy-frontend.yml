@@ -13,7 +13,6 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         env:
           MIDTRANS_CLIENT_KEY: ${{ secrets.MIDTRANS_CLIENT_KEY }}
-          TURNSTILE_SITE_KEY: ${{ secrets.TURNSTILE_SITE_KEY }}
           GA_ID: ${{ secrets.GA_ID }}
           GADS_ID: ${{ secrets.GADS_ID }}
           GOOGLE_SITE_VERIFICATION: ${{ secrets.GOOGLE_SITE_VERIFICATION }}
@@ -22,7 +21,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
-          envs: MIDTRANS_CLIENT_KEY,TURNSTILE_SITE_KEY,GA_ID,GADS_ID,GOOGLE_SITE_VERIFICATION
+          envs: MIDTRANS_CLIENT_KEY,GA_ID,GADS_ID,GOOGLE_SITE_VERIFICATION
           script: |
             cd /var/www/qurbanlink-frontend
             git pull origin main
@@ -34,11 +33,6 @@ jobs:
             grep -q "^NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION=" .env.local \
               && sed -i "s|^NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION=.*|NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION=true|" .env.local \
               || echo "NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION=true" >> .env.local
-
-            # Inject Cloudflare Turnstile site key (public, di-bake ke build Next.js)
-            grep -q "^NEXT_PUBLIC_TURNSTILE_SITE_KEY=" .env.local \
-              && sed -i "s|^NEXT_PUBLIC_TURNSTILE_SITE_KEY=.*|NEXT_PUBLIC_TURNSTILE_SITE_KEY=${TURNSTILE_SITE_KEY}|" .env.local \
-              || echo "NEXT_PUBLIC_TURNSTILE_SITE_KEY=${TURNSTILE_SITE_KEY}" >> .env.local
 
             # Google Analytics 4 (GA4)
             grep -q "^NEXT_PUBLIC_GA_ID=" .env.local \

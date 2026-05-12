@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -22,7 +22,6 @@ import { useRegister } from '@/hooks/use-auth';
 import { registerSchema, type RegisterFormValues } from '@/lib/validations/auth';
 import { toast } from 'sonner';
 import { AxiosError } from 'axios';
-import { Turnstile } from '@/components/auth/turnstile';
 
 function SacredInput({
   icon: Icon,
@@ -89,7 +88,10 @@ const STEP1_FIELDS = [
 
 export function RegisterForm() {
   const [step, setStep] = useState<1 | 2>(1);
-  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  // Honeypot field — bot fills, human leaves empty
+  const [honeypot, setHoneypot] = useState('');
+  // Capture form-render time to detect bot-speed submissions (<2s)
+  const formStartedAtRef = useRef<number>(Date.now());
   const register = useRegister();
   const searchParams = useSearchParams();
   const planFromUrl = searchParams.get('plan') ?? undefined;
@@ -115,11 +117,14 @@ export function RegisterForm() {
   }
 
   function onSubmit(data: RegisterFormValues) {
-    if (!turnstileToken) {
-      toast.error('Mohon tunggu verifikasi keamanan selesai…');
-      return;
-    }
-    register.mutate({ ...data, plan: planFromUrl, turnstile_token: turnstileToken }, {
+    register.mutate(
+      {
+        ...data,
+        plan: planFromUrl,
+        website: honeypot, // honeypot (harus tetap kosong)
+        form_started_at: formStartedAtRef.current,
+      },
+      {
       onError: (error) => {
         if (error instanceof AxiosError) {
           const errors = error.response?.data?.errors;
@@ -387,12 +392,17 @@ export function RegisterForm() {
                 )}
               />
 
-              {/* Cloudflare Turnstile — proteksi anti-bot */}
-              <div className="flex justify-center pt-2">
-                <Turnstile
-                  onVerify={(token) => setTurnstileToken(token)}
-                  onExpire={() => setTurnstileToken(null)}
-                  onError={() => {}} // fallback handled inside Turnstile component
+              {/* Honeypot — hidden, bot biasanya isi semua field */}
+              <div aria-hidden="true" style={{ position: 'absolute', left: '-9999px', width: 0, height: 0, overflow: 'hidden' }}>
+                <label htmlFor="website-hp">Website (jangan diisi)</label>
+                <input
+                  id="website-hp"
+                  type="text"
+                  name="website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
                 />
               </div>
 
