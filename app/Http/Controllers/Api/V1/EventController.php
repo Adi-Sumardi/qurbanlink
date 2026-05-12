@@ -41,7 +41,7 @@ class EventController extends Controller
         $validated['tenant_id'] = app()->has('current_tenant') ? app('current_tenant')->id : $request->user()->tenant_id;
         $validated['created_by'] = $request->user()->id;
         $validated['year'] = Carbon::parse($validated['event_date'])->year;
-        $validated['status'] = EventStatus::Draft;
+        $validated['status'] = EventStatus::Active;
 
         $event = Event::create($validated);
 
@@ -86,8 +86,8 @@ class EventController extends Controller
      */
     public function destroy(Event $event): JsonResponse
     {
-        if ($event->status !== EventStatus::Draft) {
-            return $this->error('Only draft events can be deleted.', 422);
+        if (!in_array($event->status, [EventStatus::Draft, EventStatus::Active])) {
+            return $this->error('Only draft or active events can be deleted.', 422);
         }
 
         $event->delete();
@@ -100,6 +100,10 @@ class EventController extends Controller
      */
     public function activate(Event $event): JsonResponse
     {
+        if ($event->status === EventStatus::Active) {
+            return $this->success(new EventResource($event), 'Event is already active.');
+        }
+
         if ($event->status !== EventStatus::Draft) {
             return $this->error('Only draft events can be activated.', 422);
         }

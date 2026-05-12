@@ -12,15 +12,21 @@ class LoginAction
     {
         $user = User::where('email', $email)->first();
 
-        if (! $user || ! Hash::check($password, $user->password)) {
+        if (! $user) {
             throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
+                'email' => ['Email tidak terdaftar. Pastikan Anda menggunakan email yang benar.'],
+            ]);
+        }
+
+        if (! Hash::check($password, $user->password)) {
+            throw ValidationException::withMessages([
+                'password' => ['Kata sandi salah. Silakan coba lagi atau gunakan Lupa Kata Sandi.'],
             ]);
         }
 
         if (! $user->is_active) {
             throw ValidationException::withMessages([
-                'email' => ['Your account has been deactivated.'],
+                'email' => ['Akun Anda telah dinonaktifkan. Hubungi administrator untuk bantuan.'],
             ]);
         }
 
