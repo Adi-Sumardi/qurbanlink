@@ -35,14 +35,15 @@ export function useRegister() {
       const plan = (variables as RegisterRequest & { plan?: string }).plan;
       const eventId = response.data.event_id;
 
-      // Always go to the event/dashboard first
-      const base = eventId ? `/events/${eventId}` : '/dashboard';
-
       if (plan && plan !== 'free') {
-        // Attach welcome_plan so PostRegisterPayment auto-opens Snap on dashboard
-        router.replace(`${base}?welcome_plan=${plan}`);
+        // Paid plan → subscription page yang auto-trigger Midtrans Snap.
+        // event_id & from=register dipakai subscription page untuk redirect setelah bayar.
+        const params = new URLSearchParams({ plan, from: 'register' });
+        if (eventId) params.set('event_id', eventId);
+        router.replace(`/subscription?${params.toString()}`);
       } else {
-        router.replace(base);
+        // Free plan → langsung ke event/dashboard, trial 3 hari sudah aktif
+        router.replace(eventId ? `/events/${eventId}` : '/dashboard');
       }
     },
   });

@@ -171,17 +171,17 @@ describe('recipientSchema', () => {
 
 describe('donorSchema', () => {
   it('accepts valid data', () => {
-    const result = donorSchema.safeParse({ name: 'Bu Siti' });
+    const result = donorSchema.safeParse({ name: 'Bu Siti', kurban_type: 'pribadi' });
     expect(result.success).toBe(true);
   });
 
   it('rejects short name', () => {
-    const result = donorSchema.safeParse({ name: 'B' });
+    const result = donorSchema.safeParse({ name: 'B', kurban_type: 'pribadi' });
     expect(result.success).toBe(false);
   });
 
   it('accepts optional email when empty string', () => {
-    const result = donorSchema.safeParse({ name: 'Bu Siti', email: '' });
+    const result = donorSchema.safeParse({ name: 'Bu Siti', kurban_type: 'pribadi', email: '' });
     expect(result.success).toBe(true);
   });
 });
