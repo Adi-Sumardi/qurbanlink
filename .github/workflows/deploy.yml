@@ -16,17 +16,15 @@ jobs:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         env:
-          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
-          NEXT_PUBLIC_MIDTRANS_CLIENT_KEY: ${{ secrets.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY }}
-          NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION: ${{ secrets.NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION }}
+          MIDTRANS_CLIENT_KEY: ${{ secrets.MIDTRANS_CLIENT_KEY }}
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
-          # Forward env vars from GitHub Actions secrets into the SSH session
-          # so `npm run build` bakes them into the Next.js bundle (NEXT_PUBLIC_* are build-time)
-          envs: NEXT_PUBLIC_API_URL,NEXT_PUBLIC_MIDTRANS_CLIENT_KEY,NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION
+          # Forward Midtrans client key into the SSH session so `npm run build`
+          # bakes it into the Next.js bundle (NEXT_PUBLIC_* are build-time)
+          envs: MIDTRANS_CLIENT_KEY
           script: |
             cd /var/www/distribusi-kurban
             git pull origin main
@@ -45,11 +43,13 @@ jobs:
             cd ../frontend
             npm ci
 
-            # Write NEXT_PUBLIC_* env to .env.production.local so Next.js picks them up at build
+            # Write NEXT_PUBLIC_* env to .env.production.local so Next.js bakes them at build.
+            # API URL and IS_PRODUCTION are hardcoded — they're not sensitive and rarely change.
+            # Client key (the only sensitive one of the three) comes from GitHub secret.
             cat > .env.production.local <<EOF
-            NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
-            NEXT_PUBLIC_MIDTRANS_CLIENT_KEY=${NEXT_PUBLIC_MIDTRANS_CLIENT_KEY}
-            NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION=${NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION}
+            NEXT_PUBLIC_API_URL=https://api.tawzii.id/api/v1
+            NEXT_PUBLIC_MIDTRANS_CLIENT_KEY=${MIDTRANS_CLIENT_KEY}
+            NEXT_PUBLIC_MIDTRANS_IS_PRODUCTION=true
             EOF
 
             npm run build
