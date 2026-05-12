@@ -114,11 +114,16 @@ class Tenant extends Model
 
     /**
      * Get the active subscription for the tenant.
+     * A subscription is active if its status is 'active' AND it hasn't expired yet.
      */
     public function activeSubscription(): HasOne
     {
         return $this->hasOne(Subscription::class)
             ->where('status', 'active')
+            ->where(function ($q) {
+                $q->whereNull('expires_at')           // no expiry = unlimited
+                  ->orWhere('expires_at', '>', now()); // not yet expired
+            })
             ->latest();
     }
 }
