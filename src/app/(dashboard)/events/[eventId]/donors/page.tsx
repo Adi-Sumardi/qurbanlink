@@ -56,6 +56,7 @@ export default function DonorsPage() {
   const [deleteDonorId, setDeleteDonorId] = useState<string | null>(null);
   const [kurbanType, setKurbanType] = useState<'pribadi' | 'patungan'>('pribadi');
   const [participantsModal, setParticipantsModal] = useState<Donor | null>(null);
+  const [detailModal, setDetailModal] = useState<Donor | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ['donors', eventId, params],
@@ -252,17 +253,21 @@ export default function DonorsPage() {
                   </TableHeader>
                   <TableBody>
                     {donors.map((donor) => (
-                      <TableRow key={donor.id}>
+                      <TableRow
+                        key={donor.id}
+                        className="cursor-pointer hover:bg-muted/50 transition-colors"
+                        onClick={() => setDetailModal(donor)}
+                      >
                         <TableCell className="font-medium">
                           <div>
-                            <p>{donor.name}</p>
+                            <p className="hover:text-[#004532] transition-colors">{donor.name}</p>
                             {donor.kurban_type === 'patungan' && (donor.participants?.length ?? 0) > 0 && (
                               <p className="mt-0.5 text-xs text-muted-foreground">+{donor.participants!.length} peserta</p>
                             )}
                           </div>
                         </TableCell>
                         <TableCell>{donor.phone || '-'}</TableCell>
-                        <TableCell>
+                        <TableCell onClick={(e) => e.stopPropagation()}>
                           {donor.kurban_type === 'patungan' ? (
                             <button
                               type="button"
@@ -284,7 +289,7 @@ export default function DonorsPage() {
                         <TableCell className="text-center">{donor.animals_count ?? 0}</TableCell>
                         <TableCell><StatusBadge status={donor.submission_status} label={DONOR_STATUS_LABELS[donor.submission_status]} /></TableCell>
                         {canEdit && (
-                          <TableCell className="text-right">
+                          <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
                             <div className="flex items-center justify-end gap-1">
                               <Button variant="ghost" size="icon" onClick={() => openEditDialog(donor)}><Pencil className="size-4" /></Button>
                               <Button variant="ghost" size="icon" onClick={() => setDeleteDonorId(donor.id)}><Trash2 className="size-4 text-destructive" /></Button>
@@ -292,7 +297,6 @@ export default function DonorsPage() {
                           </TableCell>
                         )}
                       </TableRow>
-                    ))}
                   </TableBody>
                 </Table>
               </div>
@@ -483,6 +487,91 @@ export default function DonorsPage() {
                 </DialogFooter>
               </form>
             </Form>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Donor Detail Modal */}
+      <Dialog open={!!detailModal} onOpenChange={(open) => !open && setDetailModal(null)}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <User className="size-4 text-[#004532]" />
+              Detail Donatur
+            </DialogTitle>
+          </DialogHeader>
+          {detailModal && (
+            <div className="space-y-4">
+              <div className="flex items-start gap-3 rounded-xl bg-[#f0fbf4] px-4 py-3">
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#004532] text-base font-bold text-white">
+                  {detailModal.name.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <p className="font-bold text-[#191c1e]">{detailModal.name}</p>
+                  <div className="mt-0.5 flex items-center gap-1.5">
+                    {detailModal.kurban_type === 'patungan'
+                      ? <span className="inline-flex items-center gap-1 rounded-full bg-[#004532] px-2 py-0.5 text-[10px] font-bold text-white"><Users className="size-2.5" />Patungan</span>
+                      : <span className="inline-flex items-center gap-1 rounded-full border border-[#004532]/20 px-2 py-0.5 text-[10px] font-semibold text-[#004532]"><User className="size-2.5" />Pribadi</span>}
+                    <StatusBadge status={detailModal.submission_status} label={DONOR_STATUS_LABELS[detailModal.submission_status]} />
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                {[
+                  { label: 'Telepon', value: detailModal.phone },
+                  { label: 'Email', value: detailModal.email },
+                  { label: 'NIK', value: detailModal.nik },
+                  { label: 'Hewan', value: `${detailModal.animals_count ?? 0} ekor` },
+                ].map(({ label, value }) => (
+                  <div key={label} className="rounded-lg border border-[#004532]/10 px-3 py-2">
+                    <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">{label}</p>
+                    <p className="mt-0.5 font-medium text-[#191c1e]">{value || '-'}</p>
+                  </div>
+                ))}
+              </div>
+
+              {detailModal.address && (
+                <div className="rounded-lg border border-[#004532]/10 px-3 py-2 text-sm">
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Alamat</p>
+                  <p className="mt-0.5 text-[#191c1e]">{detailModal.address}</p>
+                </div>
+              )}
+
+              {detailModal.notes && (
+                <div className="rounded-lg border border-amber-100 bg-amber-50 px-3 py-2 text-sm">
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-amber-600">Catatan</p>
+                  <p className="mt-0.5 text-amber-800">{detailModal.notes}</p>
+                </div>
+              )}
+
+              {detailModal.kurban_type === 'patungan' && (detailModal.participants?.length ?? 0) > 0 && (
+                <div>
+                  <p className="mb-2 text-sm font-semibold">Peserta Patungan ({detailModal.participants!.length})</p>
+                  <div className="space-y-1.5">
+                    {detailModal.participants!.map((p, i) => (
+                      <div key={i} className="flex items-center gap-2 rounded-lg border border-[#004532]/10 px-3 py-2">
+                        <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-[#004532] text-[10px] font-bold text-white">{i + 1}</span>
+                        <span className="text-sm">{p.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {canEdit && (
+                <div className="flex gap-2 pt-1">
+                  <Button variant="outline" size="sm" className="flex-1 gap-1.5 border-[#004532]/20 text-[#004532]"
+                    onClick={() => { setDetailModal(null); openEditDialog(detailModal); }}>
+                    <Pencil className="size-3.5" />Edit
+                  </Button>
+                  <Button variant="outline" size="sm" className="flex-1 gap-1.5 border-red-200 text-destructive hover:bg-red-50"
+                    onClick={() => { setDetailModal(null); setDeleteDonorId(detailModal.id); }}>
+                    <Trash2 className="size-3.5" />Hapus
+                  </Button>
+                </div>
+              )}
+            </div>
           )}
         </DialogContent>
       </Dialog>
