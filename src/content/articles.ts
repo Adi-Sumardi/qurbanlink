@@ -313,6 +313,312 @@ export const ARTICLES: Article[] = [
       },
     ],
   },
+
+  // ───────────────────────── Artikel 4 ─────────────────────────
+  {
+    slug: 'cara-membagi-zona-distribusi-kurban-adil-rt-rw',
+    title:
+      'Cara Membagi Zona Distribusi Kurban yang Adil per RT/RW (Panduan Praktis)',
+    description:
+      'Distribusi yang merata dimulai dari pembagian zona yang tepat. Panduan praktis menentukan kuota per RT/RW, kriteria penerima, dan strategi agar tidak ada wilayah yang terlewat.',
+    publishedAt: '2026-05-10',
+    readMinutes: 7,
+    category: 'Panduan',
+    author: 'Tim Tawzii Digital',
+    tags: [
+      'zona distribusi',
+      'kuota RT RW',
+      'pembagian adil',
+      'panitia masjid',
+    ],
+    content: [
+      {
+        type: 'paragraph',
+        text: 'Salah satu sumber konflik klasik panitia kurban: "Kenapa RT 03 dapat banyak, RT 05 cuma sedikit?" Pembagian zona yang tidak terencana membuat distribusi terkesan pilih kasih, padahal niat panitia sudah benar. Artikel ini membahas cara membagi zona distribusi yang adil dan bisa dipertanggungjawabkan.',
+      },
+
+      { type: 'heading', text: 'Kenapa Perlu Zonasi?' },
+      {
+        type: 'paragraph',
+        text: 'Tanpa zonasi, kupon cenderung beredar di lingkungan dekat masjid saja. Warga RT yang lebih jauh — meskipun secara ekonomi lebih membutuhkan — sering tidak kebagian karena akses informasi yang lebih lambat. Zonasi memastikan tiap wilayah punya jatah proporsional.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Manfaat lain: panitia bisa memetakan kebutuhan secara visual, mendeteksi RT yang under-served, dan mengantisipasi kepadatan antrian dengan menjadwalkan slot pengambilan berbeda per zona.',
+      },
+
+      { type: 'heading', text: 'Langkah 1: Petakan Wilayah Cakupan' },
+      {
+        type: 'paragraph',
+        text: 'Mulai dari daftar RT/RW yang masuk jamaah masjid. Idealnya gunakan radius 1-2 km dari masjid sebagai cakupan utama, dengan opsi memperluas ke RT tetangga yang banyak dhuafa. Catat jumlah KK per RT — data ini biasanya tersedia di ketua RT.',
+      },
+
+      { type: 'heading', text: 'Langkah 2: Tentukan Kriteria Penerima' },
+      {
+        type: 'paragraph',
+        text: 'Sepakati di rapat panitia: siapa yang berhak dapat kupon? Beberapa kriteria yang umum dipakai:',
+      },
+      {
+        type: 'list',
+        items: [
+          'Fakir & miskin (penerima utama secara syariat).',
+          'Lansia tanpa penghasilan tetap.',
+          'Janda/duda dengan tanggungan.',
+          'Keluarga difabel atau sakit kronis.',
+          'Jamaah aktif masjid (sebagai bentuk silaturahmi, bukan prioritas).',
+        ],
+      },
+      {
+        type: 'paragraph',
+        text: 'Dokumentasikan kriteria ini secara tertulis — kalau ada warga komplain, panitia punya dasar yang jelas.',
+      },
+
+      { type: 'heading', text: 'Langkah 3: Hitung Kuota per Zona' },
+      {
+        type: 'paragraph',
+        text: 'Rumus sederhana: (jumlah dhuafa di zona / total dhuafa keseluruhan) × total kupon. Misal total kupon 600, RT 01 punya 40 dhuafa dari 200 total dhuafa, maka kuota RT 01 = (40/200) × 600 = 120 kupon.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Kalau data dhuafa tidak akurat, pakai pendekatan proporsional terhadap jumlah KK miskin (data dari kelurahan). Yang penting kuota terdokumentasi sebelum kupon dicetak.',
+      },
+
+      { type: 'heading', text: 'Langkah 4: Koordinasi dengan Ketua RT' },
+      {
+        type: 'paragraph',
+        text: 'Setelah kuota dialokasikan, serahkan daftar nama penerima ke ketua RT untuk diverifikasi. Ketua RT lebih tahu kondisi warganya — siapa yang baru pindah, siapa yang sebenarnya sudah mampu, siapa yang kelewat dari pendataan awal.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Tips: minta ketua RT tanda tangan di lembar daftar. Ini bukan birokrasi — ini perlindungan kalau ada warga yang merasa terlewat, panitia bisa menunjuk bahwa daftar sudah diverifikasi RT.',
+      },
+
+      { type: 'heading', text: 'Langkah 5: Distribusi Kupon Berbasis Zona' },
+      {
+        type: 'paragraph',
+        text: 'Pakai sistem yang bisa tag kupon per zona — di Tawzii Digital, tiap kupon punya field "Zona" sehingga laporan akhir otomatis menampilkan distribusi per RT. Kalau RT 03 cuma terealisasi 60%, panitia bisa investigasi: apakah daftar penerima terlalu banyak, atau ada masalah komunikasi.',
+      },
+
+      { type: 'heading', text: 'Mitigasi Konflik' },
+      {
+        type: 'paragraph',
+        text: 'Tetap saja, akan ada warga yang protes. Yang penting: panitia punya data, kriteria tertulis, dan tanda tangan ketua RT. Tiga hal ini cukup untuk menjawab keluhan secara profesional tanpa membuat warga merasa diserang.',
+      },
+      {
+        type: 'quote',
+        text: 'Keadilan bukan berarti semua dapat sama, tapi setiap yang berhak dapat sesuai porsinya.',
+      },
+
+      { type: 'heading', text: 'Penutup' },
+      {
+        type: 'paragraph',
+        text: 'Zonasi yang baik dimulai dari data, dilanjutkan dengan koordinasi, dan diakhiri dengan transparansi laporan. Mulai pemetaan zona sekarang — jangan tunggu H-7 Idul Adha. Semakin awal, semakin matang distribusinya.',
+      },
+    ],
+  },
+
+  // ───────────────────────── Artikel 5 ─────────────────────────
+  {
+    slug: 'tips-mengelola-antrian-pengambilan-daging-kurban-tertib',
+    title:
+      'Tips Mengelola Antrian Pengambilan Daging Kurban agar Tertib dan Cepat',
+    description:
+      'Antrian panjang dan panas-panasan adalah pengalaman buruk yang bisa dihindari. Berikut tips praktis mengelola alur pengambilan daging kurban supaya tertib dan selesai dalam waktu singkat.',
+    publishedAt: '2026-05-11',
+    readMinutes: 5,
+    category: 'Tips',
+    author: 'Tim Tawzii Digital',
+    tags: [
+      'antrian kurban',
+      'tips panitia',
+      'distribusi cepat',
+      'idul adha',
+    ],
+    content: [
+      {
+        type: 'paragraph',
+        text: 'Pengalaman buruk paling sering di hari distribusi kurban: antrian mengular, warga kepanasan, dan panitia kewalahan. Dengan persiapan yang tepat, distribusi 500 penerima bisa selesai dalam 45 menit tanpa kekacauan.',
+      },
+
+      { type: 'heading', text: '1. Bagi Slot Waktu per Zona' },
+      {
+        type: 'paragraph',
+        text: 'Jangan undang semua penerima jam 08:00. Bagi slot per zona/RT: RT 01-02 jam 08:00, RT 03-04 jam 09:00, RT 05-06 jam 10:00. Tulis slot di kupon supaya warga tahu kapan datang.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Hasilnya: antrian terpecah jadi 3-4 gelombang kecil, bukan satu tsunami. Panitia bisa istirahat singkat antar gelombang.',
+      },
+
+      { type: 'heading', text: '2. Siapkan Minimal 2 Jalur Antrian' },
+      {
+        type: 'paragraph',
+        text: 'Satu jalur untuk lansia/difabel (prioritas, tanpa antrian), satu jalur untuk umum. Kalau penerima > 300 orang, tambah jalur ketiga khusus penerima dengan kupon digital (scan dari HP, lebih cepat).',
+      },
+
+      { type: 'heading', text: '3. Setup Stasiun Scan yang Efisien' },
+      {
+        type: 'paragraph',
+        text: 'Tiap stasiun butuh: 1 petugas pegang HP scanner, 1 petugas serahkan paket daging, 1 petugas arahkan ke jalur keluar. Pisahkan ketiganya secara fisik supaya tidak bottleneck di satu titik.',
+      },
+      {
+        type: 'list',
+        items: [
+          'HP scanner sudah login & buka modul Scan sebelum jam mulai.',
+          'Power bank cadangan tersedia di tiap stasiun.',
+          'Paket daging sudah pre-packed dan dikelompokkan per zona.',
+        ],
+      },
+
+      { type: 'heading', text: '4. Pre-Pack Paket Daging Sebelum Distribusi' },
+      {
+        type: 'paragraph',
+        text: 'Jangan timbang & bungkus saat penerima datang — itu mimpi buruk. Pre-pack semua paket sehari sebelum atau pagi-pagi sebelum slot pertama. Tiap paket diberi label nomor urut yang match dengan kupon.',
+      },
+
+      { type: 'heading', text: '5. Sediakan Area Tunggu yang Nyaman' },
+      {
+        type: 'paragraph',
+        text: 'Tenda + kursi + air mineral. Ini bukan kemewahan, ini empati. Warga yang merasa dihargai akan menyebar cerita positif ke tetangga — efek branding masjid yang luar biasa.',
+      },
+
+      { type: 'heading', text: '6. Brief Panitia 30 Menit Sebelum Mulai' },
+      {
+        type: 'paragraph',
+        text: 'Kumpulkan semua panitia, jelaskan alur, tunjuk siapa pegang stasiun mana, dan tentukan PIC kalau ada masalah (kupon tidak terbaca, penerima protes, dll). Brief singkat ini memangkas separuh dari potensi kekacauan.',
+      },
+
+      { type: 'heading', text: '7. Tracking Real-Time' },
+      {
+        type: 'paragraph',
+        text: 'Live dashboard yang menampilkan progres real-time (mis. "320/600 kupon terpakai") membantu koordinator memutuskan kapan harus stop antrian, kapan kirim petugas tambahan, dan kapan bisa istirahat.',
+      },
+
+      { type: 'heading', text: '8. Punya Plan B untuk Kupon Bermasalah' },
+      {
+        type: 'paragraph',
+        text: 'Selalu ada kasus: kupon basah kena hujan, QR tidak terbaca, atau penerima lupa bawa kupon. Tunjuk 1 PIC khusus untuk handle kasus-kasus ini — biasanya bisa diverifikasi via nama + alamat di database, lalu kupon di-mark manual sebagai terpakai.',
+      },
+
+      { type: 'heading', text: 'Penutup' },
+      {
+        type: 'paragraph',
+        text: 'Antrian yang tertib bukan soal disiplin warga — itu soal desain alur dari panitia. Investasikan waktu di persiapan H-1, hasilnya hari-H lebih singkat dan kepuasan semua pihak naik signifikan.',
+      },
+    ],
+  },
+
+  // ───────────────────────── Artikel 6 ─────────────────────────
+  {
+    slug: 'hukum-patungan-sapi-kurban-niat-pembagian',
+    title:
+      'Hukum Patungan Sapi Kurban: Ketentuan, Niat, dan Pembagian Daging',
+    description:
+      'Patungan sapi (7 orang) adalah praktik umum dalam kurban. Berikut penjelasan lengkap hukumnya menurut fiqih, syarat sahnya, dan cara pembagian daging yang benar.',
+    publishedAt: '2026-05-12',
+    readMinutes: 8,
+    category: 'Edukasi',
+    author: 'Tim Tawzii Digital',
+    tags: [
+      'patungan sapi',
+      'hukum kurban',
+      'fiqih kurban',
+      'niat kurban',
+    ],
+    content: [
+      {
+        type: 'paragraph',
+        text: 'Sapi kurban patungan 7 orang adalah praktik yang sangat umum di Indonesia. Tapi banyak calon sohibul yang masih ragu: apakah ini sah? Bolehkah niatnya beda-beda? Bagaimana pembagian dagingnya? Artikel ini menjawab semuanya berdasarkan fiqih klasik.',
+      },
+
+      { type: 'heading', text: 'Dasar Hukumnya' },
+      {
+        type: 'paragraph',
+        text: 'Patungan sapi atau unta untuk kurban berdasarkan hadits riwayat Muslim dari Jabir bin Abdillah RA: "Kami berkurban bersama Rasulullah SAW pada tahun Hudaibiyah, seekor unta untuk tujuh orang dan seekor sapi untuk tujuh orang." (HR. Muslim no. 1318).',
+      },
+      {
+        type: 'paragraph',
+        text: 'Hadits ini menjadi dasar bahwa 1 sapi sah untuk 7 sohibul. Kambing & domba tidak boleh patungan — 1 ekor = 1 sohibul.',
+      },
+
+      { type: 'heading', text: 'Syarat Sah Patungan' },
+      {
+        type: 'list',
+        items: [
+          'Maksimal 7 orang per ekor sapi/unta — tidak boleh lebih.',
+          'Tiap peserta berniat ibadah (kurban, aqiqah yang sebagian ulama membolehkan, atau gabungan keduanya).',
+          'Tidak ada peserta yang berniat untuk konsumsi murni (mis. cuma mau dapat daging).',
+          'Pembayaran sudah lunas sebelum penyembelihan.',
+          'Sapi memenuhi syarat: minimal 2 tahun, sehat, tidak cacat berat.',
+        ],
+      },
+
+      { type: 'heading', text: 'Bolehkah Niat Tiap Peserta Berbeda?' },
+      {
+        type: 'paragraph',
+        text: 'Mazhab Hanafi & Hambali membolehkan variasi niat selama semuanya bersifat ibadah. Misal: 5 orang kurban, 2 orang aqiqah. Mazhab Syafi`i lebih ketat — sebagian ulamanya mensyaratkan semua peserta harus niat kurban. Untuk amannya, lakukan koordinasi niat sebelum penyembelihan.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Yang jelas tidak boleh: 1-2 peserta berniat sekadar "ambil dagingnya" tanpa niat ibadah apapun. Ini membatalkan keabsahan kurban untuk seluruh peserta lain dalam satu sapi.',
+      },
+
+      { type: 'heading', text: 'Pembagian Daging — 1/7 untuk Tiap Sohibul' },
+      {
+        type: 'paragraph',
+        text: 'Setelah disembelih, daging dibagi rata 7 bagian sesuai jumlah peserta. Ini bagian "hak sohibul" — boleh dimakan, disedekahkan, atau dihadiahkan.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Sunnahnya, sohibul mengambil 1/3 untuk konsumsi keluarga, 1/3 untuk dihadiahkan, dan 1/3 untuk sedekah ke fakir-miskin. Banyak masjid memilih jalan praktis: seluruh bagian sohibul didistribusikan ke penerima, dan sohibul hanya ambil simbolis 1-2 kg untuk keluarga.',
+      },
+
+      { type: 'heading', text: 'Bagaimana Cara Pembagian Praktis di Masjid?' },
+      {
+        type: 'paragraph',
+        text: 'Setelah daging ditimbang, panitia biasanya tidak benar-benar memisahkan secara fisik 7 bagian. Yang lebih lazim: semua daging dianggap "milik bersama 7 sohibul" lalu didistribusikan ke penerima sesuai daftar zona. Hak tiap sohibul dipenuhi melalui laporan akhir: berapa kg total daging, berapa penerima, di zona mana.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Sistem digital memudahkan hal ini — sohibul dapat laporan PDF berisi foto sapi, berat daging, jumlah penerima, dan rincian zona. Transparansi yang dulu butuh berhari-hari sekarang tinggal sehari.',
+      },
+
+      { type: 'heading', text: 'Bolehkah Sohibul Tidak Hadir Saat Penyembelihan?' },
+      {
+        type: 'paragraph',
+        text: 'Boleh. Tidak ada syarat sohibul harus hadir. Yang penting niat sudah ditetapkan & pembayaran lunas. Banyak sohibul perantauan yang transfer dari luar kota — kurban tetap sah.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Sunnah hadir untuk menyaksikan, tapi tidak wajib. Lebih utama panitia kirim foto/video sebagai pengganti kehadiran fisik.',
+      },
+
+      { type: 'heading', text: 'Apa yang Tidak Boleh Dilakukan?' },
+      {
+        type: 'list',
+        items: [
+          'Menjual bagian daging sohibul (tidak boleh untuk dikomersialkan).',
+          'Memberi upah penyembelih dengan daging (upah harus dari kas masjid).',
+          'Menjadikan kulit/kepala sebagai komoditas yang diuangkan ke sohibul.',
+          'Lebih dari 7 orang dalam satu sapi.',
+        ],
+      },
+      {
+        type: 'paragraph',
+        text: 'Kulit & jeroan secara fiqih masuk hak sohibul juga — tapi kebiasaan di Indonesia, kulit didonasikan ke panitia atau lembaga sosial sebagai infaq tambahan. Ini sah selama dengan persetujuan sohibul.',
+      },
+
+      { type: 'heading', text: 'Kesimpulan' },
+      {
+        type: 'paragraph',
+        text: 'Patungan sapi 7 orang adalah ibadah yang sah, didasarkan langsung pada sunnah Nabi SAW. Yang perlu diperhatikan: niat tiap peserta harus ibadah, pembayaran lunas sebelum penyembelihan, dan pembagian daging mengikuti adab syariat.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Bagi masjid yang mengelola banyak sapi patungan, sistem digital sangat membantu — tiap sohibul punya catatan terpisah, foto hewan tersimpan, dan laporan distribusi otomatis. Transparansi inilah yang membuat ibadah kurban makin tenang dan donatur makin percaya.',
+      },
+    ],
+  },
 ];
 
 export const ARTICLES_BY_SLUG: Record<string, Article> = Object.fromEntries(
