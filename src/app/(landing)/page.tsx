@@ -90,6 +90,7 @@ function Navbar() {
             { label: 'Testimoni', href: '#testimoni' },
             { label: 'Harga', href: '#harga' },
             { label: 'FAQ', href: '#faq' },
+            { label: 'Coba Demo', href: '/coba' },
             { label: 'Panduan', href: '/panduan' },
             { label: 'Blog', href: '/blog' },
           ].map((item, i) => (

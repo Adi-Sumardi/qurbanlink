@@ -15,6 +15,7 @@ const PUBLIC_PATHS = [
   '/laporan-keberlanjutan',
   '/blog',
   '/panduan',
+  '/coba',
 ];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
