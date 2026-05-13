@@ -27,6 +27,7 @@ const ContentSecurityPolicy = `
   connect-src 'self' ${apiOrigin} ${midtransWild} ${midtransCdn}
     https://images.unsplash.com https://source.unsplash.com
     https://api.tawzii.id ${cloudflare} ${turnstile} ${google}
+    www.google.com www.google.co.id
     ${isDev ? 'ws://localhost:* http://localhost:* https://*.trycloudflare.com wss://*.trycloudflare.com https://*.ngrok-free.app ws://*.ngrok-free.app' : ''};
   worker-src 'self' blob:;
   object-src 'none';
