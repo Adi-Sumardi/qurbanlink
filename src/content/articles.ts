@@ -619,6 +619,391 @@ export const ARTICLES: Article[] = [
       },
     ],
   },
+
+  // ───────────────────────── Artikel 7 ─────────────────────────
+  {
+    slug: 'kupon-digital-vs-kupon-kertas-perbandingan-lengkap',
+    title:
+      'Kupon Digital vs Kupon Kertas Kurban: Perbandingan Lengkap dari Sisi Biaya, Keamanan & Efisiensi',
+    description:
+      'Mana yang lebih baik: kupon kertas tradisional atau kupon digital berbasis QR Code? Berikut perbandingan lengkap dari sisi biaya, keamanan, kecepatan, dan transparansi.',
+    publishedAt: '2026-05-12',
+    readMinutes: 7,
+    category: 'Edukasi',
+    author: 'Tim Tawzii Digital',
+    tags: [
+      'kupon digital',
+      'kupon kertas',
+      'qr code kurban',
+      'perbandingan',
+    ],
+    content: [
+      {
+        type: 'paragraph',
+        text: 'Setiap musim Idul Adha, panitia masjid dihadapkan pada pilihan: tetap pakai kupon kertas seperti puluhan tahun terakhir, atau migrasi ke kupon digital berbasis QR Code? Artikel ini membandingkan keduanya secara objektif berdasarkan pengalaman ratusan masjid di Indonesia.',
+      },
+
+      { type: 'heading', text: '1. Biaya Produksi' },
+      {
+        type: 'paragraph',
+        text: 'Kupon kertas: butuh cetak (Rp 200-500/lembar), kertas dengan watermark/hologram (anti-palsu) bisa Rp 1.000-2.000/lembar. Untuk 500 kupon, total Rp 100.000-1.000.000.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Kupon digital: biaya platform mulai gratis (paket Free) hingga Rp 50-200ribu/musim untuk paket berbayar. Cetak fisik (opsional) tinggal print di kertas biasa karena QR-nya sendiri yang anti-palsu.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Pemenang: digital (terutama di skala >300 penerima).',
+      },
+
+      { type: 'heading', text: '2. Keamanan dari Pemalsuan' },
+      {
+        type: 'paragraph',
+        text: 'Kupon kertas — meskipun pakai watermark — tetap rentan: fotocopy berkualitas tinggi bisa mengelabui petugas, apalagi dalam kondisi sibuk dan terburu-buru. Beberapa masjid melaporkan 5-10% kupon palsu setiap musim.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Kupon digital: QR Code unik tervalidasi server. Fotocopy = scan kedua = otomatis ditolak. Tidak mungkin dipalsukan tanpa akses ke database masjid.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Pemenang: digital (telak).',
+      },
+
+      { type: 'heading', text: '3. Kecepatan Distribusi' },
+      {
+        type: 'paragraph',
+        text: 'Kupon kertas: 30-60 detik per penerima (cek nama di daftar, coret, kasih daging). 500 penerima = 4-8 jam total.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Kupon digital: scan QR 2-3 detik per penerima. 500 penerima dengan 2 scanner = 30-45 menit.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Pemenang: digital (10x lebih cepat).',
+      },
+
+      { type: 'heading', text: '4. Transparansi & Pelaporan' },
+      {
+        type: 'paragraph',
+        text: 'Kupon kertas: rekap manual setelah event. Butuh 2-5 hari untuk menyusun laporan ke donatur. Data hilang/rusak rentan (kena hujan, kertas basah, dll).',
+      },
+      {
+        type: 'paragraph',
+        text: 'Kupon digital: laporan otomatis terbentuk real-time. Donatur bisa pantau langsung dari HP. Laporan PDF/Excel siap pakai dalam hitungan menit setelah distribusi selesai.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Pemenang: digital.',
+      },
+
+      { type: 'heading', text: '5. Kemudahan untuk Penerima' },
+      {
+        type: 'paragraph',
+        text: 'Kupon kertas: penerima harus simpan fisik kupon, kalau hilang/rusak harus minta panitia (proses ribet).',
+      },
+      {
+        type: 'paragraph',
+        text: 'Kupon digital: bisa dikirim via WhatsApp, disimpan di HP. Untuk yang tidak punya HP, panitia tetap cetak fisik. Fleksibel untuk semua kalangan.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Pemenang: seri (tergantung demografi penerima).',
+      },
+
+      { type: 'heading', text: '6. Tantangan Kupon Digital' },
+      {
+        type: 'paragraph',
+        text: 'Tidak semua hal di digital lebih baik. Beberapa tantangan yang perlu diantisipasi:',
+      },
+      {
+        type: 'list',
+        items: [
+          'Butuh HP scanner di lokasi distribusi (idealnya 2-3 unit).',
+          'Sinyal lemah bisa mengganggu — pilih platform yang support offline mode.',
+          'Panitia perlu training singkat (15-30 menit cukup).',
+          'Penerima senior mungkin tidak familiar dengan QR — tetap perlu cetak fisik.',
+        ],
+      },
+
+      { type: 'heading', text: '7. Hybrid Approach' },
+      {
+        type: 'paragraph',
+        text: 'Banyak masjid yang sukses pakai pendekatan hybrid: data penerima dan validasi digital, tapi kupon dicetak di kertas (dengan QR Code). Penerima dapat fisik yang familiar, panitia dapat keamanan dan kecepatan digital. The best of both worlds.',
+      },
+
+      { type: 'heading', text: 'Kesimpulan' },
+      {
+        type: 'paragraph',
+        text: 'Untuk masjid dengan >100 penerima, kupon digital hampir selalu lebih unggul. Biaya lebih murah, keamanan lebih kuat, kecepatan jauh lebih tinggi, dan laporan otomatis. Untuk masjid kecil (<50 penerima), kertas masih bisa cukup — tapi tetap rentan dari sisi keamanan.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Yang penting: jangan pilih solusi karena "ikut tren" — pilih karena cocok dengan kondisi dan skala masjid Anda. Coba dulu di skala kecil sebelum full migrasi.',
+      },
+    ],
+  },
+
+  // ───────────────────────── Artikel 8 ─────────────────────────
+  {
+    slug: 'apa-itu-kurban-digital-definisi-cara-kerja-manfaat',
+    title:
+      'Apa itu Kurban Digital? Definisi, Cara Kerja, dan Manfaat untuk Masjid Indonesia',
+    description:
+      'Istilah "kurban digital" makin populer. Tapi apa sebenarnya yang dimaksud? Apakah hewannya virtual? Berikut penjelasan lengkap konsep, cara kerja, dan manfaat kurban digital.',
+    publishedAt: '2026-05-12',
+    readMinutes: 7,
+    category: 'Edukasi',
+    author: 'Tim Tawzii Digital',
+    tags: [
+      'kurban digital',
+      'definisi',
+      'cara kerja',
+      'platform kurban',
+    ],
+    content: [
+      {
+        type: 'paragraph',
+        text: 'Banyak orang masih bingung saat mendengar istilah "kurban digital". Apakah hewannya tidak nyata? Apakah ibadahnya berbeda dengan kurban tradisional? Artikel ini menjelaskan secara lengkap apa yang dimaksud dengan kurban digital, dan kenapa istilah ini sebenarnya menyederhanakan — bukan mengganti — ibadah kurban.',
+      },
+
+      { type: 'heading', text: 'Definisi: Kurban Digital ≠ Kurban Virtual' },
+      {
+        type: 'paragraph',
+        text: 'Mari klarifikasi dulu: hewan kurban di "kurban digital" tetap nyata, tetap disembelih secara fisik, dan dagingnya tetap didistribusikan ke penerima nyata. Yang "digital" adalah proses pengelolaannya — dari pendaftaran sohibul, pencatatan hewan, distribusi kupon, hingga pelaporan.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Jadi kurban digital = kurban tradisional + teknologi pengelolaan. Ibadahnya tetap sama, syariat tetap dipenuhi, hanya tools pengelolaannya yang berubah dari kertas/manual menjadi aplikasi/digital.',
+      },
+
+      { type: 'heading', text: 'Cara Kerjanya: 5 Tahap' },
+      {
+        type: 'paragraph',
+        text: 'Sebuah platform kurban digital seperti Tawzii Digital biasanya mencakup 5 tahap berikut:',
+      },
+      {
+        type: 'list',
+        ordered: true,
+        items: [
+          'Pendaftaran sohibul: data pekurban (nama, kontak, jenis kontribusi) dicatat di sistem.',
+          'Pencatatan hewan: tiap hewan kurban di-input lengkap dengan foto, berat, dan sohibul terkait.',
+          'Generate kupon: berdasarkan estimasi daging, sistem menghasilkan QR Code unik untuk tiap penerima.',
+          'Distribusi & scan: hari-H, petugas scan QR penerima. Sistem otomatis validasi & catat.',
+          'Pelaporan otomatis: setelah event, laporan PDF/Excel tersedia untuk donatur dan dokumentasi internal.',
+        ],
+      },
+
+      { type: 'heading', text: 'Manfaat untuk Masjid' },
+      {
+        type: 'paragraph',
+        text: 'Manfaat yang paling dirasakan masjid yang sudah migrasi ke kurban digital:',
+      },
+      {
+        type: 'list',
+        items: [
+          'Distribusi lebih merata — kupon tervalidasi per zona, tidak ada penerima ganda.',
+          'Antrian lebih cepat — 2-3 detik per penerima vs 30-60 detik manual.',
+          'Transparansi meningkat — donatur lihat sendiri laporan real-time.',
+          'Audit trail lengkap — siapa scan apa, jam berapa, semua tercatat.',
+          'Tidak ada kupon palsu — fotocopy QR otomatis terdeteksi.',
+          'Knowledge transfer mudah — panitia baru tinggal login, tidak perlu reset dari nol.',
+        ],
+      },
+
+      { type: 'heading', text: 'Manfaat untuk Sohibul/Donatur' },
+      {
+        type: 'list',
+        items: [
+          'Tahu hewan kurbannya sampai ke berapa orang.',
+          'Dapat foto/video hewan saat disembelih.',
+          'Laporan PDF resmi sebagai dokumentasi pribadi.',
+          'Bisa kurban dari luar kota tanpa khawatir transparansi.',
+        ],
+      },
+
+      { type: 'heading', text: 'Manfaat untuk Penerima/Mustahik' },
+      {
+        type: 'list',
+        items: [
+          'Antrian jauh lebih singkat (tidak panas-panasan).',
+          'Kupon bisa dikirim ke HP, tidak takut hilang.',
+          'Sistem mencegah ada yang dapat 2 kali dan ada yang tidak kebagian.',
+        ],
+      },
+
+      { type: 'heading', text: 'Pertanyaan Umum' },
+      {
+        type: 'paragraph',
+        text: '"Apakah kurban digital sah secara syariat?" — Ya. Hewannya tetap nyata, penyembelihan tetap mengikuti syariat, distribusi tetap ke mustahik. Yang "digital" hanya pengelolaannya.',
+      },
+      {
+        type: 'paragraph',
+        text: '"Bagaimana kalau penerima tidak punya HP?" — Kupon tetap bisa dicetak fisik dengan QR Code di atasnya. Penerima senior tetap bisa pakai kupon kertas.',
+      },
+      {
+        type: 'paragraph',
+        text: '"Apakah butuh internet sepanjang acara?" — Tidak. Platform yang baik (seperti Tawzii) support offline mode. Scan tetap jalan meski sinyal hilang, lalu auto-sync ketika online.',
+      },
+      {
+        type: 'paragraph',
+        text: '"Berapa biayanya?" — Banyak platform kurban digital gratis untuk paket dasar. Paket berbayar mulai dari Rp 50-200ribu/musim untuk fitur tambahan.',
+      },
+
+      { type: 'heading', text: 'Apakah Cocok untuk Masjid Saya?' },
+      {
+        type: 'paragraph',
+        text: 'Kurban digital cocok untuk: masjid dengan >50 penerima, panitia yang familiar dengan smartphone, dan masjid yang ingin meningkatkan transparansi ke donatur. Untuk masjid sangat kecil (<30 penerima) dengan panitia senior, kertas masih bisa cukup.',
+      },
+
+      { type: 'heading', text: 'Kesimpulan' },
+      {
+        type: 'paragraph',
+        text: 'Kurban digital bukan menggantikan ibadah kurban — ia hanya menyederhanakan pengelolaannya. Hewan tetap nyata, syariat tetap dijaga, dan dampaknya ke mustahik justru lebih besar karena distribusi lebih merata dan transparan.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Bagi masjid yang belum pernah mencoba, mulai dari paket gratis untuk skala kecil. Rasakan kemudahannya, lalu skalakan tahun berikutnya. Anda akan terkejut betapa banyak waktu dan energi panitia yang bisa dihemat.',
+      },
+    ],
+  },
+
+  // ───────────────────────── Artikel 9 ─────────────────────────
+  {
+    slug: 'tips-memilih-platform-distribusi-kurban-digital-untuk-masjid',
+    title:
+      '7 Tips Memilih Platform Distribusi Kurban Digital yang Tepat untuk Masjid Anda',
+    description:
+      'Tidak semua platform kurban digital sama. Berikut 7 kriteria penting yang perlu dievaluasi sebelum memilih platform untuk masjid Anda — dari fitur offline hingga harga.',
+    publishedAt: '2026-05-13',
+    readMinutes: 6,
+    category: 'Tips',
+    author: 'Tim Tawzii Digital',
+    tags: [
+      'platform kurban',
+      'tips memilih',
+      'aplikasi masjid',
+      'distribusi digital',
+    ],
+    content: [
+      {
+        type: 'paragraph',
+        text: 'Belakangan ini bermunculan banyak platform digital untuk distribusi kurban. Tapi tidak semuanya sama — ada yang gratis tapi fitur minim, ada yang lengkap tapi mahal, ada yang bagus tapi ribet dipakai. Berikut 7 kriteria yang perlu dievaluasi sebelum memilih.',
+      },
+
+      { type: 'heading', text: '1. Support Offline Mode' },
+      {
+        type: 'paragraph',
+        text: 'Ini wajib. Banyak lokasi distribusi di area outdoor dengan sinyal lemah. Platform yang murni online akan macet di hari-H. Pastikan scan tetap jalan tanpa internet dan data auto-sync ketika online kembali.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Cara test: matikan WiFi & data HP, coba scan kupon. Kalau gagal, skip platform itu.',
+      },
+
+      { type: 'heading', text: '2. Keamanan QR Code' },
+      {
+        type: 'paragraph',
+        text: 'Tidak semua QR kupon dilengkapi server-side validation. Beberapa platform "fake digital" — QR-nya tetap bisa di-fotocopy dan dipakai berkali-kali. Pastikan platform punya validasi unik server-side, bukan cuma QR generator biasa.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Cara test: scan satu kupon dua kali — kedua scan harus ditolak dengan jelas (notif merah, suara berbeda).',
+      },
+
+      { type: 'heading', text: '3. Kemudahan Onboarding' },
+      {
+        type: 'paragraph',
+        text: 'Panitia masjid bukan IT expert. Platform yang baik bisa dipelajari panitia dalam 30 menit. Cek apakah ada: video tutorial, dokumentasi step-by-step, tim support yang responsif.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Hindari platform yang setup-nya butuh bantuan teknisi atau install software macam-macam.',
+      },
+
+      { type: 'heading', text: '4. Manajemen Zona/RT/RW' },
+      {
+        type: 'paragraph',
+        text: 'Fitur zonasi krusial untuk distribusi yang adil. Pastikan platform punya: pembagian zona, kuota per zona, dan laporan distribusi per zona.',
+      },
+
+      { type: 'heading', text: '5. Laporan & Ekspor Data' },
+      {
+        type: 'paragraph',
+        text: 'Setelah event, Anda butuh laporan untuk donatur, audit internal, dan dokumentasi. Cek apakah platform menyediakan:',
+      },
+      {
+        type: 'list',
+        items: [
+          'Laporan PDF per donatur (foto hewan + distribusi).',
+          'Laporan distribusi lengkap (per zona, per jenis hewan).',
+          'Ekspor Excel untuk audit & arsip.',
+          'Akses laporan multi-tahun untuk perbandingan.',
+        ],
+      },
+
+      { type: 'heading', text: '6. Harga & Model Bisnis' },
+      {
+        type: 'paragraph',
+        text: 'Hati-hati dengan platform yang "gratis tapi semua fitur" — biasanya monetize via iklan atau data jual. Pastikan platform punya model bisnis yang jelas.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Model yang sehat: paket Free untuk masjid kecil + paket berbayar untuk fitur lanjutan. Ini sustainable dan platform akan terus develop fitur.',
+      },
+
+      { type: 'heading', text: '7. Tim & Komitmen Jangka Panjang' },
+      {
+        type: 'paragraph',
+        text: 'Kurban itu tahunan. Anda butuh platform yang masih hidup tahun depan. Cek: siapa tim di belakangnya, sudah berapa musim mereka beroperasi, dan apa rencana development mereka.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Hindari platform "musiman" yang muncul cuma menjelang Idul Adha lalu hilang setelahnya.',
+      },
+
+      { type: 'heading', text: 'Bonus: 3 Red Flags yang Harus Diwaspadai' },
+      {
+        type: 'list',
+        items: [
+          'Platform yang minta data berlebihan (NIK, dll.) padahal tidak diperlukan untuk distribusi.',
+          'Platform tanpa policy privasi yang jelas — data jamaah Anda berisiko dijual.',
+          'Platform yang menjanjikan "tanpa konfigurasi, langsung jalan" — biasanya fitur tidak fleksibel untuk kebutuhan masjid yang spesifik.',
+        ],
+      },
+
+      { type: 'heading', text: 'Checklist Singkat' },
+      {
+        type: 'paragraph',
+        text: 'Sebelum memilih platform, jawab 7 pertanyaan ini:',
+      },
+      {
+        type: 'list',
+        ordered: true,
+        items: [
+          'Bisa offline? — Wajib YA.',
+          'QR aman dari duplikasi? — Wajib YA.',
+          'Panitia bisa belajar <1 jam? — Wajib YA.',
+          'Ada manajemen zona? — Wajib YA jika distribusi lintas RT/RW.',
+          'Laporan PDF & Excel? — Wajib YA.',
+          'Harga transparan? — Wajib YA.',
+          'Tim aktif >1 musim? — Sangat disarankan YA.',
+        ],
+      },
+
+      { type: 'heading', text: 'Penutup' },
+      {
+        type: 'paragraph',
+        text: 'Platform yang tepat akan membuat panitia Anda lebih tenang, donatur lebih percaya, dan penerima lebih puas. Jangan terburu-buru memilih — evaluasi dulu 2-3 platform sebelum committed.',
+      },
+      {
+        type: 'paragraph',
+        text: 'Tawzii Digital sendiri dibangun dengan 7 kriteria di atas sebagai prinsip utama. Kalau Anda mau membandingkan dengan platform lain, silakan — kami yakin perbandingan yang fair akan menunjukkan keunggulan kami.',
+      },
+    ],
+  },
 ];
 
 export const ARTICLES_BY_SLUG: Record<string, Article> = Object.fromEntries(
