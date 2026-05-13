@@ -16,6 +16,7 @@ import {
   Shield,
   CreditCard,
   ArrowLeft,
+  Monitor,
 } from 'lucide-react';
 import { DemoBanner } from '@/components/coba/demo-banner';
 import { FloatingCta } from '@/components/coba/floating-cta';
@@ -25,6 +26,7 @@ const NAV = [
   { href: '/coba/dashboard', label: 'Beranda', icon: LayoutDashboard },
   { href: '/coba/dashboard/kupon', label: 'Distribusi', icon: Ticket },
   { href: '/coba/dashboard/scan', label: 'Scan QR', icon: ScanLine, highlight: true },
+  { href: '/coba/dashboard/live', label: 'Live Dashboard', icon: Monitor },
 ];
 
 const NAV_DISABLED = [

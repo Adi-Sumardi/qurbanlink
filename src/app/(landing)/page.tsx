@@ -225,7 +225,7 @@ function HeroSection() {
 
             {/* CTA */}
             <m.div
-              className="pt-1"
+              className="flex flex-wrap items-center gap-4 pt-1"
               variants={fadeUp}
               transition={{ duration: 0.5 }}
             >
@@ -235,6 +235,15 @@ function HeroSection() {
               >
                 Daftar Gratis Sekarang
                 <ArrowRight className="size-5" />
+              </Link>
+              <Link
+                href="/coba"
+                className="group inline-flex items-center gap-2.5 rounded-full border-2 border-[#004532]/20 bg-white px-7 py-[14px] text-base font-extrabold font-headline text-[#004532] shadow-sm transition-all hover:border-[#004532]/40 hover:bg-[#f2f4f6] hover:shadow-md active:scale-95"
+              >
+                <span className="flex size-7 items-center justify-center rounded-full bg-[#a6f2d1] transition-transform group-hover:scale-110">
+                  <Eye className="size-3.5 text-[#004532]" />
+                </span>
+                Coba Demo
               </Link>
             </m.div>
 

@@ -1,9 +1,11 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import { CheckCircle2, XCircle, ScanLine, Info, Search } from 'lucide-react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
+import { motion as m, AnimatePresence } from 'motion/react';
+import { CheckCircle2, XCircle, ScanLine, Info, Search, Sparkles, ShieldX, Ban } from 'lucide-react';
 import { useDemoStore, type ScanResult } from '@/stores/demo.store';
 import { DEMO_PENERIMA, DEMO_ZONA } from '@/content/demo-seed';
+import { DemoCouponCard } from '@/components/coba/demo-coupon-card';
 
 function formatDateTime(iso: string): string {
   if (!iso) return '—';
@@ -16,34 +18,118 @@ function formatDateTime(iso: string): string {
   });
 }
 
-/** Mini 7x7 QR-like pattern, deterministic by id */
-function MiniQr({ id }: { id: string }) {
-  // Hash sederhana untuk pseudo-random pattern berdasar id
-  const seed = id.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
-  const cells = Array.from({ length: 49 }, (_, i) => {
-    // Corner markers (top-left, top-right, bottom-left) = always on at ring
-    const row = Math.floor(i / 7);
-    const col = i % 7;
-    if (
-      (row < 3 && col < 3) ||
-      (row < 3 && col > 3) ||
-      (row > 3 && col < 3)
-    ) {
-      const isCorner =
-        row === 0 || row === 2 || col === 0 || col === 2 ||
-        (row === 1 && col === 1) ||
-        (row > 3 && row === 6) ||
-        (col > 3 && col === 6);
-      return isCorner;
-    }
-    return ((seed * (i + 1)) % 7) > 3;
-  });
+/* ─── Confetti-like particle burst for success ─── */
+function SuccessParticles() {
+  const particles = useMemo(
+    () =>
+      Array.from({ length: 16 }, (_, i) => ({
+        id: i,
+        angle: (i / 16) * 360,
+        distance: 60 + Math.random() * 50,
+        size: 4 + Math.random() * 6,
+        color: ['#10b981', '#34d399', '#6ee7b7', '#a7f3d0', '#fbbf24', '#22c55e'][i % 6],
+        delay: Math.random() * 0.15,
+      })),
+    []
+  );
+
   return (
-    <div className="grid size-12 grid-cols-7 gap-px">
-      {cells.map((on, i) => (
-        <div key={i} className={on ? 'bg-[#191c1e]' : 'bg-transparent'} />
+    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      {particles.map((p) => (
+        <m.div
+          key={p.id}
+          className="absolute left-1/2 top-1/2 rounded-full"
+          style={{
+            width: p.size,
+            height: p.size,
+            backgroundColor: p.color,
+          }}
+          initial={{ x: 0, y: 0, opacity: 1, scale: 1 }}
+          animate={{
+            x: Math.cos((p.angle * Math.PI) / 180) * p.distance,
+            y: Math.sin((p.angle * Math.PI) / 180) * p.distance,
+            opacity: 0,
+            scale: 0.3,
+          }}
+          transition={{
+            duration: 0.8,
+            delay: p.delay,
+            ease: 'easeOut',
+          }}
+        />
       ))}
     </div>
+  );
+}
+
+/* ─── Success checkmark with drawing animation ─── */
+function AnimatedCheckmark() {
+  return (
+    <m.div
+      className="relative flex size-20 items-center justify-center"
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 15, delay: 0.1 }}
+    >
+      {/* Glowing background ring */}
+      <m.div
+        className="absolute inset-0 rounded-full bg-emerald-400/30"
+        initial={{ scale: 0.5, opacity: 0 }}
+        animate={{ scale: [0.5, 1.8, 1.4], opacity: [0, 0.6, 0] }}
+        transition={{ duration: 1.2, ease: 'easeOut' }}
+      />
+      {/* Second pulse ring */}
+      <m.div
+        className="absolute inset-0 rounded-full bg-emerald-400/20"
+        initial={{ scale: 0.5, opacity: 0 }}
+        animate={{ scale: [0.5, 2.5], opacity: [0.4, 0] }}
+        transition={{ duration: 1.5, ease: 'easeOut', delay: 0.2 }}
+      />
+      {/* Icon circle */}
+      <m.div
+        className="relative flex size-16 items-center justify-center rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/40"
+        initial={{ scale: 0, rotate: -90 }}
+        animate={{ scale: 1, rotate: 0 }}
+        transition={{ delay: 0.15, type: 'spring', stiffness: 350 }}
+      >
+        <m.div
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={{ pathLength: 1, opacity: 1 }}
+          transition={{ delay: 0.35, duration: 0.4 }}
+        >
+          <CheckCircle2 className="size-9 text-white" strokeWidth={2.5} />
+        </m.div>
+      </m.div>
+    </m.div>
+  );
+}
+
+/* ─── Rejected/duplicate X with shake animation ─── */
+function AnimatedReject() {
+  return (
+    <m.div
+      className="relative flex size-20 items-center justify-center"
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+    >
+      {/* Red flash ring */}
+      <m.div
+        className="absolute inset-0 rounded-full bg-rose-500/30"
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: [0.8, 2], opacity: [0.5, 0] }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+      />
+      {/* Icon circle */}
+      <m.div
+        className="relative flex size-16 items-center justify-center rounded-full bg-rose-500 shadow-lg shadow-rose-500/40"
+        initial={{ scale: 0.6, rotate: 0 }}
+        animate={{ scale: 1, rotate: [0, -12, 12, -6, 0] }}
+        transition={{ delay: 0.05, duration: 0.5 }}
+      >
+        <XCircle className="size-9 text-white" strokeWidth={2.5} />
+      </m.div>
+    </m.div>
   );
 }
 
@@ -55,6 +141,8 @@ export default function DemoScanPage() {
   const [preview, setPreview] = useState<ScanResult | null>(null);
   const [filter, setFilter] = useState<'Semua' | 'Aktif' | 'Terpakai'>('Aktif');
   const [query, setQuery] = useState('');
+  const [showSuccessOverlay, setShowSuccessOverlay] = useState(false);
+  const [lastConfirmedName, setLastConfirmedName] = useState('');
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -72,17 +160,75 @@ export default function DemoScanPage() {
   function handleClick(id: string) {
     const result = previewScan(id);
     setPreview(result);
+    // Scroll preview into view
+    if (typeof window !== 'undefined') {
+      setTimeout(() => {
+        document
+          .getElementById('scan-preview')
+          ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 50);
+    }
   }
 
   function handleConfirm() {
     if (preview?.kind === 'success') {
       confirmScan(preview.kupon.id);
+      setLastConfirmedName(preview.penerimaNama);
+      setShowSuccessOverlay(true);
     }
     setPreview(null);
   }
 
+  // Auto-hide success overlay
+  useEffect(() => {
+    if (!showSuccessOverlay) return;
+    const timer = setTimeout(() => setShowSuccessOverlay(false), 2500);
+    return () => clearTimeout(timer);
+  }, [showSuccessOverlay]);
+
   return (
     <div className="space-y-6">
+      {/* ═══ FULL-SCREEN SUCCESS OVERLAY ═══ */}
+      <AnimatePresence>
+        {showSuccessOverlay && (
+          <m.div
+            className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-emerald-600/95 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <SuccessParticles />
+            <AnimatedCheckmark />
+            <m.p
+              className="mt-6 text-center font-headline text-3xl font-extrabold text-white md:text-4xl"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              Scan Berhasil!
+            </m.p>
+            <m.p
+              className="mt-2 flex items-center gap-2 text-center text-lg text-emerald-100"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.45 }}
+            >
+              <Sparkles className="size-5" />
+              Kupon {lastConfirmedName} sudah diverifikasi
+            </m.p>
+            <m.div
+              className="mt-8 rounded-full bg-white/20 px-6 py-2 text-sm font-medium text-white"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7 }}
+            >
+              Menutup otomatis...
+            </m.div>
+          </m.div>
+        )}
+      </AnimatePresence>
+
       {/* Header */}
       <div className="rounded-3xl bg-white p-6 shadow-sm md:p-8">
         <div className="flex items-start gap-4">
@@ -111,14 +257,19 @@ export default function DemoScanPage() {
         </div>
       </div>
 
-      {/* Preview hasil scan */}
-      {preview && (
-        <ScanResultCard
-          result={preview}
-          onConfirm={handleConfirm}
-          onCancel={() => setPreview(null)}
-        />
-      )}
+      {/* Preview hasil scan dengan animasi */}
+      <div id="scan-preview">
+        <AnimatePresence mode="wait">
+          {preview && (
+            <ScanResultCard
+              key={`${preview.kind}-${preview.kind !== 'invalid' ? preview.kupon.id : ''}`}
+              result={preview}
+              onConfirm={handleConfirm}
+              onCancel={() => setPreview(null)}
+            />
+          )}
+        </AnimatePresence>
+      </div>
 
       {/* Filter bar */}
       <div className="rounded-3xl bg-white p-5 shadow-sm">
@@ -159,55 +310,34 @@ export default function DemoScanPage() {
         </div>
       </div>
 
-      {/* Grid kupon */}
+      {/* Grid kupon — pakai DemoCouponCard versi compact */}
       <div className="rounded-3xl bg-white p-5 shadow-sm md:p-6">
         <p className="mb-4 text-xs font-bold uppercase tracking-wider text-[#3f4944]/60">
-          {filtered.length} kupon
+          {filtered.length} kupon — klik untuk simulasi scan
         </p>
         {filtered.length === 0 ? (
           <p className="py-8 text-center text-sm text-[#3f4944]/60">
             Tidak ada kupon yang cocok dengan filter.
           </p>
         ) : (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filtered.map((k) => {
               const p = DEMO_PENERIMA.find((x) => x.id === k.penerimaId);
               const z = p && DEMO_ZONA.find((zo) => zo.id === p.zonaId);
-              const isTerpakai = k.status === 'Terpakai';
+              if (!p || !z) return null;
               return (
                 <button
                   key={k.id}
                   type="button"
                   onClick={() => handleClick(k.id)}
-                  className={`group flex flex-col items-center rounded-2xl border-2 p-3 text-left transition-all active:scale-95 ${
-                    isTerpakai
-                      ? 'border-[#f2f4f6] bg-[#f7f9fb] opacity-70 hover:opacity-100'
-                      : 'border-[#eceef0] bg-white hover:-translate-y-0.5 hover:border-[#004532]/30 hover:shadow-md'
-                  }`}
+                  className="group block text-left transition-transform active:scale-95 hover:-translate-y-0.5"
                 >
-                  <div className="flex w-full items-center justify-between">
-                    <span className="font-mono text-[10px] font-bold text-[#191c1e]">
-                      {k.id}
-                    </span>
-                    <span
-                      className={`rounded-full px-1.5 py-0.5 text-[9px] font-bold ${
-                        isTerpakai
-                          ? 'bg-[#eceef0] text-[#3f4944]'
-                          : 'bg-emerald-50 text-emerald-700'
-                      }`}
-                    >
-                      {k.status.toUpperCase()}
-                    </span>
-                  </div>
-                  <div className="my-2 flex w-full justify-center rounded-lg bg-[#f7f9fb] p-2">
-                    <MiniQr id={k.id} />
-                  </div>
-                  <p className="line-clamp-1 w-full text-[11px] font-bold text-[#191c1e]">
-                    {p?.nama ?? '—'}
-                  </p>
-                  <p className="line-clamp-1 w-full text-[10px] text-[#3f4944]/60">
-                    {z?.nama ?? '—'}
-                  </p>
+                  <DemoCouponCard
+                    kupon={k}
+                    penerima={p}
+                    zona={z}
+                    variant="compact"
+                  />
                 </button>
               );
             })}
@@ -229,20 +359,58 @@ function ScanResultCard({
 }) {
   if (result.kind === 'success') {
     return (
-      <div className="overflow-hidden rounded-3xl border-2 border-emerald-200 bg-white shadow-lg shadow-emerald-100/40">
-        <div className="bg-emerald-50 px-6 py-4">
-          <div className="flex items-center gap-3">
-            <CheckCircle2 className="size-6 text-emerald-600" />
+      <m.div
+        initial={{ opacity: 0, scale: 0.92, y: -8 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: -4 }}
+        transition={{ type: 'spring', stiffness: 280, damping: 22 }}
+        className="overflow-hidden rounded-3xl border-2 border-emerald-200 bg-white shadow-xl shadow-emerald-100/40"
+      >
+        {/* Animated success pulse banner */}
+        <div className="relative overflow-hidden bg-emerald-50 px-6 py-5">
+          <m.div
+            className="absolute -left-10 top-1/2 size-24 -translate-y-1/2 rounded-full bg-emerald-300/40"
+            initial={{ scale: 0.5, opacity: 0 }}
+            animate={{ scale: [0.5, 2.5], opacity: [0.7, 0] }}
+            transition={{ duration: 1.4, ease: 'easeOut' }}
+          />
+          <m.div
+            className="absolute right-10 top-1/2 size-16 -translate-y-1/2 rounded-full bg-emerald-200/40"
+            initial={{ scale: 0.5, opacity: 0 }}
+            animate={{ scale: [0.5, 3], opacity: [0.5, 0] }}
+            transition={{ duration: 1.6, ease: 'easeOut', delay: 0.15 }}
+          />
+          <div className="relative flex items-center gap-3">
+            <m.div
+              initial={{ scale: 0, rotate: -90 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ delay: 0.12, type: 'spring', stiffness: 350 }}
+              className="flex size-12 items-center justify-center rounded-full bg-emerald-500 text-white shadow-lg shadow-emerald-500/40"
+            >
+              <CheckCircle2 className="size-7" strokeWidth={2.5} />
+            </m.div>
             <div>
-              <p className="font-headline text-base font-extrabold text-emerald-900">
+              <m.p
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2 }}
+                className="font-headline text-lg font-extrabold text-emerald-900"
+              >
                 Kupon Valid — Siap Diambil
-              </p>
-              <p className="text-xs text-emerald-700">
-                Scan berhasil dalam 2.1 detik
-              </p>
+              </m.p>
+              <m.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="flex items-center gap-1.5 text-xs text-emerald-700"
+              >
+                <Sparkles className="size-3" />
+                Scan berhasil — konfirmasi untuk update status
+              </m.p>
             </div>
           </div>
         </div>
+
         <div className="p-6">
           <div className="flex items-start justify-between gap-4">
             <div>
@@ -279,26 +447,69 @@ function ScanResultCard({
             </button>
           </div>
         </div>
-      </div>
+      </m.div>
     );
   }
 
   if (result.kind === 'duplicate') {
     return (
-      <div className="overflow-hidden rounded-3xl border-2 border-rose-200 bg-white shadow-lg shadow-rose-100/40">
-        <div className="bg-rose-50 px-6 py-4">
-          <div className="flex items-center gap-3">
-            <XCircle className="size-6 text-rose-600" />
+      <m.div
+        initial={{ opacity: 0, x: 0 }}
+        animate={{
+          opacity: 1,
+          x: [0, -16, 16, -12, 12, -6, 6, 0],
+        }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.6, ease: 'easeInOut' }}
+        className="overflow-hidden rounded-3xl border-2 border-rose-300 bg-white shadow-xl shadow-rose-100/40"
+      >
+        {/* Rejected banner with red flash */}
+        <div className="relative overflow-hidden bg-rose-50 px-6 py-5">
+          {/* Red flash overlay */}
+          <m.div
+            className="absolute inset-0 bg-rose-400"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 0.4, 0] }}
+            transition={{ duration: 0.5, times: [0, 0.3, 1] }}
+          />
+          {/* Second red flash */}
+          <m.div
+            className="absolute inset-0 bg-rose-300"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 0.2, 0] }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          />
+          <div className="relative flex items-center gap-3">
+            <m.div
+              initial={{ scale: 0.6, rotate: 0 }}
+              animate={{ scale: 1, rotate: [0, -12, 12, -6, 0] }}
+              transition={{ delay: 0.05, duration: 0.5 }}
+              className="flex size-12 items-center justify-center rounded-full bg-rose-500 text-white shadow-lg shadow-rose-500/40"
+            >
+              <Ban className="size-7" strokeWidth={2.5} />
+            </m.div>
             <div>
-              <p className="font-headline text-base font-extrabold text-rose-900">
-                Kupon Sudah Dipakai
-              </p>
-              <p className="text-xs text-rose-700">
-                Kupon ini tidak bisa dipakai dua kali
-              </p>
+              <m.p
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.15 }}
+                className="font-headline text-lg font-extrabold text-rose-900"
+              >
+                Kupon Tidak Bisa Diambil!
+              </m.p>
+              <m.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.25 }}
+                className="flex items-center gap-1.5 text-xs text-rose-700"
+              >
+                <ShieldX className="size-3" />
+                Kupon ini sudah pernah dipakai sebelumnya
+              </m.p>
             </div>
           </div>
         </div>
+
         <div className="p-6">
           <div className="flex items-start justify-between gap-4">
             <div>
@@ -309,12 +520,22 @@ function ScanResultCard({
                 {result.penerimaNama}
               </p>
             </div>
-            <span className="rounded-full bg-rose-100 px-3 py-1.5 text-xs font-bold text-rose-800">
+            <m.span
+              className="rounded-full bg-rose-100 px-3 py-1.5 text-xs font-bold text-rose-800"
+              initial={{ scale: 0 }}
+              animate={{ scale: [0, 1.2, 1] }}
+              transition={{ delay: 0.2, duration: 0.4 }}
+            >
               TERPAKAI
-            </span>
+            </m.span>
           </div>
 
-          <div className="mt-4 rounded-2xl bg-[#f7f9fb] p-4 text-sm">
+          <m.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="mt-4 rounded-2xl bg-[#f7f9fb] p-4 text-sm"
+          >
             <p className="text-xs font-bold uppercase tracking-wider text-[#3f4944]/60">
               Riwayat Scan Pertama
             </p>
@@ -323,7 +544,19 @@ function ScanResultCard({
               · oleh{' '}
               <span className="font-bold">{result.scanBy}</span>
             </p>
-          </div>
+          </m.div>
+
+          <m.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.45 }}
+            className="mt-3 flex items-start gap-2 rounded-2xl border border-rose-100 bg-rose-50/50 p-3 text-xs text-rose-800"
+          >
+            <ShieldX className="mt-0.5 size-3.5 shrink-0 text-rose-500" />
+            <p>
+              <strong>Anti-fraud aktif:</strong> Kupon yang sudah di-scan tidak bisa dipakai lagi, meskipun QR-nya di-fotocopy atau di-screenshot.
+            </p>
+          </m.div>
 
           <div className="mt-5">
             <button
@@ -335,13 +568,18 @@ function ScanResultCard({
             </button>
           </div>
         </div>
-      </div>
+      </m.div>
     );
   }
 
   // invalid
   return (
-    <div className="overflow-hidden rounded-3xl border-2 border-rose-200 bg-white p-6 shadow-lg">
+    <m.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0 }}
+      className="overflow-hidden rounded-3xl border-2 border-rose-200 bg-white p-6 shadow-lg"
+    >
       <div className="flex items-center gap-3">
         <XCircle className="size-6 text-rose-600" />
         <p className="font-headline text-base font-extrabold text-rose-900">
@@ -356,6 +594,6 @@ function ScanResultCard({
       >
         Tutup
       </button>
-    </div>
+    </m.div>
   );
 }
