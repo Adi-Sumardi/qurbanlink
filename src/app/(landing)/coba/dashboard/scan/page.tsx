@@ -91,7 +91,7 @@ export default function DemoScanPage() {
           </div>
           <div className="flex-1">
             <h1 className="font-headline text-2xl font-extrabold text-[#191c1e] md:text-3xl">
-              Scan Kupon — Mode Simulasi
+              Scan QR — Mode Simulasi
             </h1>
             <p className="mt-2 text-sm text-[#3f4944] md:text-base">
               Di kondisi nyata, petugas mengarahkan kamera HP ke QR Code kupon.

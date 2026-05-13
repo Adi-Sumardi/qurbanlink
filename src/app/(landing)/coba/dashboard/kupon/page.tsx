@@ -40,7 +40,7 @@ export default function DemoKuponPage() {
       {/* Header */}
       <div className="rounded-3xl bg-white p-6 shadow-sm md:p-8">
         <h1 className="font-headline text-2xl font-extrabold text-[#191c1e] md:text-3xl">
-          Daftar Kupon QR
+          Distribusi
         </h1>
         <p className="mt-2 text-sm text-[#3f4944]">
           {kupon.length} kupon ·{' '}

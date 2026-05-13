@@ -8,22 +8,35 @@ import {
   Ticket,
   Beef,
   FileBarChart2,
-  Tv,
+  Calendar,
+  HeartHandshake,
+  UserCheck,
+  MapPin,
+  Settings,
+  Shield,
+  CreditCard,
   ArrowLeft,
 } from 'lucide-react';
 import { DemoBanner } from '@/components/coba/demo-banner';
 import { FloatingCta } from '@/components/coba/floating-cta';
 
+// Selaras dengan menu di dashboard tenant (src/components/layout/app-sidebar.tsx)
 const NAV = [
-  { href: '/coba/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/coba/dashboard/kupon', label: 'Kupon QR', icon: Ticket },
-  { href: '/coba/dashboard/scan', label: 'Scan', icon: ScanLine, highlight: true },
+  { href: '/coba/dashboard', label: 'Beranda', icon: LayoutDashboard },
+  { href: '/coba/dashboard/kupon', label: 'Distribusi', icon: Ticket },
+  { href: '/coba/dashboard/scan', label: 'Scan QR', icon: ScanLine, highlight: true },
 ];
 
 const NAV_DISABLED = [
-  { label: 'Hewan', icon: Beef },
+  { label: 'Event', icon: Calendar },
+  { label: 'Donatur', icon: HeartHandshake },
+  { label: 'Penerima', icon: UserCheck },
+  { label: 'Hewan Kurban', icon: Beef },
+  { label: 'Lokasi', icon: MapPin },
   { label: 'Laporan', icon: FileBarChart2 },
-  { label: 'Live Dashboard', icon: Tv },
+  { label: 'Pengaturan', icon: Settings },
+  { label: 'Pengguna', icon: Shield },
+  { label: 'Langganan', icon: CreditCard },
 ];
 
 export default function DemoDashboardLayout({

@@ -27,23 +27,23 @@ export const metadata: Metadata = {
 const FEATURES = [
   {
     icon: LayoutDashboard,
-    title: 'Dashboard Live',
+    title: 'Beranda',
     desc: 'Pantau progres distribusi real-time dengan KPI & breakdown zona RT/RW.',
   },
   {
     icon: ScanLine,
-    title: 'Scan Kupon QR',
+    title: 'Scan QR',
     desc: 'Coba scan 50 kupon simulasi — kupon yang sudah terpakai otomatis ditolak.',
   },
   {
     icon: Ticket,
-    title: '50 Kupon Aktif',
+    title: 'Distribusi',
     desc: 'Lihat daftar kupon dengan filter status, zona, dan pencarian nama penerima.',
   },
   {
     icon: FileBarChart2,
-    title: 'Preview Laporan',
-    desc: 'Lihat seperti apa laporan PDF & Excel yang akan dikirim ke donatur Anda.',
+    title: 'Laporan',
+    desc: 'Preview laporan PDF & Excel yang akan dikirim ke donatur Anda.',
   },
 ];
 
