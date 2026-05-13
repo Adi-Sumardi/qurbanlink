@@ -1346,35 +1346,6 @@ const jsonLd = {
       ],
       url: 'https://tawzii.id',
     },
-    {
-      '@type': 'FAQPage',
-      mainEntity: [
-        {
-          '@type': 'Question',
-          name: 'Apa itu Tawzii Digital?',
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: 'Tawzii Digital adalah platform SaaS distribusi kurban berbasis QR Code untuk masjid dan organisasi Islam di Indonesia. Platform ini membantu mencegah kupon palsu, mengatur distribusi per zona wilayah, dan memantau transparansi hewan kurban secara real-time.',
-          },
-        },
-        {
-          '@type': 'Question',
-          name: 'Bagaimana cara mencegah kupon kurban dipalsukan?',
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: 'Tawzii Digital menggunakan kupon QR terenkripsi yang unik untuk setiap penerima. Setelah di-scan sekali, kupon langsung hangus dan tidak bisa digunakan lagi — sehingga pemalsuan atau fotokopi kupon tidak bisa terjadi.',
-          },
-        },
-        {
-          '@type': 'Question',
-          name: 'Apakah Tawzii Digital gratis?',
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: 'Ya, Tawzii Digital menyediakan paket gratis untuk masjid dengan kebutuhan distribusi kecil. Tersedia juga paket berbayar dengan fitur lebih lengkap untuk distribusi skala besar.',
-          },
-        },
-      ],
-    },
   ],
 };
 

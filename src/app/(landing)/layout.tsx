@@ -99,7 +99,7 @@ export const metadata: Metadata = {
  * - Organization: brand identity
  * - SoftwareApplication: app listing in search
  * - WebSite: sitelinks search box
- * - FAQPage: FAQ rich results
+ * NOTE: FAQPage schema lives in faq-section.tsx (single source of truth)
  */
 function JsonLd() {
   const organizationSchema = {
@@ -160,52 +160,7 @@ function JsonLd() {
     },
   };
 
-  const faqSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: [
-      {
-        '@type': 'Question',
-        name: 'Apa itu Tawzii Digital?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Tawzii Digital adalah platform distribusi kurban digital berbasis QR Code yang membantu masjid dan organisasi Islam mengelola pembagian daging kurban secara transparan, adil, dan efisien.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'Bagaimana cara kerja distribusi kurban dengan QR Code?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Setiap penerima mendapat kupon digital dengan QR Code unik. Saat pengambilan, panitia cukup scan QR Code — sistem otomatis memverifikasi dan menandai kupon sebagai sudah digunakan. Tidak bisa dipalsukan atau digunakan dua kali.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'Apakah Tawzii Digital gratis untuk masjid?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Ya! Tawzii menyediakan paket Free yang bisa digunakan masjid tanpa biaya. Paket berbayar tersedia untuk fitur tambahan seperti kuota kupon lebih banyak dan laporan lanjutan.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'Apakah bisa digunakan tanpa internet?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Ya, fitur scan QR Code tetap bisa berjalan meski koneksi internet terputus. Data akan otomatis tersinkronisasi saat koneksi kembali tersedia.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'Apa keunggulan kupon digital dibanding kupon kertas?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Kupon digital QR Code tidak bisa difotokopi atau dipalsukan, otomatis hangus setelah digunakan, dan semua data tercatat di sistem secara real-time. Panitia bisa memantau distribusi dari dashboard tanpa perlu rekap manual.',
-        },
-      },
-    ],
-  };
+
 
   return (
     <>
@@ -221,10 +176,7 @@ function JsonLd() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
+
     </>
   );
 }
