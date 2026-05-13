@@ -29,6 +29,7 @@ import { SUBSCRIPTION_PLAN_LABELS } from '@/lib/constants';
 import type { SubscriptionPlanInfo } from '@/services/subscription.service';
 import { toast } from 'sonner';
 import { FaqSection } from '@/components/landing/faq-section';
+import { TestimonialsSection } from '@/components/landing/testimonials-section';
 
 // --- Animation Variants ---
 
@@ -83,6 +84,7 @@ function Navbar() {
           {[
             { label: 'Beranda', href: '#' },
             { label: 'Fitur', href: '#fitur' },
+            { label: 'Testimoni', href: '#testimoni' },
             { label: 'Harga', href: '#harga' },
             { label: 'FAQ', href: '#faq' },
             { label: 'Panduan', href: '/panduan' },
@@ -1231,6 +1233,7 @@ export default function LandingPage() {
         <HeroSection />
         <FeaturesSection />
         <TransparencySection />
+        <TestimonialsSection />
         <PricingSection />
         <FaqSection />
         <CtaSection />
