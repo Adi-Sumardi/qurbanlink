@@ -222,24 +222,18 @@ function HeroSection() {
               </li>
             </m.ul>
 
-            {/* CTA Buttons */}
+            {/* CTA */}
             <m.div
-              className="flex flex-wrap items-center gap-4 pt-1"
+              className="pt-1"
               variants={fadeUp}
               transition={{ duration: 0.5 }}
             >
               <Link
                 href="/register"
-                className="btn-gradient inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-base font-extrabold font-headline shadow-xl shadow-[#004532]/20 transition-all active:scale-95 hover:opacity-90 md:px-8 md:py-4"
+                className="btn-gradient inline-flex items-center gap-2 rounded-full px-8 py-4 text-base font-extrabold font-headline shadow-xl shadow-[#004532]/20 transition-all active:scale-95 hover:opacity-90"
               >
-                Daftar Gratis
+                Daftar Gratis Sekarang
                 <ArrowRight className="size-5" />
-              </Link>
-              <Link
-                href="#fitur"
-                className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-base font-bold font-headline text-[#191c1e] ring-1 ring-[#eceef0] transition-all hover:bg-[#f7f9fb] hover:ring-[#004532]/30 md:px-8 md:py-4"
-              >
-                Lihat Demo Fitur
               </Link>
             </m.div>
 
