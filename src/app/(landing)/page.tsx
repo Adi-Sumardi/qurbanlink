@@ -354,39 +354,54 @@ function HeroSection() {
                 </div>
               </m.div>
 
-              {/* Floating: Kupon QR card */}
+              {/* Floating: Kupon QR card — uses actual .coupon-card CSS */}
               <m.div
-                className="absolute -right-4 -top-8 hidden w-56 rounded-2xl bg-white p-4 shadow-2xl shadow-[#004532]/20 ring-1 ring-black/5 md:block lg:-right-6"
+                className="absolute -right-4 -top-8 hidden w-[220px] md:block lg:-right-6"
+                style={{ filter: 'drop-shadow(0 12px 40px rgba(0,69,50,0.18))' }}
                 initial={{ opacity: 0, rotate: 8, y: 20 }}
                 animate={{ opacity: 1, rotate: 6, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.9 }}
               >
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-[9px] font-black uppercase tracking-widest text-[#004532]">
-                      Kupon Kurban
-                    </p>
-                    <p className="font-mono text-xs font-bold text-[#191c1e]">
-                      #A-0142
-                    </p>
+                <div className="coupon-card" style={{ fontSize: '1.05em' }}>
+                  <div className="coupon-header">
+                    <span className="coupon-org-name">Masjid Al-Hikmah</span>
+                    <span className="coupon-org-city">Bekasi</span>
                   </div>
-                  <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-bold text-emerald-700">
-                    AKTIF
-                  </span>
-                </div>
-
-                {/* QR placeholder grid */}
-                <div className="mt-3 flex items-center justify-center rounded-xl bg-[#f7f9fb] p-3">
-                  <QrPlaceholder />
-                </div>
-
-                <div className="mt-3 space-y-0.5 text-center">
-                  <p className="text-xs font-bold text-[#191c1e]">
-                    Bapak Suparman
-                  </p>
-                  <p className="text-[10px] text-[#3f4944]/70">
-                    RT 03 / RW 05 · 1 paket
-                  </p>
+                  <div className="coupon-title">Kupon Distribusi Daging Kurban</div>
+                  <div className="coupon-event">Idul Adha 1447 H</div>
+                  <div className="coupon-body">
+                    <div className="coupon-qr">
+                      <div className="flex items-center justify-center" style={{ width: 88, height: 88 }}>
+                        <QrPlaceholder />
+                      </div>
+                      <span className="coupon-number">A-0142</span>
+                    </div>
+                    <div className="coupon-details">
+                      <div className="detail-row">
+                        <span className="detail-label">Nama</span>
+                        <span className="detail-value">Bp. Suparman</span>
+                      </div>
+                      <div className="detail-row">
+                        <span className="detail-label">Alamat</span>
+                        <span className="detail-value">Jl. Mawar No. 12</span>
+                      </div>
+                      <div className="detail-row">
+                        <span className="detail-label">Zona</span>
+                        <span className="detail-value">RT 03 / RW 05</span>
+                      </div>
+                      <div className="detail-row">
+                        <span className="detail-label">Kategori</span>
+                        <span className="detail-value">Fakir</span>
+                      </div>
+                      <div className="detail-row">
+                        <span className="detail-label">Porsi</span>
+                        <span className="detail-value">1 paket</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="coupon-footer">
+                    <span className="coupon-validity">Berlaku s/d 27 Mei 2026</span>
+                  </div>
                 </div>
               </m.div>
 
