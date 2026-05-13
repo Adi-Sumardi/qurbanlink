@@ -74,7 +74,7 @@ export const metadata: Metadata = {
       'Distribusi kurban digital berbasis QR Code. Cegah kupon palsu, atur pembagian per zona RT/RW, dan pantau transparansi hewan kurban secara real-time. Gratis untuk masjid di seluruh Indonesia.',
     images: [
       {
-        url: '/og-image.png',
+        url: '/og',
         width: 1200,
         height: 630,
         alt: 'Tawzii Digital — Platform Distribusi Kurban Digital untuk Masjid Indonesia',
@@ -86,7 +86,7 @@ export const metadata: Metadata = {
     title: 'Tawzii Digital — Platform Distribusi Kurban Digital',
     description:
       'Distribusi kurban digital berbasis QR Code. Cegah kupon palsu, pembagian per zona, transparansi real-time. Gratis untuk masjid!',
-    images: ['/og-image.png'],
+    images: ['/og'],
     creator: '@tawziidigital',
   },
   other: {
