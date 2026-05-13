@@ -18,7 +18,7 @@ export const FAQ_ITEMS: FaqItem[] = [
   {
     question: 'Apakah Tawzii Digital gratis?',
     answer:
-      'Ya, kami menyediakan paket Uji Coba gratis selama 3 hari dengan kuota 15 kupon. Setelah masa uji coba, Anda dapat memilih paket berbayar mulai Rp 1.000 untuk kuota lebih besar dan fitur tambahan seperti Live Dashboard, Export PDF, dan Priority Support.',
+      'Ya, kami menyediakan paket Uji Coba gratis selama 3 hari dengan kuota 15 kupon. Setelah masa uji coba, Anda dapat memilih paket berbayar untuk kuota lebih besar dan fitur tambahan seperti Live Dashboard, Export PDF, dan Priority Support.',
   },
   {
     question: 'Bagaimana cara mendaftar?',
@@ -58,6 +58,6 @@ export const FAQ_ITEMS: FaqItem[] = [
   {
     question: 'Apakah ada support kalau bingung pakai?',
     answer:
-      'Tentu. Kami menyediakan dokumentasi lengkap, panduan video, dan tim support yang siap membantu. Paket Professional ke atas mendapatkan Priority Support dengan respon dalam 2 jam kerja. Untuk pertanyaan umum, hubungi kami via WhatsApp atau email yang tertera di footer halaman.',
+      'Tentu. Kami menyediakan dokumentasi lengkap, panduan, dan tim support yang siap membantu. Paket Professional ke atas mendapatkan Priority Support dengan respon dalam 2 jam kerja. Untuk pertanyaan umum, hubungi kami via WhatsApp atau email yang tertera di footer halaman.',
   },
 ];

@@ -1,8 +1,34 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { Calendar, Clock, User, ArrowLeft, Tag } from 'lucide-react';
-import { ARTICLES, ARTICLES_BY_SLUG } from '@/content/articles';
+import { Calendar, Clock, User, ArrowLeft, Tag, ArrowRight } from 'lucide-react';
+import { ARTICLES, ARTICLES_BY_SLUG, type Article } from '@/content/articles';
+
+const CATEGORY_COLORS: Record<string, string> = {
+  Panduan: 'bg-[#a6f2d1] text-[#004532]',
+  Tips: 'bg-amber-100 text-amber-800',
+  Edukasi: 'bg-blue-100 text-blue-800',
+};
+
+function getRelatedArticles(current: Article, limit = 3): Article[] {
+  const currentTags = new Set(current.tags.map((t) => t.toLowerCase()));
+  const scored = ARTICLES.filter((a) => a.slug !== current.slug).map((a) => {
+    const sharedTags = a.tags.filter((t) =>
+      currentTags.has(t.toLowerCase())
+    ).length;
+    const categoryMatch = a.category === current.category ? 1 : 0;
+    // Score: kategori sama (×3) + per shared tag (×2) + recency tiebreaker
+    const score = categoryMatch * 3 + sharedTags * 2;
+    return { article: a, score };
+  });
+
+  scored.sort((x, y) => {
+    if (y.score !== x.score) return y.score - x.score;
+    return y.article.publishedAt.localeCompare(x.article.publishedAt);
+  });
+
+  return scored.slice(0, limit).map((s) => s.article);
+}
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -64,7 +90,7 @@ export default async function ArticlePage({ params }: PageProps) {
     keywords: article.tags.join(', '),
   };
 
-  const related = ARTICLES.filter((a) => a.slug !== article.slug).slice(0, 2);
+  const related = getRelatedArticles(article, 3);
 
   return (
     <main className="min-h-screen bg-[#f7f9fb]">
@@ -201,28 +227,78 @@ export default async function ArticlePage({ params }: PageProps) {
       {/* Related Articles */}
       {related.length > 0 && (
         <section className="bg-[#f7f9fb] py-16">
-          <div className="mx-auto max-w-4xl px-6">
-            <h3 className="font-headline mb-8 text-center text-2xl font-extrabold text-[#191c1e] md:text-3xl">
-              Artikel lainnya
-            </h3>
-            <div className="grid gap-6 md:grid-cols-2">
+          <div className="mx-auto max-w-6xl px-6">
+            <div className="mb-8 flex items-end justify-between gap-4">
+              <div>
+                <p className="text-xs font-black uppercase tracking-widest text-[#004532]">
+                  Rekomendasi
+                </p>
+                <h3 className="font-headline mt-2 text-2xl font-extrabold text-[#191c1e] md:text-3xl">
+                  Artikel Terkait
+                </h3>
+              </div>
+              <Link
+                href="/blog"
+                className="hidden items-center gap-1.5 text-sm font-bold text-[#004532] hover:underline md:inline-flex"
+              >
+                Lihat semua
+                <ArrowRight className="size-4" />
+              </Link>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {related.map((rel) => (
                 <Link
                   key={rel.slug}
                   href={`/blog/${rel.slug}`}
-                  className="group rounded-2xl bg-white p-6 shadow-sm transition-all hover:shadow-lg"
+                  className="group flex flex-col overflow-hidden rounded-3xl bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl"
                 >
-                  <span className="text-xs font-bold uppercase tracking-widest text-[#004532]">
-                    {rel.category}
-                  </span>
-                  <h4 className="font-headline mt-2 text-lg font-bold text-[#191c1e] group-hover:text-[#004532]">
-                    {rel.title}
-                  </h4>
-                  <p className="mt-2 line-clamp-2 text-sm text-[#3f4944]">
-                    {rel.description}
-                  </p>
+                  <div className="relative h-40 w-full bg-gradient-to-br from-[#004532] to-[#065f46]">
+                    <div className="absolute inset-0 flex items-center justify-center text-6xl font-extrabold text-white/10">
+                      {rel.title.charAt(0)}
+                    </div>
+                    <span
+                      className={`absolute left-4 top-4 rounded-full px-3 py-1 text-xs font-bold ${
+                        CATEGORY_COLORS[rel.category] ?? 'bg-white text-[#004532]'
+                      }`}
+                    >
+                      {rel.category}
+                    </span>
+                  </div>
+                  <div className="flex flex-1 flex-col p-6">
+                    <h4 className="font-headline text-base font-extrabold leading-snug text-[#191c1e] group-hover:text-[#004532] md:text-lg">
+                      {rel.title}
+                    </h4>
+                    <p className="mt-2 line-clamp-2 text-sm text-[#3f4944]">
+                      {rel.description}
+                    </p>
+                    <div className="mt-4 flex items-center gap-4 text-xs text-[#3f4944]/60">
+                      <span className="flex items-center gap-1.5">
+                        <Calendar className="size-3.5" />
+                        {new Date(rel.publishedAt).toLocaleDateString('id-ID', {
+                          day: 'numeric',
+                          month: 'long',
+                          year: 'numeric',
+                        })}
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <Clock className="size-3.5" />
+                        {rel.readMinutes} menit
+                      </span>
+                    </div>
+                  </div>
                 </Link>
               ))}
+            </div>
+
+            <div className="mt-8 text-center md:hidden">
+              <Link
+                href="/blog"
+                className="inline-flex items-center gap-1.5 text-sm font-bold text-[#004532] hover:underline"
+              >
+                Lihat semua artikel
+                <ArrowRight className="size-4" />
+              </Link>
             </div>
           </div>
         </section>
