@@ -21,6 +21,9 @@ import {
   ScanLine,
   Beef,
   ClipboardList,
+  Star,
+  WifiOff,
+  Sparkles,
 } from 'lucide-react';
 import { motion as m, useInView } from 'motion/react';
 import { publicService } from '@/services/public.service';
@@ -128,7 +131,7 @@ function Navbar() {
 
 function HeroSection() {
   return (
-    <section className="relative overflow-hidden pt-20 pb-32 px-6 lg:px-8">
+    <section className="relative overflow-hidden pt-16 pb-24 px-6 md:pt-20 md:pb-32 lg:px-8">
       {/* BG glow */}
       <m.div
         className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[600px] w-[800px] -translate-x-1/2 -translate-y-1/4 rounded-full bg-[#a6f2d1]/20 blur-3xl"
@@ -137,137 +140,300 @@ function HeroSection() {
       />
 
       <div className="mx-auto max-w-7xl">
-        <div className="grid grid-cols-1 gap-16 lg:grid-cols-12 lg:items-center">
+        <div className="grid grid-cols-1 gap-14 lg:grid-cols-12 lg:items-center lg:gap-10">
           {/* Left: Text */}
           <m.div
-            className="lg:col-span-6 space-y-8"
+            className="lg:col-span-6 space-y-7"
             initial="hidden"
             animate="visible"
             variants={stagger}
           >
-            {/* Badge */}
+            {/* Social proof badge */}
             <m.div variants={fadeUp} transition={{ duration: 0.5 }}>
-              <div className="inline-flex items-center gap-2 rounded-full bg-[#6ffbbe] px-4 py-2 text-xs font-black tracking-widest uppercase text-[#002113]">
-                <Zap className="size-3" />
-                Platform Kurban Digital
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#004532]/15 bg-white px-4 py-2 text-xs font-bold text-[#004532] shadow-sm">
+                <div className="flex items-center -space-x-1">
+                  {[1, 2, 3, 4, 5].map((s) => (
+                    <Star
+                      key={s}
+                      className="size-3 fill-amber-400 text-amber-400"
+                    />
+                  ))}
+                </div>
+                <span className="text-[#3f4944]">
+                  Dipercaya <strong className="text-[#004532]">50+ masjid</strong> di Indonesia
+                </span>
               </div>
             </m.div>
 
             {/* Headline */}
             <m.div variants={fadeUp} transition={{ duration: 0.6 }}>
-              <h1 className="font-headline text-5xl font-extrabold leading-tight tracking-tight text-[#004532] md:text-6xl lg:text-7xl">
-                Amanah Kurban
-                <br />
-                <span className="text-[#00714d]">Masjid Digital.</span>
+              <h1 className="font-headline text-4xl font-extrabold leading-[1.05] tracking-tight text-[#191c1e] md:text-5xl lg:text-6xl">
+                Distribusi kurban masjid{' '}
+                <span className="relative inline-block whitespace-nowrap text-[#004532]">
+                  10&times; lebih cepat
+                  <svg
+                    className="absolute -bottom-1 left-0 w-full"
+                    height="6"
+                    viewBox="0 0 200 6"
+                    preserveAspectRatio="none"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M2 4 Q 100 0 198 4"
+                      stroke="#6ffbbe"
+                      strokeWidth="3"
+                      fill="none"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </span>
+                {' '}&amp; tanpa kupon palsu.
               </h1>
             </m.div>
 
             {/* Subtext */}
             <m.p
-              className="max-w-xl text-lg leading-relaxed text-[#3f4944]"
+              className="max-w-xl text-base leading-relaxed text-[#3f4944] md:text-lg"
               variants={fadeUp}
               transition={{ duration: 0.6 }}
             >
-              Ubah pengelolaan kurban tradisional menjadi ekosistem digital yang presisi,
-              transparan, dan bermartabat. Pastikan setiap distribusi tepat sasaran dengan
-              integritas Islami.
+              Platform distribusi kurban berbasis QR Code untuk masjid &amp; organisasi
+              Islam. Kupon anti-palsu, scan tetap jalan offline, dan laporan otomatis
+              siap dikirim ke donatur.
             </m.p>
+
+            {/* Benefit pills */}
+            <m.ul
+              className="flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold text-[#191c1e]"
+              variants={fadeUp}
+              transition={{ duration: 0.5 }}
+            >
+              <li className="flex items-center gap-2">
+                <CheckCircle className="size-4 text-[#004532]" />
+                Kupon anti-palsu
+              </li>
+              <li className="flex items-center gap-2">
+                <WifiOff className="size-4 text-[#004532]" />
+                Scan tanpa sinyal
+              </li>
+              <li className="flex items-center gap-2">
+                <Sparkles className="size-4 text-[#004532]" />
+                Gratis untuk masjid
+              </li>
+            </m.ul>
 
             {/* CTA Buttons */}
             <m.div
-              className="flex flex-wrap gap-4 pt-2"
+              className="flex flex-wrap items-center gap-4 pt-1"
               variants={fadeUp}
               transition={{ duration: 0.5 }}
             >
               <Link
                 href="/register"
-                className="btn-gradient inline-flex items-center gap-2 rounded-full px-8 py-4 text-base font-extrabold font-headline shadow-xl shadow-[#004532]/20 transition-all active:scale-95 hover:opacity-90"
+                className="btn-gradient inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-base font-extrabold font-headline shadow-xl shadow-[#004532]/20 transition-all active:scale-95 hover:opacity-90 md:px-8 md:py-4"
               >
-                Daftarkan Masjid Anda
+                Daftar Gratis
                 <ArrowRight className="size-5" />
               </Link>
               <Link
-                href="/panduan"
-                className="inline-flex items-center gap-2 rounded-full bg-[#e6e8ea] px-8 py-4 text-base font-bold font-headline text-[#191c1e] transition-colors hover:bg-[#e0e3e5]"
+                href="#fitur"
+                className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-base font-bold font-headline text-[#191c1e] ring-1 ring-[#eceef0] transition-all hover:bg-[#f7f9fb] hover:ring-[#004532]/30 md:px-8 md:py-4"
               >
-                Lihat Panduan
+                Lihat Demo Fitur
               </Link>
             </m.div>
+
+            {/* Reassurance */}
+            <m.p
+              className="text-xs text-[#3f4944]/70"
+              variants={fadeUp}
+              transition={{ duration: 0.4 }}
+            >
+              ✓ Tanpa kartu kredit · ✓ Setup 5 menit · ✓ Cancel kapan saja
+            </m.p>
           </m.div>
 
-          {/* Right: Animal Images */}
+          {/* Right: Product mockups */}
           <m.div
             className="relative lg:col-span-6"
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ duration: 0.9, delay: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
-            <div className="grid grid-cols-2 gap-4">
-              {/* Card Sapi */}
-              <div className="pt-12">
-                <m.div
-                  className="overflow-hidden rounded-3xl shadow-2xl"
-                  style={{ rotate: -3 }}
-                  whileHover={{ rotate: 0, transition: { duration: 0.4 } }}
-                >
-                  <div className="relative aspect-[3/4]">
-                    <img
-                      src="https://images.unsplash.com/photo-1654224933022-a4916680a657?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                      alt="Sapi Kurban"
-                      className="h-full w-full object-cover"
-                    />
-                    {/* Overlay gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#003826]/80 via-transparent to-transparent" />
-                    <p className="absolute bottom-5 left-0 right-0 text-center text-xs font-bold tracking-widest uppercase text-[#6ffbbe]">
-                      Sapi Kurban
+            <div className="relative mx-auto max-w-md lg:max-w-none">
+              {/* Main: Dashboard mockup */}
+              <m.div
+                className="relative overflow-hidden rounded-3xl bg-white shadow-2xl shadow-[#004532]/15 ring-1 ring-black/5"
+                whileHover={{ y: -4, transition: { duration: 0.3 } }}
+              >
+                {/* Browser chrome */}
+                <div className="flex items-center gap-1.5 border-b border-[#eceef0] bg-[#f7f9fb] px-4 py-3">
+                  <div className="size-2.5 rounded-full bg-rose-400/60" />
+                  <div className="size-2.5 rounded-full bg-amber-400/60" />
+                  <div className="size-2.5 rounded-full bg-emerald-400/60" />
+                  <div className="ml-3 flex-1 rounded-md bg-white px-3 py-1 text-[10px] font-mono text-[#3f4944]/60 ring-1 ring-[#eceef0]">
+                    tawzii.id/dashboard
+                  </div>
+                </div>
+
+                <div className="p-5 md:p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-[#3f4944]/60">
+                        Live Distribusi
+                      </p>
+                      <h3 className="font-headline mt-1 text-lg font-extrabold text-[#191c1e]">
+                        Idul Adha 1447 H
+                      </h3>
+                    </div>
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-bold text-emerald-700">
+                      <span className="size-1.5 animate-pulse rounded-full bg-emerald-500" />
+                      AKTIF
+                    </span>
+                  </div>
+
+                  {/* Progress bar */}
+                  <div className="mt-5">
+                    <div className="flex items-end justify-between">
+                      <div>
+                        <p className="font-headline text-3xl font-extrabold text-[#191c1e]">
+                          847
+                          <span className="text-base font-bold text-[#3f4944]/50">
+                            {' '}/ 1.200
+                          </span>
+                        </p>
+                        <p className="text-xs text-[#3f4944]/70">
+                          Kupon ter-scan
+                        </p>
+                      </div>
+                      <p className="font-headline text-2xl font-extrabold text-[#004532]">
+                        70.5%
+                      </p>
+                    </div>
+                    <div className="mt-3 h-2 overflow-hidden rounded-full bg-[#f2f4f6]">
+                      <m.div
+                        className="h-full rounded-full bg-gradient-to-r from-[#004532] to-[#6ffbbe]"
+                        initial={{ width: 0 }}
+                        animate={{ width: '70.5%' }}
+                        transition={{ duration: 1.2, delay: 0.8, ease: 'easeOut' }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Zone breakdown */}
+                  <div className="mt-5 space-y-2.5">
+                    {[
+                      { zone: 'RT 01 / RW 05', done: 180, total: 200, color: 'bg-emerald-500' },
+                      { zone: 'RT 03 / RW 05', done: 145, total: 180, color: 'bg-emerald-500' },
+                      { zone: 'RT 02 / RW 06', done: 92, total: 150, color: 'bg-amber-500' },
+                      { zone: 'RT 04 / RW 06', done: 38, total: 170, color: 'bg-rose-500' },
+                    ].map((z) => {
+                      const pct = (z.done / z.total) * 100;
+                      return (
+                        <div key={z.zone} className="flex items-center gap-3">
+                          <span className="w-24 text-xs font-semibold text-[#3f4944]">
+                            {z.zone}
+                          </span>
+                          <div className="flex-1 h-1.5 overflow-hidden rounded-full bg-[#f2f4f6]">
+                            <div
+                              className={`h-full ${z.color}`}
+                              style={{ width: `${pct}%` }}
+                            />
+                          </div>
+                          <span className="w-14 text-right text-xs font-bold tabular-nums text-[#191c1e]">
+                            {z.done}/{z.total}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </m.div>
+
+              {/* Floating: Kupon QR card */}
+              <m.div
+                className="absolute -right-4 -top-8 hidden w-56 rounded-2xl bg-white p-4 shadow-2xl shadow-[#004532]/20 ring-1 ring-black/5 md:block lg:-right-6"
+                initial={{ opacity: 0, rotate: 8, y: 20 }}
+                animate={{ opacity: 1, rotate: 6, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.9 }}
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-[9px] font-black uppercase tracking-widest text-[#004532]">
+                      Kupon Kurban
+                    </p>
+                    <p className="font-mono text-xs font-bold text-[#191c1e]">
+                      #A-0142
                     </p>
                   </div>
-                </m.div>
-              </div>
+                  <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[9px] font-bold text-emerald-700">
+                    AKTIF
+                  </span>
+                </div>
 
-              {/* Card Kambing */}
-              <div>
-                <m.div
-                  className="overflow-hidden rounded-3xl shadow-2xl"
-                  style={{ rotate: 3 }}
-                  whileHover={{ rotate: 0, transition: { duration: 0.4 } }}
-                >
-                  <div className="relative aspect-[3/4]">
-                    <img
-                      src="https://images.unsplash.com/photo-1588466585717-f8041aec7875?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                      alt="Kambing Kurban"
-                      className="h-full w-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#003826]/80 via-transparent to-transparent" />
-                    <p className="absolute bottom-5 left-0 right-0 text-center text-xs font-bold tracking-widest uppercase text-[#6ffbbe]">
-                      Kambing Kurban
-                    </p>
-                  </div>
-                </m.div>
-              </div>
-            </div>
+                {/* QR placeholder grid */}
+                <div className="mt-3 flex items-center justify-center rounded-xl bg-[#f7f9fb] p-3">
+                  <QrPlaceholder />
+                </div>
 
-            {/* Stats overlay card */}
-            <m.div
-              className="absolute -bottom-8 -left-6 hidden rounded-2xl bg-white/90 p-5 shadow-xl shadow-[#004532]/8 backdrop-blur-xl md:block"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 1 }}
-            >
-              <div className="flex items-center gap-4">
-                <div className="flex size-12 items-center justify-center rounded-full bg-[#a6f2d1]">
-                  <svg viewBox="0 0 24 24" className="size-6 fill-[#004532]"><path d="M4.5 6.375a4.125 4.125 0 1 1 8.25 0 4.125 4.125 0 0 1-8.25 0ZM14.25 8.625a3.375 3.375 0 1 1 6.75 0 3.375 3.375 0 0 1-6.75 0ZM1.5 19.125a7.125 7.125 0 0 1 14.25 0v.003l-.001.119a.75.75 0 0 1-.363.63 13.067 13.067 0 0 1-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 0 1-.364-.63l-.001-.122ZM17.25 19.128l-.001.144a2.25 2.25 0 0 1-.233.96 10.088 10.088 0 0 0 5.06-1.01.75.75 0 0 0 .42-.643 4.875 4.875 0 0 0-6.957-4.611 8.586 8.586 0 0 1 1.71 5.157v.003Z"/></svg>
+                <div className="mt-3 space-y-0.5 text-center">
+                  <p className="text-xs font-bold text-[#191c1e]">
+                    Bapak Suparman
+                  </p>
+                  <p className="text-[10px] text-[#3f4944]/70">
+                    RT 03 / RW 05 · 1 paket
+                  </p>
+                </div>
+              </m.div>
+
+              {/* Floating: Scan success toast */}
+              <m.div
+                className="absolute -bottom-6 -left-4 hidden items-center gap-3 rounded-2xl bg-white p-3 pr-5 shadow-xl shadow-[#004532]/15 ring-1 ring-black/5 md:flex lg:-left-6"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 1.1 }}
+              >
+                <div className="flex size-10 items-center justify-center rounded-xl bg-[#a6f2d1]">
+                  <ScanLine className="size-5 text-[#004532]" />
                 </div>
                 <div>
-                  <p className="text-sm text-[#3f4944]">Hewan Dikelola</p>
-                  <p className="font-headline text-2xl font-bold text-[#004532]">12.450+</p>
+                  <p className="text-xs font-bold text-[#191c1e]">
+                    Kupon valid · siap diambil
+                  </p>
+                  <p className="text-[10px] text-[#3f4944]/70">
+                    Scan 2.1 detik · Ibu Maryam
+                  </p>
                 </div>
-              </div>
-            </m.div>
+              </m.div>
+            </div>
           </m.div>
         </div>
       </div>
     </section>
+  );
+}
+
+/** Decorative QR-like grid placeholder — bukan QR asli, hanya visual mockup */
+function QrPlaceholder() {
+  // 7×7 grid pseudo-random pattern (deterministic, no hydration mismatch)
+  const PATTERN = [
+    1, 1, 1, 0, 1, 1, 1,
+    1, 0, 1, 1, 0, 0, 1,
+    1, 0, 1, 0, 1, 0, 1,
+    0, 1, 0, 1, 1, 1, 0,
+    1, 0, 1, 0, 0, 1, 1,
+    1, 0, 0, 1, 1, 0, 1,
+    1, 1, 1, 0, 1, 0, 1,
+  ];
+  return (
+    <div className="grid size-24 grid-cols-7 gap-px">
+      {PATTERN.map((v, i) => (
+        <div
+          key={i}
+          className={v ? 'bg-[#191c1e]' : 'bg-transparent'}
+        />
+      ))}
+    </div>
   );
 }
 
