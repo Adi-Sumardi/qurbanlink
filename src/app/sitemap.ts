@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { ARTICLES } from '@/content/articles';
+import { PANDUAN_MODULES } from '@/content/panduan';
 
 const BASE_URL = 'https://tawzii.id';
 
@@ -9,6 +10,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(article.publishedAt),
     changeFrequency: 'monthly' as const,
     priority: 0.7,
+  }));
+
+  const panduanPages: MetadataRoute.Sitemap = PANDUAN_MODULES.map((m) => ({
+    url: `${BASE_URL}/panduan/${m.slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly' as const,
+    priority: 0.6,
   }));
 
   return [
@@ -37,6 +45,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     ...blogPosts,
+    {
+      url: `${BASE_URL}/panduan`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    ...panduanPages,
     {
       url: `${BASE_URL}/kebijakan-privasi`,
       lastModified: new Date(),
